@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "player.h"
 
-
 HRESULT player::init(void)
 {
 	_x = 100;

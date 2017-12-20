@@ -1,5 +1,6 @@
 #pragma once
 #include "gameNode.h"
+#include "player.h"
 #include "fieldObject.h"
 #include "enemy.h"
 
@@ -13,7 +14,7 @@ private:
 	int _afterMapNumber;
 	int _curMapNumber;
 
-	POINT _playerPos;
+	player* _playerPos;
 	vector<fieldObject*> _objectPos;
 	vector<enemy*> _enemyPos;
 
@@ -27,7 +28,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(POINT, vector<fieldObject*>, vector<enemy*>);
+	void update(player*, vector<fieldObject*>, vector<enemy*>);
 	void render(void);
 
 	void mapChange(int);

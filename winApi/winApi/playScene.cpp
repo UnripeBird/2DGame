@@ -37,7 +37,7 @@ void playScene::release(void)
 
 void playScene::update(void)
 {
-	_mapManager->update(_player->getPos(), _objectManager->getObject(), _enemyManager->getEnemy());
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy());
 
 	_player->update(_objectManager->getObject(), _enemyManager->getEnemy());
 

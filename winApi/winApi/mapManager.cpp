@@ -26,14 +26,16 @@ void mapManager::release(void)
 	_mapPixelCollisionVector.clear();
 }
 
-void mapManager::update(POINT playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos)
+void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos)
 {
 	_playerPos = playerPos;
 	_objectPos = objectPos;
 	_enemyPos = enemyPos;
 
-	_cameraX = _playerPos.x - WINSIZEX / 2;
-	_cameraY = _playerPos.y - WINSIZEY / 2;
+	POINT playerPosition = _playerPos->getPos();
+
+	_cameraX = playerPosition.x - WINSIZEX / 2;
+	_cameraY = playerPosition.y - WINSIZEY / 2;
 	if (_cameraX < 0) _cameraX = 0;
 	else if (_cameraX + WINSIZEX > _mapBackImageVector[_curMapNumber]->getWidth()) _cameraX = _mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX;
 	if (_cameraY < 0) _cameraY = 0;
@@ -42,9 +44,11 @@ void mapManager::update(POINT playerPos, vector<fieldObject*> objectPos, vector<
 
 void mapManager::render(void)
 {
+	POINT playerPosition = _playerPos->getPos();
+
 	_mapBackImageVector[_curMapNumber]->render(mapDC, 0, 0);
 	
-	Rectangle(mapDC, _playerPos.x - 25, _playerPos.y - 25, _playerPos.x + 25, _playerPos.y + 25);
+	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
 
 	for (int i = 0; i < _objectPos.size(); i++)
 	{
