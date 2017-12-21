@@ -4,6 +4,7 @@
 HRESULT mapManager::init(void)
 {
 	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background0"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("field0"));
 
 	mapDC = CreateCompatibleDC(getMemDC()); // ±×³É ½á
 	mapBit = NULL;
@@ -37,16 +38,17 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 	_cameraX = playerPosition.x - WINSIZEX / 2;
 	_cameraY = playerPosition.y - WINSIZEY / 2;
 	if (_cameraX < 0) _cameraX = 0;
-	else if (_cameraX + WINSIZEX > _mapBackImageVector[_curMapNumber]->getWidth()) _cameraX = _mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX;
+	else if (_cameraX + WINSIZEX > _mapImageVector[_curMapNumber]->getWidth()) _cameraX = _mapImageVector[_curMapNumber]->getWidth() - WINSIZEX;
 	if (_cameraY < 0) _cameraY = 0;
-	else if (_cameraY + WINSIZEY > _mapBackImageVector[_curMapNumber]->getHeight()) _cameraY = _mapBackImageVector[_curMapNumber]->getHeight() - WINSIZEY;
+	else if (_cameraY + WINSIZEY > _mapImageVector[_curMapNumber]->getHeight()) _cameraY = _mapImageVector[_curMapNumber]->getHeight() - WINSIZEY;
 }
 
 void mapManager::render(void)
 {
 	POINT playerPosition = _playerPos->getPos();
 
-	_mapBackImageVector[_curMapNumber]->render(mapDC, 0, 0);
+	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
+	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 	
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
 	_playerPos->getImage()->aniRender(mapDC, playerPosition.x, playerPosition.y, _playerPos->getAni());
