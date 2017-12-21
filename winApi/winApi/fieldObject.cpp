@@ -3,11 +3,16 @@
 
 HRESULT fieldObject::init(void)
 {
+	// 플레이어 상호작용 스타모양 박스
 	_appearMapNum = 0;
-	_discernNum = box;
+	_discernNum = starbox;
 	_x = 300.0f;
 	_y = 300.0f;
 	_rc = RectMakeCenter(_x, _y, 100, 100);
+
+	// 플레이어 상호작용 스톤박스
+
+
 	return S_OK;
 }
 

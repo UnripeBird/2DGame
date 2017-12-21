@@ -121,9 +121,6 @@
     <ClCompile Include="fieldObject.cpp">
       <Filter>커비\object</Filter>
     </ClCompile>
-    <ClCompile Include="moveBox.cpp">
-      <Filter>커비\object</Filter>
-    </ClCompile>
     <ClCompile Include="objectManager.cpp">
       <Filter>커비\object\Manager</Filter>
     </ClCompile>
@@ -144,6 +141,12 @@
     </ClCompile>
     <ClCompile Include="playScene.cpp">
       <Filter>커비\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="StarBox.cpp">
+      <Filter>커비\object</Filter>
+    </ClCompile>
+    <ClCompile Include="stonBox.cpp">
+      <Filter>커비\object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,9 +210,6 @@
     <ClInclude Include="fieldObject.h">
       <Filter>커비\object</Filter>
     </ClInclude>
-    <ClInclude Include="moveBox.h">
-      <Filter>커비\object</Filter>
-    </ClInclude>
     <ClInclude Include="objectManager.h">
       <Filter>커비\object\Manager</Filter>
     </ClInclude>
@@ -230,6 +230,12 @@
     </ClInclude>
     <ClInclude Include="playScene.h">
       <Filter>커비\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="StarBox.h">
+      <Filter>커비\object</Filter>
+    </ClInclude>
+    <ClInclude Include="stonBox.h">
+      <Filter>커비\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -72,7 +72,11 @@ extern POINT		_ptMouse;
 
 typedef enum OBJECTDISCERN
 {
-	box
+	//스타박스 - 흡수 가능한 하얀색 별 박스
+	//붐 박스 - 폭탄 오브젝트
+	//스톤 박스 - 플레이어 흡수 시에만 움직이는 박스
+	//물 - 오브젝트 안에 있을경우 수영 애니메이션 출력
+	starbox,boombox,stonbox,water
 };
 
 typedef enum ENEMYDISCERN

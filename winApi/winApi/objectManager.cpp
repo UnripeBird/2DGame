@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "objectManager.h"
-#include "moveBox.h"
+#include "StarBox.h"
 
 HRESULT objectManager::init(void)
 {
-	for (int i = 0; i < 2; i++)
+	IMAGEMANAGER->addFrameImage("박스오브젝트", "image/objectImage/object.bmp", 48, 288, 1, 7);
+
+	for (int i = 0; i < 7; i++)
 	{
 		fieldObject* obj;
-		obj = new moveBox;
-		obj->init("없음", box, i * 0, PointMake(300 * (i + 1), (150 * i) + 100));
+		obj = new StarBox;
+		obj->init("흡수박스", starbox, i * 0, PointMake(300 * (i + 1), (5 * i) + 100));
 		_vObject.push_back(obj);
 	}
+
+
 	return S_OK;
 }
 
