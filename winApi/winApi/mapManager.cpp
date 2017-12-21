@@ -49,11 +49,15 @@ void mapManager::render(void)
 	_mapBackImageVector[_curMapNumber]->render(mapDC, 0, 0);
 	
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
+	_playerPos->getImage()->aniRender(mapDC, playerPosition.x, playerPosition.y, _playerPos->getAni());
 
 	for (int i = 0; i < _objectPos.size(); i++)
 	{
-		if(_objectPos[i]->getAppearMapNum() == _curMapNumber)
+		if (_objectPos[i]->getAppearMapNum() == _curMapNumber)
+		{
 			Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
+			//_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, 0, _objectPos[i]->getObjStarBox());
+		}
 	}
 
 	for (int i = 0; i < _enemyPos.size(); i++)
