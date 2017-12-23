@@ -5,6 +5,7 @@ HRESULT mapManager::init(void)
 {
 	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background0"));
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("field0"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel0"));
 
 	mapDC = CreateCompatibleDC(getMemDC()); // 그냥 써
 	mapBit = NULL;
@@ -58,7 +59,7 @@ void mapManager::render(void)
 		if (_objectPos[i]->getAppearMapNum() == _curMapNumber)
 		{
 			Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
-			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, 0, _objectPos[i]->getObjStarBox());
+			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
 		}
 	}
 
@@ -83,6 +84,6 @@ void mapManager::mapChange(int nextMap)
 		DeleteObject(mapBit);
 	}
 
-	mapBit = (HBITMAP)CreateCompatibleBitmap(getMemDC(), _mapBackImageVector[nextMap]->getWidth(),_mapBackImageVector[nextMap]->getHeight()); //맵 크기만큼의 빈 비트맵을 생성한다
+	mapBit = (HBITMAP)CreateCompatibleBitmap(getMemDC(), _mapImageVector[nextMap]->getWidth(), _mapImageVector[nextMap]->getHeight()); //맵 크기만큼의 빈 비트맵을 생성한다
 	mapOBit = (HBITMAP)SelectObject(mapDC, mapBit);
 }

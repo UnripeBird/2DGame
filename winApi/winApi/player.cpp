@@ -428,7 +428,6 @@ void player::objectCollisionReaction(vector<fieldObject*> objectPos, int collisi
 {
 	switch (objectPos[collisionNum]->getDiscernNum())
 	{
-		case box:
 			break;
 	}
 }

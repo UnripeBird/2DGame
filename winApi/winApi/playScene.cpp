@@ -3,7 +3,7 @@
 
 HRESULT playScene::init(void)
 {
-	IMAGEMANAGER->addImage("background0", "image\\background0.bmp", 1280, 569, true, RGB(0, 0, 0));
+	IMAGEMANAGER->addImage("background0", "image\\background0.bmp", 1280*3, 569*3, true, RGB(0, 0, 0));
 	IMAGEMANAGER->addImage("field0", "image\\field0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("pixel0", "image\\pixel0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
 
