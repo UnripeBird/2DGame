@@ -76,7 +76,16 @@ typedef enum OBJECTDISCERN
 	//붐 박스 - 폭탄 오브젝트
 	//스톤 박스 - 플레이어 흡수 시에만 움직이는 박스
 	//물 - 오브젝트 안에 있을경우 수영 애니메이션 출력
-	starbox,boombox,stonbox,water
+	//아이언 - 폭탄 파괴 x 플레이어 흡수 x
+	starbox,boombox,stonbox,water,ironbox,sandbox,
+
+	//업 아이템 - 목숨 1 증가 아이템
+	//캔디 아이템 - 체력 증가 - 지민이 맘대로
+	//맥스 아이템 - 체력 풀 회복
+	//고기 아이템 - 체력 회복 - 지민이 맘대로
+	//음료 아이템 - 체력 회복 - 지민이 맘대로
+	//체리 아이템 - 체력회복 - 지민이 맘대로
+	upItem,candyitem,maxtem,meat,drink,cherry
 };
 
 typedef enum ENEMYDISCERN

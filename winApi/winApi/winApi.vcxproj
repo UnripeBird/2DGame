@@ -141,17 +141,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="animation.cpp" />
+    <ClCompile Include="boomBox.cpp" />
     <ClCompile Include="boxEnemy.cpp" />
+    <ClCompile Include="candyItem.cpp" />
+    <ClCompile Include="cherryItem.cpp" />
+    <ClCompile Include="drinkItem.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyManager.cpp" />
     <ClCompile Include="fieldObject.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
+    <ClCompile Include="ironBox.cpp" />
     <ClCompile Include="jumpSample.cpp" />
     <ClCompile Include="keyManager.cpp" />
+    <ClCompile Include="lifeItem.cpp" />
     <ClCompile Include="mainGame.cpp" />
     <ClCompile Include="mapManager.cpp" />
+    <ClCompile Include="maxItem.cpp" />
+    <ClCompile Include="meatItem.cpp" />
+    <ClCompile Include="sandBox.cpp" />
     <ClCompile Include="StarBox.cpp" />
     <ClCompile Include="NumberSample.cpp" />
     <ClCompile Include="objectManager.cpp" />
@@ -173,18 +182,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
+    <ClInclude Include="boomBox.h" />
     <ClInclude Include="boxEnemy.h" />
+    <ClInclude Include="candyItem.h" />
+    <ClInclude Include="cherryItem.h" />
     <ClInclude Include="commonMacroFiunction.h" />
+    <ClInclude Include="drinkItem.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="fieldObject.h" />
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
+    <ClInclude Include="ironBox.h" />
     <ClInclude Include="jumpSample.h" />
     <ClInclude Include="keyManager.h" />
+    <ClInclude Include="lifeItem.h" />
     <ClInclude Include="mainGame.h" />
     <ClInclude Include="mapManager.h" />
+    <ClInclude Include="maxItem.h" />
+    <ClInclude Include="meatItem.h" />
+    <ClInclude Include="sandBox.h" />
     <ClInclude Include="StarBox.h" />
     <ClInclude Include="NumberSample.h" />
     <ClInclude Include="objectManager.h" />

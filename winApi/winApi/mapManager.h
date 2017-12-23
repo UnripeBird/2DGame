@@ -33,6 +33,7 @@ public:
 
 	void mapChange(int);
 
+	image* getPixelImage() { return _mapPixelCollisionVector[_curMapNumber]; }
 	mapManager() {}
 	~mapManager() {}
 };

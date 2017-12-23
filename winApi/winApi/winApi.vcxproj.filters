@@ -65,6 +65,12 @@
     <Filter Include="커비\scene">
       <UniqueIdentifier>{805f7d29-75a7-43ee-8096-a527e6c63029}</UniqueIdentifier>
     </Filter>
+    <Filter Include="커비\object\box">
+      <UniqueIdentifier>{ce86af43-5737-4fda-928b-74d11242f611}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="커비\object\item">
+      <UniqueIdentifier>{617a00fb-735e-44eb-b79c-8c53a1aeb0d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="keyManager.cpp">
@@ -142,11 +148,38 @@
     <ClCompile Include="playScene.cpp">
       <Filter>커비\scene</Filter>
     </ClCompile>
+    <ClCompile Include="boomBox.cpp">
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
     <ClCompile Include="StarBox.cpp">
-      <Filter>커비\object</Filter>
+      <Filter>커비\object\box</Filter>
     </ClCompile>
     <ClCompile Include="stonBox.cpp">
-      <Filter>커비\object</Filter>
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
+    <ClCompile Include="ironBox.cpp">
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
+    <ClCompile Include="sandBox.cpp">
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
+    <ClCompile Include="lifeItem.cpp">
+      <Filter>커비\object\item</Filter>
+    </ClCompile>
+    <ClCompile Include="candyItem.cpp">
+      <Filter>커비\object\item</Filter>
+    </ClCompile>
+    <ClCompile Include="maxItem.cpp">
+      <Filter>커비\object\item</Filter>
+    </ClCompile>
+    <ClCompile Include="meatItem.cpp">
+      <Filter>커비\object\item</Filter>
+    </ClCompile>
+    <ClCompile Include="drinkItem.cpp">
+      <Filter>커비\object\item</Filter>
+    </ClCompile>
+    <ClCompile Include="cherryItem.cpp">
+      <Filter>커비\object\item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -231,11 +264,38 @@
     <ClInclude Include="playScene.h">
       <Filter>커비\scene</Filter>
     </ClInclude>
+    <ClInclude Include="boomBox.h">
+      <Filter>커비\object\box</Filter>
+    </ClInclude>
     <ClInclude Include="StarBox.h">
-      <Filter>커비\object</Filter>
+      <Filter>커비\object\box</Filter>
     </ClInclude>
     <ClInclude Include="stonBox.h">
-      <Filter>커비\object</Filter>
+      <Filter>커비\object\box</Filter>
+    </ClInclude>
+    <ClInclude Include="ironBox.h">
+      <Filter>커비\object\box</Filter>
+    </ClInclude>
+    <ClInclude Include="sandBox.h">
+      <Filter>커비\object\box</Filter>
+    </ClInclude>
+    <ClInclude Include="lifeItem.h">
+      <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="candyItem.h">
+      <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="maxItem.h">
+      <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="meatItem.h">
+      <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="drinkItem.h">
+      <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="cherryItem.h">
+      <Filter>커비\object\item</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
