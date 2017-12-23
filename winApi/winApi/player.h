@@ -23,9 +23,10 @@ private:
 	int _fileNum;
 	int _pose;
 	int _aniControl;
-	bool _curRight;
 	int _keyDownNum;
+	bool _curRight;
 	bool _playAni;
+	bool _curSwallow;
 
 	float DubbleKeyTimer;
 	float DublleKeyWorldTimer;

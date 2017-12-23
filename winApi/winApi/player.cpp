@@ -21,7 +21,8 @@ HRESULT player::init(void)
 	_y = 400;
 	_curJump = 0;
 	_maxJump = 0;
-	_maxJump = 0;
+	_curSliding = 0;
+	_maxSliding = 0;
 	_gravity = 2;
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
@@ -43,6 +44,7 @@ HRESULT player::init(void)
 	_curRight = true;
 	_keyDownNum = 0;
 	_playAni = false;
+	_curSwallow = false;
 
 	_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
 
@@ -126,7 +128,28 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	//슬라이딩
 	if (_aniControl == SLIDING)
 	{
-
+		if (_curRight == true && _curSliding <= _maxSliding && rightMove())
+		{
+			_x += 3;
+			_curSliding = _x;
+		}
+		else if (_curRight == false && _curSliding >= _maxSliding && leftMove())
+		{
+			_x -= 3;
+			_curSliding = _x;
+		}
+		else if (_curSwallow == true)
+		{
+			_aniControl = NONE;
+			_pose = SWALLOW;
+			_playAni = true;
+		}
+		else
+		{
+			_aniControl = NONE;
+			_pose = IDLE;
+			_playAni = true;
+		}
 	}
 }
 
@@ -179,7 +202,7 @@ void player::move(vector<fieldObject*> objectPos)
 		moveCollision(objectPos, direction);
 	}
 
-	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW)
+	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
 	{
 		_pose = IDLE;
 		_playAni = true;
@@ -222,12 +245,12 @@ void player::move(vector<fieldObject*> objectPos)
 			_x -= PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && rightMove())
+		else if (_pose == JUMPING && leftMove())
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
 		}
-		else if (_pose == FALLING && rightMove())
+		else if (_pose == FALLING && leftMove())
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
@@ -236,7 +259,7 @@ void player::move(vector<fieldObject*> objectPos)
 		direction = 1;
 		moveCollision(objectPos, direction);
 	}
-	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _pose != SWALLOW)
+	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
 	{
 		_pose = IDLE;
 		_playAni = true;
@@ -249,13 +272,18 @@ void player::move(vector<fieldObject*> objectPos)
 		_pose = SWALLOW;
 		_playAni = true;
 	}
+	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
+	{
+		_curSwallow = true;
+	}
 	if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
 	{
 		_pose = IDLE;
 		_playAni = true;
+		_curSwallow = false;
 	}
 
-	//Z
+	//Z - 점프, 날기, 공격
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
 		if (_pose == SWALLOW)
@@ -263,8 +291,19 @@ void player::move(vector<fieldObject*> objectPos)
 			_pose = SLIDING;
 			_playAni = true;
 			_aniControl = SLIDING;
+			_curSliding = _x;
+			if (_curRight == true)
+			{
+				_curSliding = _x;
+				_maxSliding = _curSliding + 120;
+			}
+			else if (_curRight == false)
+			{
+				_curSliding = _x;
+				_maxSliding = _curSliding - 120;
+			}
 		}
-		else 
+		else if(_pose != SLIDING)
 		{
 			_pose = JUMPING;
 			_playAni = true;
@@ -299,8 +338,8 @@ void player::move(vector<fieldObject*> objectPos)
 		else { _starFrame = 54; _endFrame = 55; }
 		break;
 	case SLIDING:
-		if (_curRight == true) { _starFrame = 72; _endFrame = 73; }
-		else { _starFrame = 90; _endFrame = 91; }
+		if (_curRight == true) { _starFrame = 72; _endFrame = 72; }
+		else { _starFrame = 90; _endFrame = 90; }
 		break;
 	case JUMPING:
 		if (_curRight == true) { _starFrame = 108; _endFrame = 108; }
@@ -389,6 +428,8 @@ void player::objectCollisionReaction(vector<fieldObject*> objectPos, int collisi
 {
 	switch (objectPos[collisionNum]->getDiscernNum())
 	{
+		case box:
+			break;
 	}
 }
 
@@ -446,7 +487,7 @@ bool player::rightMove()
 bool player::leftMove()
 {
 	bool _horizonMove = true;
-	for (int i = _rc.left + 1; i < _rc.left - 1; i++)
+	for (int i = _rc.left + 1; i > _rc.left - 1; i--)
 	{
 		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
 
