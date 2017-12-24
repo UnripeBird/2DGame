@@ -143,12 +143,14 @@
     <ClCompile Include="animation.cpp" />
     <ClCompile Include="boomBox.cpp" />
     <ClCompile Include="boxEnemy.cpp" />
+    <ClCompile Include="brontoburt.cpp" />
     <ClCompile Include="candyItem.cpp" />
     <ClCompile Include="cherryItem.cpp" />
     <ClCompile Include="drinkItem.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyManager.cpp" />
     <ClCompile Include="fieldObject.cpp" />
+    <ClCompile Include="frog.cpp" />
     <ClCompile Include="gameNode.cpp" />
     <ClCompile Include="image.cpp" />
     <ClCompile Include="imageManager.cpp" />
@@ -178,12 +180,14 @@
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
     <ClCompile Include="utils.cpp" />
+    <ClCompile Include="waddle.cpp" />
     <ClCompile Include="winMain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
     <ClInclude Include="boomBox.h" />
     <ClInclude Include="boxEnemy.h" />
+    <ClInclude Include="brontoburt.h" />
     <ClInclude Include="candyItem.h" />
     <ClInclude Include="cherryItem.h" />
     <ClInclude Include="commonMacroFiunction.h" />
@@ -191,6 +195,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="fieldObject.h" />
+    <ClInclude Include="frog.h" />
     <ClInclude Include="gameNode.h" />
     <ClInclude Include="image.h" />
     <ClInclude Include="imageManager.h" />
@@ -219,6 +224,7 @@
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
     <ClInclude Include="utils.h" />
+    <ClInclude Include="waddle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

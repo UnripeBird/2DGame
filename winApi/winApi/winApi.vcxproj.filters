@@ -181,6 +181,15 @@
     <ClCompile Include="cherryItem.cpp">
       <Filter>커비\object\item</Filter>
     </ClCompile>
+    <ClCompile Include="waddle.cpp">
+      <Filter>커비\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="frog.cpp">
+      <Filter>커비\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="brontoburt.cpp">
+      <Filter>커비\enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonMacroFiunction.h">
@@ -296,6 +305,15 @@
     </ClInclude>
     <ClInclude Include="cherryItem.h">
       <Filter>커비\object\item</Filter>
+    </ClInclude>
+    <ClInclude Include="waddle.h">
+      <Filter>커비\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="frog.h">
+      <Filter>커비\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="brontoburt.h">
+      <Filter>커비\enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

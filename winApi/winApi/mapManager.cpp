@@ -66,7 +66,12 @@ void mapManager::render(void)
 	for (int i = 0; i < _enemyPos.size(); i++)
 	{
 		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
+		{
 			Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
+			_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
+				, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
+				_enemyPos[i]->getframex(), _enemyPos[i]->getframey());
+		}
 	}
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 
