@@ -23,7 +23,7 @@ HRESULT player::init(void)
 	_maxJump = 0;
 	_curSliding = 0;
 	_maxSliding = 0;
-	_gravity = 2;
+	_gravity = 4;
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
@@ -45,6 +45,7 @@ HRESULT player::init(void)
 	_keyDownNum = 0;
 	_playAni = false;
 	_curSwallow = false;
+	groundCollision = false;
 
 	_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
 
@@ -57,6 +58,9 @@ HRESULT player::init(void)
 	DublleKeyWorldTimer = 0;
 	DubbleKeyTimer = 0;
 
+	_imageX = _x - (_ani->getFrameWidth() / 2);
+	_imageY = _y - (_ani->getFrameHeight() / 2) - 23;
+
 	return S_OK;
 }
 
@@ -66,14 +70,13 @@ void player::release(void)
 
 void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage)
 {
+	groundCollision = false; //
 	_pixelImage = pixelimage;
 	move(objectPos);
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 
-	//픽셀 충돌
-	bool groundCollision = false;
 	if (_pose == LANDING)
 	{
 		_pose = IDLE;
@@ -104,11 +107,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		}
 	}
 
-	if (!groundCollision)
-	{
-		_y += _gravity;
-	}
-
+	//바닥에 충돌할때까지 하강
 	if (!groundCollision)
 	{
 		_y += _gravity;
@@ -155,8 +154,8 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 
 void player::move(vector<fieldObject*> objectPos)
 {
-	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
 	int direction = 0;
+	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
 
 	//오른쪽
 	if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _pose == IDLE)
@@ -198,8 +197,6 @@ void player::move(vector<fieldObject*> objectPos)
 			_x += PLAYERSPEED;
 			_curRight = true;
 		}
-		direction = 1;
-		moveCollision(objectPos, direction);
 	}
 
 	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
@@ -255,9 +252,6 @@ void player::move(vector<fieldObject*> objectPos)
 			_x -= PLAYERSPEED;
 			_curRight = false;
 		}
-
-		direction = 1;
-		moveCollision(objectPos, direction);
 	}
 	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
 	{
@@ -372,10 +366,16 @@ void player::move(vector<fieldObject*> objectPos)
 		_ani->start();
 		_playAni = false;
 	}
+	moveCollision(objectPos);
+
+	//플레이어 이미지 위치 업데이트
+	//기본 커비일때 위치 초기화
+	_imageX = _x - (_ani->getFrameWidth() / 2);
+	_imageY = _y - (_ani->getFrameHeight() / 2) - 23;
 
 }
 
-void player::moveCollision(vector<fieldObject*> objectPos, int direction)
+void player::moveCollision(vector<fieldObject*> objectPos)
 {
 	RECT temp;
 
@@ -385,21 +385,49 @@ void player::moveCollision(vector<fieldObject*> objectPos, int direction)
 	{
 		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
 		{
-			switch (direction)
+			//캐릭터 기준 왼쪽 충돌
+			//if (objectPos[i]->getrc().right > _rc.left)
+			//{
+			//	_x = objectPos[i]->getrc().left + 75;
+			//	break;
+			//}
+			//캐릭터 기준 오른쪽 충돌
+			//if (objectPos[i]->getrc().left < _rc.right)
+			//{
+			//	_x = objectPos[i]->getrc().right - 75;
+			//	break;
+			//}
+			//캐릭터 기준 위쪽 충돌
+			//if (objectPos[i]->getrc().bottom > _rc.top)
+			//{
+			//	_y = objectPos[i]->getrc().top + 75;
+			//	_pose = FALLING;
+			//	break;
+			//}
+			////캐릭터 기준 아래쪽 충돌
+			if (objectPos[i]->getrc().top < _rc.bottom)
 			{
-				case 1:
-					_x = objectPos[i]->getrc().left - 25;
-					break;
-				case 2:
-					_x = objectPos[i]->getrc().right + 25;
-					break;
-				case 3:
-					_y = objectPos[i]->getrc().top - 25;
-					break;
-				case 4:
-					_y = objectPos[i]->getrc().bottom + 25;
-					break;
+				_y = objectPos[i]->getrc().bottom - 65;
+				groundCollision = false;
+				//_pose = LANDING;
+				//_playAni = true;
+				break;
 			}
+			//switch (direction)
+			//{
+			//	case 1:
+			//		_x = objectPos[i]->getrc().left + 75;
+			//		break;
+			//	case 2:
+			//		_x = objectPos[i]->getrc().right + 25;
+			//		break;
+			//	case 3:
+			//		_y = objectPos[i]->getrc().top - 25;
+			//		break;
+			//	case 4:
+			//		_y = objectPos[i]->getrc().bottom + 25;
+			//		break;
+			//}
 		}
 	}
 }
