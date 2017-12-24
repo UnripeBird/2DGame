@@ -90,5 +90,11 @@ typedef enum OBJECTDISCERN
 
 typedef enum ENEMYDISCERN
 {
-	enemyBox
+	enemyBox,
+	waddledee,
+	Frog,
+	Bronto,
+	Burning,
+	spark,
+	chilly
 };

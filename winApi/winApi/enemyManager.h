@@ -1,7 +1,9 @@
 #pragma once
 #include "enemy.h"
 #include "boxEnemy.h"
-
+#include "waddle.h"
+#include "frog.h"
+#include "brontoburt.h"
 class enemyManager
 {
 private:
