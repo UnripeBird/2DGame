@@ -47,12 +47,13 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 void mapManager::render(void)
 {
 	POINT playerPosition = _playerPos->getPos();
+	POINT playerImagePosition = _playerPos->getImagePos();
 
 	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 	
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
-	_playerPos->getImage()->aniRender(mapDC, playerPosition.x, playerPosition.y, _playerPos->getAni());
+	_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
 
 	for (int i = 0; i < _objectPos.size(); i++)
 	{
