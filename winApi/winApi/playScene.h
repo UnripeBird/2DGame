@@ -4,6 +4,7 @@
 #include "player.h"
 #include "objectManager.h"
 #include "enemyManager.h"
+#include "bulletManager.h"
 
 class playScene : public gameNode
 {
@@ -12,6 +13,7 @@ private:
 	player* _player;
 	objectManager* _objectManager;
 	enemyManager* _enemyManager;
+	bulletManager* _bulletManager;
 
 public:
 	HRESULT init(void);

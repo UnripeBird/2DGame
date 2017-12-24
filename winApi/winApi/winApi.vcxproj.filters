@@ -71,6 +71,9 @@
     <Filter Include="커비\object\item">
       <UniqueIdentifier>{617a00fb-735e-44eb-b79c-8c53a1aeb0d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="커비\bullet\Manager">
+      <UniqueIdentifier>{b26513e8-7b2b-4451-979f-4caa0f73080a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="keyManager.cpp">
@@ -189,6 +192,12 @@
     </ClCompile>
     <ClCompile Include="brontoburt.cpp">
       <Filter>커비\enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="bulletManager.cpp">
+      <Filter>커비\bullet\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="bullet.cpp">
+      <Filter>커비\bullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -314,6 +323,12 @@
     </ClInclude>
     <ClInclude Include="brontoburt.h">
       <Filter>커비\enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="bulletManager.h">
+      <Filter>커비\bullet\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="bullet.h">
+      <Filter>커비\bullet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -144,6 +144,8 @@
     <ClCompile Include="boomBox.cpp" />
     <ClCompile Include="boxEnemy.cpp" />
     <ClCompile Include="brontoburt.cpp" />
+    <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="bulletManager.cpp" />
     <ClCompile Include="candyItem.cpp" />
     <ClCompile Include="cherryItem.cpp" />
     <ClCompile Include="drinkItem.cpp" />
@@ -188,6 +190,8 @@
     <ClInclude Include="boomBox.h" />
     <ClInclude Include="boxEnemy.h" />
     <ClInclude Include="brontoburt.h" />
+    <ClInclude Include="bullet.h" />
+    <ClInclude Include="bulletManager.h" />
     <ClInclude Include="candyItem.h" />
     <ClInclude Include="cherryItem.h" />
     <ClInclude Include="commonMacroFiunction.h" />
