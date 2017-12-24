@@ -14,7 +14,7 @@ HRESULT frog::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, 
 	return S_OK;
 }
 
-void frog::update(void)
+void frog::update(image* pixelimage, POINT playerPoint)
 {
 
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();

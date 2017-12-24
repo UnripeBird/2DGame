@@ -19,6 +19,8 @@ HRESULT playScene::init(void)
 	_enemyManager = new enemyManager;
 	_enemyManager->init();
 
+	_bulletManager = new bulletManager;
+	_bulletManager->init();
 	return S_OK;
 }
 
@@ -35,17 +37,22 @@ void playScene::release(void)
 
 	_enemyManager->release();
 	SAFE_DELETE(_enemyManager);
+
+	_bulletManager->release();
+	SAFE_DELETE(_bulletManager);
 }
 
 void playScene::update(void)
 {
-	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy());
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
 
 	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage());
 
 	_objectManager->update();
 
-	_enemyManager->update();
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
+
+	_bulletManager->update();
 }
 
 void playScene::render(void)

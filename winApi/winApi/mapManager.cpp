@@ -28,11 +28,12 @@ void mapManager::release(void)
 	_mapPixelCollisionVector.clear();
 }
 
-void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos)
+void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos, vector<bullet*> bulletPos)
 {
 	_playerPos = playerPos;
 	_objectPos = objectPos;
 	_enemyPos = enemyPos;
+	_bulletPos = bulletPos;
 
 	POINT playerPosition = _playerPos->getPos();
 
@@ -73,6 +74,14 @@ void mapManager::render(void)
 				, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
 				_enemyPos[i]->getframex(), _enemyPos[i]->getframey());
 		}
+	}
+
+	for (int i = 0; i < _bulletPos.size(); i++)
+	{
+		_bulletPos[i]->getImage()->frameRender(mapDC,
+			_bulletPos[i]->getPos().x - (_bulletPos[i]->getImage()->getFrameWidth() / 2),
+			_bulletPos[i]->getPos().y - (_bulletPos[i]->getImage()->getFrameHeight() / 2),
+			_bulletPos[i]->getImageFrame().x, _bulletPos[i]->getImageFrame().y);
 	}
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 

@@ -13,7 +13,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(void);
+	void update(image* pixelimage, POINT playerPoint);
 
 	vector<enemy*> getEnemy() { return _vEnemy; }
 

@@ -3,6 +3,7 @@
 #include "player.h"
 #include "fieldObject.h"
 #include "enemy.h"
+#include "bullet.h"
 
 class mapManager : public gameNode
 {
@@ -17,6 +18,7 @@ private:
 	player* _playerPos;
 	vector<fieldObject*> _objectPos;
 	vector<enemy*> _enemyPos;
+	vector<bullet*> _bulletPos;
 
 	float _cameraX;
 	float _cameraY;
@@ -28,7 +30,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(player*, vector<fieldObject*>, vector<enemy*>);
+	void update(player*, vector<fieldObject*>, vector<enemy*>, vector<bullet*>);
 	void render(void);
 
 	void mapChange(int);

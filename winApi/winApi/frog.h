@@ -11,7 +11,7 @@ private:
 
 public:
 	HRESULT init(string, ENEMYDISCERN, int, POINT);
-	void update(void);
+	void update(image* pixelimage, POINT playerPoint);
 	void Hit();
 	frog() {}
 	~frog() {}
