@@ -45,7 +45,7 @@ void playScene::update(void)
 
 	_objectManager->update();
 
-	_enemyManager->update();
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
 }
 
 void playScene::render(void)

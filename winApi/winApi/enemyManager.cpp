@@ -31,11 +31,11 @@ void enemyManager::release(void)
 	}
 }
 
-void enemyManager::update(void)
+void enemyManager::update(image* pixelimage, POINT playerPoint)
 {
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end();)
 	{
-		(*_viEnemy)->update();
+		(*_viEnemy)->update(pixelimage,playerPoint);
 		if ((*_viEnemy)->getState() == 2)
 		{
 			(*_viEnemy)->release();

@@ -32,7 +32,7 @@ public:
 	HRESULT init(void);
 	virtual HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void release(void);
-	virtual void update(void);
+	virtual void update(image* pixelimage, POINT playerPoint);
 
 
 	virtual void Hit() = 0;

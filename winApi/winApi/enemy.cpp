@@ -31,7 +31,7 @@ void enemy::release(void)
 {
 }
 
-void enemy::update(void)
+void enemy::update(image* pixelimage, POINT playerPoint)
 {
 	
 

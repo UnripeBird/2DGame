@@ -14,7 +14,7 @@ HRESULT brontoburt::init(string imageName, ENEMYDISCERN discernNum, int appearMa
 	return S_OK;
 }
 
-void brontoburt::update(void)
+void brontoburt::update(image* pixelimage, POINT playerPoint)
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	//움직이는 방향
