@@ -10,8 +10,12 @@ HRESULT fieldObject::init(string imageName,OBJECTDISCERN discernNum, int appearM
 
 	_x = pos.x;
 	_y = pos.y;
-	_playerPoint.x = 200;
+
+	//임시 플레이어 좌표 - 플레이어에서 받아와야함 - 받아와야할 값 - 플레이어cpp 에서의 getPos
+	_playerPoint.x = 100;
 	_playerPoint.y = 500;
+	//임시 플레이어 방향 - 플레이어에서 받아와야함 - 받아와야할 값 - 플레이어cpp 에서의 _curRight
+	_curRight = true;
 
 	if (_image == NULL)
 	{
@@ -30,7 +34,7 @@ void fieldObject::release(void)
 {
 }
 
-void fieldObject::update(void)
+void fieldObject::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 }
 

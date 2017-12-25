@@ -28,11 +28,12 @@ void mapManager::release(void)
 	_mapPixelCollisionVector.clear();
 }
 
-void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos)
+void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos, vector<bullet*> bulletPos)
 {
 	_playerPos = playerPos;
 	_objectPos = objectPos;
 	_enemyPos = enemyPos;
+	_bulletPos = bulletPos;
 
 	POINT playerPosition = _playerPos->getPos();
 
@@ -47,18 +48,19 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 void mapManager::render(void)
 {
 	POINT playerPosition = _playerPos->getPos();
+	POINT playerImagePosition = _playerPos->getImagePos();
 
 	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 	
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
-	_playerPos->getImage()->aniRender(mapDC, playerPosition.x, playerPosition.y, _playerPos->getAni());
+	_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
 
 	for (int i = 0; i < _objectPos.size(); i++)
 	{
 		if (_objectPos[i]->getAppearMapNum() == _curMapNumber)
 		{
-			Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
+			//Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
 			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
 		}
 	}
@@ -81,6 +83,14 @@ void mapManager::render(void)
 					_enemyPos[i]->getAni());
 			}
 		}
+	}
+
+	for (int i = 0; i < _bulletPos.size(); i++)
+	{
+		_bulletPos[i]->getImage()->frameRender(mapDC,
+			_bulletPos[i]->getPos().x - (_bulletPos[i]->getImage()->getFrameWidth() / 2),
+			_bulletPos[i]->getPos().y - (_bulletPos[i]->getImage()->getFrameHeight() / 2),
+			_bulletPos[i]->getImageFrame().x, _bulletPos[i]->getImageFrame().y);
 	}
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 

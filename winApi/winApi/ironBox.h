@@ -5,7 +5,7 @@ class ironBox :
 {
 private:
 	HRESULT init(string objectName, OBJECTDISCERN discernNum, int mapNum, POINT pos);
-	void update(void);
+	void update(POINT playerPosition, vector<bullet*> bulletPos);
 
 	void move();
 

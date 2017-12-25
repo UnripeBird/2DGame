@@ -98,3 +98,9 @@ typedef enum ENEMYDISCERN
 	Spark,
 	chilly
 };
+
+typedef enum BULLETDISCERN
+{
+	Breath,
+	Star
+};

@@ -10,10 +10,12 @@ private:
 
 public:
 	HRESULT init(string, OBJECTDISCERN, int, POINT);
-	void update(void);
+	void update(POINT playerPosition, vector<bullet*> bulletPos);
 
+	void wind(POINT);
 	void move();
 	void flash();
+	void starabso(POINT);
 
 	candyItem(){}
 	~candyItem(){}

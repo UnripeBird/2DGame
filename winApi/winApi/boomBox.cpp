@@ -22,17 +22,28 @@ HRESULT boomBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	return S_OK;
 }
 
-void boomBox::update(void)
+void boomBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	if (KEYMANAGER->isOnceKeyDown('R'))
 	{
 		_state = 3;
 	}
+
+	for (int i = 0; i < bulletPos.size(); i++)
+	{
+		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
+		{
+			_state = 3;
+			bulletPos[i]->setState(2);
+		}
+	}
+
 	if (_state == 3)
 	{
 		boomEffect();
 	}
+
 }
 
 void boomBox::move(void)

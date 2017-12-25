@@ -1,5 +1,7 @@
 #include "stdafx.h"
+#include "player.h"
 #include "objectManager.h"
+#include "bullet.h"
 #include "StarBox.h"
 #include"stonBox.h"
 #include "boomBox.h"
@@ -16,6 +18,9 @@ HRESULT objectManager::init(void)
 	IMAGEMANAGER->addFrameImage("박스오브젝트", "image\\objectImage\\object.bmp", 48, 288, 1, 7);
 	IMAGEMANAGER->addFrameImage("폭발이미지", "image\\objectImage\\boomObject.bmp", 240, 48, 5, 1, true, RGB(149, 177, 200));
 	IMAGEMANAGER->addFrameImage("아이템", "image\\objectImage\\item.bmp", 384, 384, 6, 6, true, RGB(12, 230, 248));
+
+	//별 오브젝트 이미지
+	IMAGEMANAGER->addFrameImage("별오브젝트", "image\\objectImage\\starObject.bmp", 48, 48,1,1, true, RGB(207, 176, 255));
 
 	//스타박스 - 플레이어 흡수 상호작용 : 플레이어가 삼킬수있고 공격으로 사용가능 / 폭탄 연쇄반응O
 	for (int i = 0; i < 7; i++)
@@ -38,7 +43,7 @@ HRESULT objectManager::init(void)
 	{
 		fieldObject* ston;
 		ston = new stonBox;
-		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 8 * 2.0f));
+		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 200 * 2.0f));
 		_vObject.push_back(ston);
 	}
 
@@ -131,11 +136,11 @@ void objectManager::release(void)
 	}
 }
 
-void objectManager::update(void)
+void objectManager::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	for (_viObject = _vObject.begin(); _viObject != _vObject.end();)
 	{
-		(*_viObject)->update();
+		(*_viObject)->update(playerPosition, bulletPos);
 		switch ((*_viObject)->getState())
 		{
 		case 2:
@@ -175,6 +180,13 @@ void objectManager::update(void)
 					}
 				}
 			}
+			(*_viObject)->release();
+			_viObject = _vObject.erase(_viObject);
+		}
+			break;
+		//별박스, 아이템 플레이어 흡수시 사라지게
+		case 4:
+		{
 			(*_viObject)->release();
 			_viObject = _vObject.erase(_viObject);
 		}

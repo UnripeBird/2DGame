@@ -11,6 +11,8 @@ class player
 private:
 	float _x;
 	float _y;
+	float _imageX;
+	float _imageY;
 	int _curJump;
 	int _maxJump;
 	int _curSliding;
@@ -27,6 +29,7 @@ private:
 	bool _curRight;
 	bool _playAni;
 	bool _curSwallow;
+	bool groundCollision;
 
 	float DubbleKeyTimer;
 	float DublleKeyWorldTimer;
@@ -42,7 +45,7 @@ public:
 	void update(vector<fieldObject*>, vector<enemy*>, image*);
 
 	void move(vector<fieldObject*>);
-	void moveCollision(vector<fieldObject*>, int);
+	void moveCollision(vector<fieldObject*>);
 
 	bool objectCollision(vector<fieldObject*>);
 	void objectCollisionReaction(vector<fieldObject*>, int);
@@ -54,6 +57,7 @@ public:
 	bool leftMove();
 
 	POINT getPos() { return PointMake(_x, _y); }
+	POINT getImagePos() { return PointMake(_imageX, _imageY); }
 
 	image* getImage() { return _image; }
 	animation* getAni() { return _ani; }
