@@ -158,6 +158,7 @@ void player::move(vector<fieldObject*> objectPos)
 	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
 	int direction = 0;
 
+	
 	//¿À¸¥ÂÊ
 	if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _pose == IDLE)
 	{

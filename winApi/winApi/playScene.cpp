@@ -39,13 +39,13 @@ void playScene::release(void)
 
 void playScene::update(void)
 {
-	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy());
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
 
-	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage());
+	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(), _mapManager->getPixelImage());
 
 	_objectManager->update();
 
-	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy());
 }
 
 void playScene::render(void)

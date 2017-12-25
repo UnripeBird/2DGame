@@ -95,6 +95,6 @@ typedef enum ENEMYDISCERN
 	Frog,
 	Bronto,
 	Burning,
-	spark,
+	Spark,
 	chilly
 };

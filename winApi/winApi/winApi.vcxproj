@@ -22,14 +22,14 @@
     <ProjectGuid>{5E7C01CB-781A-4417-B5F6-15A673AB0F4C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>winApi</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -144,8 +144,10 @@
     <ClCompile Include="boomBox.cpp" />
     <ClCompile Include="boxEnemy.cpp" />
     <ClCompile Include="brontoburt.cpp" />
+    <ClCompile Include="burning.cpp" />
     <ClCompile Include="candyItem.cpp" />
     <ClCompile Include="cherryItem.cpp" />
+    <ClCompile Include="chilly.cpp" />
     <ClCompile Include="drinkItem.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyManager.cpp" />
@@ -163,6 +165,7 @@
     <ClCompile Include="maxItem.cpp" />
     <ClCompile Include="meatItem.cpp" />
     <ClCompile Include="sandBox.cpp" />
+    <ClCompile Include="spark.cpp" />
     <ClCompile Include="StarBox.cpp" />
     <ClCompile Include="NumberSample.cpp" />
     <ClCompile Include="objectManager.cpp" />
@@ -188,8 +191,10 @@
     <ClInclude Include="boomBox.h" />
     <ClInclude Include="boxEnemy.h" />
     <ClInclude Include="brontoburt.h" />
+    <ClInclude Include="burning.h" />
     <ClInclude Include="candyItem.h" />
     <ClInclude Include="cherryItem.h" />
+    <ClInclude Include="chilly.h" />
     <ClInclude Include="commonMacroFiunction.h" />
     <ClInclude Include="drinkItem.h" />
     <ClInclude Include="enemy.h" />
@@ -208,6 +213,7 @@
     <ClInclude Include="maxItem.h" />
     <ClInclude Include="meatItem.h" />
     <ClInclude Include="sandBox.h" />
+    <ClInclude Include="spark.h" />
     <ClInclude Include="StarBox.h" />
     <ClInclude Include="NumberSample.h" />
     <ClInclude Include="objectManager.h" />
