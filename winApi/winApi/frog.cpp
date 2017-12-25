@@ -10,6 +10,7 @@ HRESULT frog::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, 
 
 	_rezen = pos;
 	_state = 0;
+	_dr = drright;
 
 	return S_OK;
 }
@@ -18,19 +19,10 @@ void frog::update(image* pixelimage, POINT playerPoint)
 {
 
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-	//움직이는 방향
-	if (getDistance(_rezen.x, _rezen.y, _x, _y) <= 0)
-	{
-		_dr = drleft;
 
-	}
-	else if (getDistance(_rezen.x, _rezen.y, _x, _y) > 400)
-	{
-		_dr = drright;
-	}
 
 	//움직임
-	if (_hitCount == false)
+	if (_hitCount == false && _state == 1)
 	{
 		_frameWorldTimer = TIMEMANAGER->getWorldTime();
 		if (_frameWorldTimer - _frameTimer > 0.25f)
@@ -60,7 +52,7 @@ void frog::update(image* pixelimage, POINT playerPoint)
 		}
 	}
 	//피격
-	if (_hitCount == true)
+	if (_hitCount == true && _state == 1)
 	{
 
 
@@ -84,6 +76,7 @@ void frog::update(image* pixelimage, POINT playerPoint)
 
 			_framey = 0;
 			_hitCount = false;
+			_state = 2;
 
 		}
 		else if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 1)
@@ -91,12 +84,16 @@ void frog::update(image* pixelimage, POINT playerPoint)
 			_framex = 0;
 			_framey = 1;
 			_hitCount = false;
+			_state = 2;
 		}
 	}
 
 
 
 
+
+
+	pixelcollision();
 
 
 	_rc = RectMakeCenter(_x, _y, 50, 50);
@@ -107,4 +104,5 @@ void frog::Hit()
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
+
 }

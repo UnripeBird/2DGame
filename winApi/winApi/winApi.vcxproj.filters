@@ -71,6 +71,9 @@
     <Filter Include="커비\object\item">
       <UniqueIdentifier>{617a00fb-735e-44eb-b79c-8c53a1aeb0d6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="커비\enemy\파생몬스터">
+      <UniqueIdentifier>{b8f3715f-7076-4312-84dd-a71f8ef045a1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="커비\bullet\Manager">
       <UniqueIdentifier>{b26513e8-7b2b-4451-979f-4caa0f73080a}</UniqueIdentifier>
     </Filter>
@@ -139,9 +142,6 @@
     <ClCompile Include="enemy.cpp">
       <Filter>커비\enemy</Filter>
     </ClCompile>
-    <ClCompile Include="boxEnemy.cpp">
-      <Filter>커비\enemy</Filter>
-    </ClCompile>
     <ClCompile Include="animation.cpp">
       <Filter>API\애니메이션</Filter>
     </ClCompile>
@@ -184,14 +184,26 @@
     <ClCompile Include="cherryItem.cpp">
       <Filter>커비\object\item</Filter>
     </ClCompile>
-    <ClCompile Include="waddle.cpp">
-      <Filter>커비\enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="frog.cpp">
-      <Filter>커비\enemy</Filter>
+    <ClCompile Include="boxEnemy.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
     </ClCompile>
     <ClCompile Include="brontoburt.cpp">
-      <Filter>커비\enemy</Filter>
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="frog.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="waddle.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="burning.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="chilly.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="spark.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
     </ClCompile>
     <ClCompile Include="bulletManager.cpp">
       <Filter>커비\bullet\Manager</Filter>
@@ -270,9 +282,6 @@
     <ClInclude Include="enemy.h">
       <Filter>커비\enemy</Filter>
     </ClInclude>
-    <ClInclude Include="boxEnemy.h">
-      <Filter>커비\enemy</Filter>
-    </ClInclude>
     <ClInclude Include="animation.h">
       <Filter>API\애니메이션</Filter>
     </ClInclude>
@@ -315,14 +324,26 @@
     <ClInclude Include="cherryItem.h">
       <Filter>커비\object\item</Filter>
     </ClInclude>
-    <ClInclude Include="waddle.h">
-      <Filter>커비\enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="frog.h">
-      <Filter>커비\enemy</Filter>
+    <ClInclude Include="boxEnemy.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
     </ClInclude>
     <ClInclude Include="brontoburt.h">
-      <Filter>커비\enemy</Filter>
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="frog.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="waddle.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="burning.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="chilly.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="spark.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
     </ClInclude>
     <ClInclude Include="bulletManager.h">
       <Filter>커비\bullet\Manager</Filter>

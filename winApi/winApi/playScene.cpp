@@ -44,23 +44,13 @@ void playScene::release(void)
 
 void playScene::update(void)
 {
-	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
-	{
-		_bulletManager->bulletFire(Breath, _ptMouse, true);
-	}
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
 
-	if (KEYMANAGER->isOnceKeyDown(VK_RBUTTON))
-	{
-		_bulletManager->bulletFire(Breath, _ptMouse, false);
-	}
-
-	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
-
-	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage());
+	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(), _mapManager->getPixelImage());
 
 	_objectManager->update(_player->getPos(), _bulletManager->getBullet());
 
-	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy());
 
 	_bulletManager->update();
 }

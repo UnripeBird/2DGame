@@ -4,6 +4,9 @@
 #include "waddle.h"
 #include "frog.h"
 #include "brontoburt.h"
+#include "burning.h"
+#include "spark.h"
+#include "chilly.h"
 class enemyManager
 {
 private:

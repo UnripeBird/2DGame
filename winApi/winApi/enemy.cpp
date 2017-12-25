@@ -15,6 +15,8 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_y = pos.y;
 	_framex = 0;
 	_framey = 0;
+
+	_ani = new animation;
 	
 	_frameTimer = TIMEMANAGER->getWorldTime();
 	_frameWorldTimer = TIMEMANAGER->getWorldTime();
@@ -22,18 +24,165 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_hitCount = false;
 	_hitTimer = TIMEMANAGER->getWorldTime();
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-
-
+	_moveselect = false;
+	_collisioncheck = false;
+	_anicheck = true;
+	_attactmotion = false;
+	_gravity = 3.0f;
 	return S_OK;
 }
 
 void enemy::release(void)
 {
+	SAFE_DELETE(_ani);
 }
 
 void enemy::update(image* pixelimage, POINT playerPoint)
 {
 	
+
+}
+
+void enemy::pixelcollision()
+{
+	
+	//醱給 - 嬴楚
+	for (int i =_rc.bottom; i > _rc.bottom - 1; i--)
+	{
+		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+
+		int r = GetRValue(color);
+		int g = GetGValue(color);
+		int b = GetBValue(color);
+
+		if (r == 255 && g == 0 && b == 0)
+		{
+			
+			_collisioncheck = true;
+			_state = 1;
+			break;
+		}
+		else if (!(r == 255 && g == 0 && b == 0))
+		{
+
+			_collisioncheck = false;
+			_state = 1;
+			break;
+		}
+	}
+
+
+	//醱給 謝辦
+		for (int i = _rc.right; i > _rc.right - 1; i--)
+		{
+
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+
+				if (_dr == drright)
+				{
+					_dr = drleft;
+				}
+				break;
+			}
+		}
+		for (int i = _rc.left; i > _rc.left - 1; i--)
+		{
+
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+
+				if (_dr == drleft)
+				{
+					_dr = drright;
+				}
+				break;
+			}
+		}
+	if (!_collisioncheck)
+	{
+		_y += _gravity;
+	}
+
+	
+}
+
+void enemy::brontocollision()
+{
+	for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
+	{
+		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+
+		int r = GetRValue(color);
+		int g = GetGValue(color);
+		int b = GetBValue(color);
+
+		if (r == 255 && g == 0 && b == 0)
+		{
+
+			_collisioncheck = true;
+			_state = 1;
+			break;
+		}
+	
+	}
+
+
+	//醱給 謝辦
+	for (int i = _rc.right; i > _rc.right - 1; i--)
+	{
+
+		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+
+		int r = GetRValue(color);
+		int g = GetGValue(color);
+		int b = GetBValue(color);
+
+		if (r == 255 && g == 0 && b == 0)
+		{
+
+			if (_dr == drright)
+			{
+				_dr = drleft;
+			}
+			break;
+		}
+	}
+	for (int i = _rc.left; i > _rc.left - 1; i--)
+	{
+
+		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+
+		int r = GetRValue(color);
+		int g = GetGValue(color);
+		int b = GetBValue(color);
+
+		if (r == 255 && g == 0 && b == 0)
+		{
+
+			if (_dr == drleft)
+			{
+				_dr = drright;
+			}
+			break;
+		}
+	}
+	if (!_collisioncheck)
+	{
+		_y += _gravity;
+	}
 
 }
 
