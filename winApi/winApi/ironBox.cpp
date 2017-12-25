@@ -22,10 +22,17 @@ HRESULT ironBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	return S_OK;
 }
 
-void ironBox::update(void)
+void ironBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 
 	move();
+	for (int i = 0; i < bulletPos.size(); i++)
+	{
+		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
+		{
+			bulletPos[i]->setState(2);
+		}
+	}
 }
 
 void ironBox::move()

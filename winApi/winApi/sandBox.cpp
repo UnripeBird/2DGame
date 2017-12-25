@@ -26,9 +26,16 @@ HRESULT sandBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	return S_OK;
 }
 
-void sandBox::update(void)
+void sandBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
+	for (int i = 0; i < bulletPos.size(); i++)
+	{
+		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
+		{
+			bulletPos[i]->setState(2);
+		}
+	}
 	if (_state == 3)
 	{
 		boomEffect();

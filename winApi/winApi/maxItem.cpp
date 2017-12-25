@@ -21,10 +21,14 @@ HRESULT maxItem::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	return S_OK;
 }
 
-void maxItem::update(void)
+void maxItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	flash();
+	if (KEYMANAGER->isStayKeyDown('X'))
+	{
+		starabso(playerPosition);
+	}
 }
 
 void maxItem::move()
@@ -60,4 +64,66 @@ void maxItem::flash()
 		//	_state = 2;
 		//}
 	}
+}
+
+//플레이어흡수 상호작용 함수
+void maxItem::starabso(POINT playerPos)
+{
+	//플레이어 좌표로 좌우 방향 체크
+	if (playerPos.x < _x)
+	{
+		_curRight = true;
+	}
+	else
+	{
+		_curRight = false;
+	}
+
+	//방향에 따라 흡수위치 달라짐
+	if (_curRight) // 오른쪽
+	{
+		if (playerPos.y < _y)
+		{
+			_y -= speed;
+			_x -= speed;
+
+			if (playerPos.x + 60 >= _x)
+			{
+				_state = 4;
+			}
+		}
+		else
+		{
+			_y += speed;
+			_x -= speed;
+			if (playerPos.x + 60 >= _x)
+			{
+				_state = 4;
+			}
+		}
+
+
+	}//오른쪽 흡수 끝
+
+	else // 왼쪽 흡수
+	{
+		if (playerPos.y > _y)
+		{
+			_y += speed;
+			_x += speed;
+			if (playerPos.x - 60 <= _x)
+			{
+				_state = 4;
+			}
+		}
+		else
+		{
+			_y -= speed;
+			_x += speed;
+			if (playerPos.x - 60 <= _x)
+			{
+				_state = 4;
+			}
+		}
+	}//왼쪽 흡수 끝
 }
