@@ -32,7 +32,7 @@ HRESULT enemyManager::init(void)
 	_vEnemy.push_back(em);
 
 	em = new burning;
-	em->init("¹ö´×", Burning, 0, PointMake(600, 300));
+	em->init("¹ö´×", Burning, 0, PointMake(800, 300));
 	_vEnemy.push_back(em);
 	return S_OK;
 }

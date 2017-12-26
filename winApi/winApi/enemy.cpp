@@ -215,28 +215,58 @@ void enemy::burningcollision(vector<fieldObject*> objectVec)
 
 	if (_burningselect == false)
 	{
-		for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
+		
+		for (int i = _probe[3].top-1; i < _probe[3].bottom + 1; i++)
 		{
-			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
-
-			int r = GetRValue(color);
-			int g = GetGValue(color);
-			int b = GetBValue(color);
-
-			if (r == 255 && g == 0 && b == 0)
+			for (int j = _probe[3].left - 1; j < _probe[3].right + 1; j++)
 			{
+				COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
 
-				_collisioncheck = true;
-			
-				_state = 1;
-				break;
+				int r = GetRValue(color);
+				int g = GetGValue(color);
+				int b = GetBValue(color);
+
+				if (r == 255 && g == 0 && b == 0)
+				{
+
+					_collisioncheck = true;
+
+					_state = 1;
+					break;
+				}
+				else if (!(r == 255 && g == 0 && b == 0))
+				{
+					_collisioncheck = false;
+				}
+
 			}
-			else if (!(r == 255 && g == 0 && b == 0))
+		}
+
+
+		for (int i = _probe[0].top - 1; i < _probe[0].bottom + 1; i++)
+		{
+			for (int j = _probe[0].left - 1; j < _probe[0].right + 1; j++)
 			{
-				_collisioncheck = false;
+				COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+
+				int r = GetRValue(color);
+				int g = GetGValue(color);
+				int b = GetBValue(color);
+
+				if (r == 255 && g == 0 && b == 0)
+				{
+
+				
+					_state = 4;
+				}
+				else if (!(r == 255 && g == 0 && b == 0))
+				{
+					_state = 1;
+				}
+
 			}
-			
-	}
+		}
+
 	
 		//Ãæµ¹ ÁÂ¿ì
 		

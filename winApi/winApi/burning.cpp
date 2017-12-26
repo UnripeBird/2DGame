@@ -45,7 +45,7 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 			{
 				
 				move();
-		//		_x += _moveSpeed;
+				_x += _moveSpeed;
 				
 				
 					
@@ -64,6 +64,11 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	
 	
 	
+	}
+
+	if (_state == 4)
+	{
+		_y -= _moveSpeed;
 	}
 	//피격
 	if (_hitCount == true && _state == 1)
@@ -95,14 +100,14 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 		}
 	}
 	_rc = RectMakeCenter(_x, _y, 50, 50);
-
-	_probe[0] = RectMakeCenter(_rc.left-5, _rc.bottom+5, 10, 10);
-
-	_probe[1] = RectMakeCenter(_rc.right+5, _rc.bottom+5, 10, 10);
-
-	_probe[2] = RectMakeCenter(_rc.left-5, _rc.top-5, 10, 10);
-
-	_probe[3] = RectMakeCenter(_rc.right+5, _rc.top -5, 10, 10);
+	//좌
+	_probe[0] = RectMakeCenter(_rc.left-5, _rc.bottom-(_rc.bottom-_rc.top)/2, 10, 10);
+	//우
+	_probe[1] = RectMakeCenter(_rc.right+5, _rc.bottom - (_rc.bottom - _rc.top) / 2, 10, 10);
+	//상
+	_probe[2] = RectMakeCenter(_rc.right-(_rc.right - _rc.left)/2, _rc.top - 5, 10, 10);
+	//하
+	_probe[3] = RectMakeCenter(_rc.right - (_rc.right - _rc.left) / 2, _rc.bottom + 5, 10, 10);
 }
 
 void burning::Hit()

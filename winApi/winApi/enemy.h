@@ -47,7 +47,7 @@ protected:
 	RECT _probe[4];
 	
 	direction _dr;
-	burningdr _bdr;
+
 	int _state; //0 드랍상태 1 행동상태 2 삭제대기
 
 public:

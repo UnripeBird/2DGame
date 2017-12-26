@@ -82,7 +82,7 @@ HRESULT objectManager::init(void)
 		_vObject.push_back(sand);
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 0; i++)
 	{
 		fieldObject* MOB;
 		MOB = new mobBox;
