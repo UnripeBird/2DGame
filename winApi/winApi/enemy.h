@@ -7,16 +7,11 @@ enum direction
 {
 	drright,
 	drleft,
-
+	drup,
+	drdown
 
 };
-enum burningdr
-{
-	bup,
-	bdown,
-	bright,
-	bleft
-};
+
 class enemy
 {
 protected:
@@ -48,16 +43,19 @@ protected:
 	
 	direction _dr;
 
+
 	int _state; //0 드랍상태 1 행동상태 2 삭제대기
 
+	//보스 공격
+	bullet* _bullet;
 public:
 	HRESULT init(void);
 	virtual HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void release(void);
 	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
-	void pixelcollision();
-	void brontocollision();
-	void burningcollision(vector<fieldObject*> objectVec);
+	void pixelcollision(image * pixelimage);
+	void brontocollision(image * pixelimage);
+	
 	virtual void Hit() = 0;
 
 	animation* getAni() { return _ani; }

@@ -253,6 +253,7 @@
     <ClCompile Include="fieldBoom2.cpp">
       <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClCompile>
+    <ClCompile Include="woodboss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonMacroFiunction.h">
@@ -426,5 +427,6 @@
     <ClInclude Include="fieldBoom2.h">
       <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClInclude>
+    <ClInclude Include="woodboss.h" />
   </ItemGroup>
 </Project>

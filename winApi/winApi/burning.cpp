@@ -28,13 +28,13 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 
-	burningcollision(objectVec);
+
 	//움직이는 방향
 
 	//움직임
 	if (!_collisioncheck)
 	{
-		_y += _gravity;
+		_y += _moveSpeed;
 	}
 	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
 	{
@@ -46,8 +46,6 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 				
 				move();
 				_x += _moveSpeed;
-				
-				
 					
 			}
 			break;
@@ -58,7 +56,18 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 
 			}
 			break;
-
+			case drup:
+			{
+				move();
+				_y -= _moveSpeed;
+			}
+			break;
+			case drdown:
+			{
+				move();
+				_y += _moveSpeed;
+			}
+			break;
 			}
 	
 	
@@ -66,10 +75,7 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	
 	}
 
-	if (_state == 4)
-	{
-		_y -= _moveSpeed;
-	}
+
 	//피격
 	if (_hitCount == true && _state == 1)
 	{

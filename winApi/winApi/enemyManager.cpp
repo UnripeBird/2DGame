@@ -9,7 +9,7 @@ HRESULT enemyManager::init(void)
 	IMAGEMANAGER->addFrameImage("½ºÆÄÅ©", "enemy/spark.bmp", 1000 * 3, 400 * 3, 15, 4, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("Ä¥¸®", "enemy/chilly.bmp", 533 * 3, 300 * 3, 8, 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("¹ö´×", "enemy/burning.bmp", 933*3, 600*3, 14, 6, true, RGB(255, 0, 255));
-
+	IMAGEMANAGER->addFrameImage("³ª¹«¹Øµ¿", "image/treeboss.bmp", 200 * 3, 380 * 3, 5, 5, true, RGB(255, 0, 255));
 	enemy* em;
 	em = new waddle;
 	em->init("¿Íµéµð", waddledee, 0, PointMake(900, 100));
@@ -32,7 +32,11 @@ HRESULT enemyManager::init(void)
 	_vEnemy.push_back(em);
 
 	em = new burning;
-	em->init("¹ö´×", Burning, 0, PointMake(800, 300));
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+
+	em = new woodboss;
+	em->init("³ª¹«¹Øµ¿", treeboss, 3, PointMake(700, 500));
 	_vEnemy.push_back(em);
 	return S_OK;
 }
@@ -47,15 +51,22 @@ void enemyManager::release(void)
 	}
 }
 
-void enemyManager::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
+void enemyManager::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, int curMapNum)
 {
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end();)
 	{
-		(*_viEnemy)->update(pixelimage, playerPoint, objectVec, bulletVec);
-		if ((*_viEnemy)->getState() == 2)
+		if (curMapNum == (*_viEnemy)->getAppearMapNum())
 		{
-			(*_viEnemy)->release();
-			_viEnemy = _vEnemy.erase(_viEnemy);
+			(*_viEnemy)->update(pixelimage, playerPoint, objectVec, bulletVec);
+			if ((*_viEnemy)->getState() == 2)
+			{
+				(*_viEnemy)->release();
+				_viEnemy = _vEnemy.erase(_viEnemy);
+			}
+			else
+			{
+				++_viEnemy;
+			}
 		}
 		else
 		{

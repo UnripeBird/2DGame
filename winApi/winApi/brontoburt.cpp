@@ -193,7 +193,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 
 
 
-		brontocollision();
+		brontocollision(pixelimage);
 		_rc = RectMakeCenter(_x, _y, 50, 50);
 	
 

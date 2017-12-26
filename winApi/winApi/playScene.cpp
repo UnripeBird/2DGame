@@ -15,7 +15,6 @@ HRESULT playScene::init(void)
 	IMAGEMANAGER->addImage("field2", "image\\field2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("pixel2", "image\\pixel2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
 
-
 	IMAGEMANAGER->addImage("bossmapback", "image\\treebossmapback.bmp", 358 * 4, 159 * 4);
 	IMAGEMANAGER->addImage("bossmap", "image\\treebossmap.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("bossmappixel", "image\\treebosspixel.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
@@ -61,7 +60,7 @@ void playScene::update(void)
 
 	_objectManager->update(_player->getPos(), _bulletManager->getBullet());
 
-	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos(),_objectManager->getObject(),_bulletManager->getBullet());
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos(),_objectManager->getObject(),_bulletManager->getBullet(),_mapManager->getCurMapNum());
 
 	_bulletManager->update();
 

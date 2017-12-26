@@ -50,13 +50,13 @@ void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> ob
 
 }
 
-void enemy::pixelcollision()
+void enemy::pixelcollision(image * pixelimage)
 {
 	
 	//충돌 - 아래
 	for (int i =_rc.bottom; i > _rc.bottom - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), _x, i);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -83,7 +83,7 @@ void enemy::pixelcollision()
 		for (int i = _rc.right; i > _rc.right - 1; i--)
 		{
 
-			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+			COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 			int r = GetRValue(color);
 			int g = GetGValue(color);
@@ -102,7 +102,7 @@ void enemy::pixelcollision()
 		for (int i = _rc.left; i > _rc.left - 1; i--)
 		{
 
-			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+			COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 			int r = GetRValue(color);
 			int g = GetGValue(color);
@@ -126,11 +126,11 @@ void enemy::pixelcollision()
 	
 }
 
-void enemy::brontocollision()
+void enemy::brontocollision(image * pixelimage)
 {
 	for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), _x, i);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -151,7 +151,7 @@ void enemy::brontocollision()
 	for (int i = _rc.right; i > _rc.right - 1; i--)
 	{
 
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -170,7 +170,7 @@ void enemy::brontocollision()
 	for (int i = _rc.left; i > _rc.left - 1; i--)
 	{
 
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -193,87 +193,5 @@ void enemy::brontocollision()
 
 }
 
-void enemy::burningcollision(vector<fieldObject*> objectVec)
-{
-
-
-	for (int i = 0; i < objectVec.size(); i++)
-	{
-		RECT rctemp;
-		if (IntersectRect(&rctemp, &objectVec[i]->getrc(), &_rc))
-		{
-			_burningselect = true;
-			break;
-		}
-		else
-		{
-			_burningselect = false;
-
-		}
-	}
-
-
-	if (_burningselect == false)
-	{
-		
-		for (int i = _probe[3].top-1; i < _probe[3].bottom + 1; i++)
-		{
-			for (int j = _probe[3].left - 1; j < _probe[3].right + 1; j++)
-			{
-				COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
-
-				int r = GetRValue(color);
-				int g = GetGValue(color);
-				int b = GetBValue(color);
-
-				if (r == 255 && g == 0 && b == 0)
-				{
-
-					_collisioncheck = true;
-
-					_state = 1;
-					break;
-				}
-				else if (!(r == 255 && g == 0 && b == 0))
-				{
-					_collisioncheck = false;
-				}
-
-			}
-		}
-
-
-		for (int i = _probe[0].top - 1; i < _probe[0].bottom + 1; i++)
-		{
-			for (int j = _probe[0].left - 1; j < _probe[0].right + 1; j++)
-			{
-				COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
-
-				int r = GetRValue(color);
-				int g = GetGValue(color);
-				int b = GetBValue(color);
-
-				if (r == 255 && g == 0 && b == 0)
-				{
-
-				
-					_state = 4;
-				}
-				else if (!(r == 255 && g == 0 && b == 0))
-				{
-					_state = 1;
-				}
-
-			}
-		}
-
-	
-		//충돌 좌우
-		
-
-	
-	
-	}
-}
 
 
