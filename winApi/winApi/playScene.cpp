@@ -44,15 +44,15 @@ void playScene::release(void)
 
 void playScene::update(void)
 {
-	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos(),_objectManager->getObject(),_bulletManager->getBullet());
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
 
-	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(), _mapManager->getPixelImage());
+	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage(), _bulletManager);
 
-	_objectManager->update(_player->getPos(), _bulletManager->getBullet());
+	_objectManager->update();
+
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos());
 
 	_bulletManager->update();
-
-	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
 }
 
 void playScene::render(void)
