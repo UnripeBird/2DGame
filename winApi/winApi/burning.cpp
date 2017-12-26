@@ -1,4 +1,13 @@
-#include "stdafx.h"	
+#include "stdafx.h"	em = new burning;	em = new burning;	em = new burning;	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+#include "stdafx.h"
 #include "burning.h"
 
 HRESULT burning::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, POINT pos)
@@ -30,7 +39,7 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 
 	//¿òÁ÷ÀÓ
 
-	
+
 }
 
 void burning::Hit()
@@ -56,14 +65,14 @@ void burning::attackmoveleft()
 
 	_ani->setPlayFrame(14, 27, false, true);
 	_ani->setFPS(3);
-	
+
 }
 
 void burning::attackmoveright()
 {
 	_ani->setPlayFrame(28, 41, false, true);
 	_ani->setFPS(3);
-	
+
 }
 
 void burning::hitmove()

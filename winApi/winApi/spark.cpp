@@ -28,7 +28,7 @@ void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> o
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	//움직이는 방향
-	pixelcollision();
+	pixelcollision(pixelimage);
 	//움직임
 	
 	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)

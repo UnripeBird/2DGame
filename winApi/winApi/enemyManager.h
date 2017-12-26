@@ -9,6 +9,7 @@
 #include "burning.h"
 #include "spark.h"
 #include "chilly.h"
+#include "woodboss.h"
 
 class enemyManager
 {
@@ -19,7 +20,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
+	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, int curMapNum);
 
 	vector<enemy*> getEnemy() { return _vEnemy; }
 

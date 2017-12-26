@@ -90,7 +90,7 @@ void waddle::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> o
 
 
 
-	pixelcollision();
+	pixelcollision(pixelimage);
 
 	_rc = RectMakeCenter(_x, _y, 50, 50);
 	

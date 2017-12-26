@@ -199,6 +199,7 @@
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="waddle.cpp" />
     <ClCompile Include="winMain.cpp" />
+    <ClCompile Include="woodboss.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="animation.h" />
@@ -258,6 +259,7 @@
     <ClInclude Include="timer.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="waddle.h" />
+    <ClInclude Include="woodboss.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

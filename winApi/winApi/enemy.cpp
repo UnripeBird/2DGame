@@ -50,13 +50,13 @@ void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> ob
 
 }
 
-void enemy::pixelcollision()
+void enemy::pixelcollision(image * pixelimage)
 {
 	
 	//충돌 - 아래
 	for (int i =_rc.bottom; i > _rc.bottom - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), _x, i);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -83,7 +83,7 @@ void enemy::pixelcollision()
 		for (int i = _rc.right; i > _rc.right - 1; i--)
 		{
 
-			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+			COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 			int r = GetRValue(color);
 			int g = GetGValue(color);
@@ -102,7 +102,7 @@ void enemy::pixelcollision()
 		for (int i = _rc.left; i > _rc.left - 1; i--)
 		{
 
-			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+			COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 			int r = GetRValue(color);
 			int g = GetGValue(color);
@@ -126,11 +126,11 @@ void enemy::pixelcollision()
 	
 }
 
-void enemy::brontocollision()
+void enemy::brontocollision(image * pixelimage)
 {
 	for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), _x, i);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -151,7 +151,7 @@ void enemy::brontocollision()
 	for (int i = _rc.right; i > _rc.right - 1; i--)
 	{
 
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -170,7 +170,7 @@ void enemy::brontocollision()
 	for (int i = _rc.left; i > _rc.left - 1; i--)
 	{
 
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);

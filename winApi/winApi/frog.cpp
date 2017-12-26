@@ -93,7 +93,7 @@ void frog::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> obj
 
 
 
-	pixelcollision();
+	pixelcollision(pixelimage);
 
 
 	_rc = RectMakeCenter(_x, _y, 50, 50);
