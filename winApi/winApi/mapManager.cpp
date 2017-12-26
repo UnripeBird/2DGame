@@ -7,17 +7,25 @@ HRESULT mapManager::init(void)
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("field0"));
 	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel0"));
 
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("bossmapback"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("bossmap"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("bossmappixel"));
+
+	IMAGEMANAGER->addImage("LifeUI", "image\\kirbyLifeUI.bmp", 24 * 3, 14 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("LifeNum", "image\\kirbyLifeNum.bmp", 80 * 2.5, 11 * 2.5, 10, 1, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("HpBar", "image\\kirbyHpBarUI.bmp", 10 * 3, 14 * 3, 2, 1, true, RGB(255, 0, 255));
+
 	mapDC = CreateCompatibleDC(getMemDC()); // 그냥 써
 	mapBit = NULL;
 	mapOBit = NULL;
-
-	mapChange(0);
 
 	_cameraX = 0;
 	_cameraY = 0;
 
 	_afterMapNumber = 0;
 	_curMapNumber = 0;
+
+	mapChange(0);
 	return S_OK;
 }
 
@@ -107,6 +115,43 @@ void mapManager::render(void)
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 
 		mapDC, _cameraX, _cameraY, SRCCOPY);
+
+	///////////////// UI render /////////////////////////////////
+
+	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
+
+	static int _Life = 16;
+	int Life = _Life;
+
+	vector<int> LifeVec;
+
+	if (Life < 10)
+	{
+		LifeVec.push_back(Life);
+		LifeVec.push_back(0);
+	}
+	else
+	{
+		while (Life > 0)
+		{
+			LifeVec.push_back(Life % 10);
+			Life /= 10;
+		}
+	}
+
+	for (int i = 0; i < LifeVec.size(); i++)
+	{
+		IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
+	}
+
+	static int Hp = 4;
+
+	for (int i = 0; i < 6; i++)
+	{
+		int frameX = 0;
+		if (i + 1 > Hp) frameX = 1;
+		IMAGEMANAGER->frameRender("HpBar", getMemDC(), 330 + (IMAGEMANAGER->findImage("HpBar")->getFrameWidth() * i), WINSIZEY - 45, frameX, 0);
+	}
 }
 
 void mapManager::mapChange(int nextMap)

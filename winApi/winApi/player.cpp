@@ -86,7 +86,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	//충돌 - 아래
 	for (int i = _rc.bottom - 1; i < _rc.bottom + 1; i++)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), _x, i);
 	
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -496,7 +496,7 @@ bool player::rightMove()
 	bool _horizonMove = true;
 	for (int i = _rc.right - 1; i < _rc.right + 1; i++)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -517,7 +517,7 @@ bool player::leftMove()
 	bool _horizonMove = true;
 	for (int i = _rc.left + 1; i > _rc.left - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
