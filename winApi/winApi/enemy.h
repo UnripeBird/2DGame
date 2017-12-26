@@ -55,7 +55,6 @@ public:
 	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
 	void pixelcollision();
 	void brontocollision();
-	void burningcollision(vector<fieldObject*> objectVec);
 	virtual void Hit() = 0;
 
 	animation* getAni() { return _ani; }

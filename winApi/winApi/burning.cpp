@@ -1,15 +1,5 @@
-#include "stdafx.h"	em = new burning;	em = new burning;	em = new burning;	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
+#include "stdafx.h"	
 #include "burning.h"
-
-
 
 HRESULT burning::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, POINT pos)
 {
@@ -36,93 +26,11 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 
-	burningcollision(objectVec);
 	//¿òÁ÷ÀÌ´Â ¹æÇâ
 
 	//¿òÁ÷ÀÓ
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
 
-	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
-	{
 	
-			switch (_dr)
-			{
-			case drright:
-			{
-				if (_wallright == true)
-				{
-					_y -= _moveSpeed;
-				}
-				if (_wallleft == true && _wallright == false && _collisioncheck == false)
-				{
-					_y += _moveSpeed;
-				}
-				else
-				{
-					_x += _moveSpeed;
-				}
-				move();
-			
-			}
-			break;
-			case drleft:
-			{
-			
-
-			}
-			break;
-
-			}
-	
-	
-	
-	
-	}
-	//ÇÇ°Ý
-	if (_hitCount == true && _state == 1)
-	{
-		hitmove();
-		if (_hitWorldTimer - _hitTimer > 1.0f)
-		{
-			_hitCount = false;
-			_state = 2;
-
-		}
-	
-	}
-
-	//°ø°Ý
-
-	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200)
-	{
-	//	_attactmotion = true;
-
-	}
-	if (_attactmotion == true)
-	{
-	
-		if (_ani->isPlay() == false)
-		{
-			_anicheck = false;
-			_attactmotion = false;
-		}
-	}
-	_rc = RectMakeCenter(_x, _y, 50, 50);
-
-	_probex[0] = RectMakeCenter(_rc.left - 5, _rc.bottom - (_rc.bottom - _rc.top) / 2, 5, 70);
-
-	_probex[1] = RectMakeCenter(_rc.right + 5, _rc.bottom - (_rc.bottom - _rc.top) / 2, 5, 70);
-
-	_probey[0] = RectMakeCenter(_rc.right - (_rc.right - _rc.left) / 2, _rc.top, 60, 5);
-
-	_probey[1] = RectMakeCenter(_rc.right - (_rc.right - _rc.left) / 2, _rc.bottom , 60, 5);
 }
 
 void burning::Hit()
