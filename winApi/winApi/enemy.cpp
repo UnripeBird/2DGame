@@ -31,7 +31,7 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_burningselect = true;
 	//true일 경우 공격중.
 	_attactmotion = false;
-	//burning bool
+
 
 	_gravity = 3.0f;
 

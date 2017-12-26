@@ -1,4 +1,12 @@
-#include "stdafx.h"
+#include "stdafx.h"	em = new burning;	em = new burning;	em = new burning;	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
 #include "burning.h"
 
 
@@ -43,16 +51,25 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 			{
 			case drright:
 			{
-				
+				if (_wallright == true)
+				{
+					_y -= _moveSpeed;
+				}
+				if (_wallleft == true && _wallright == false && _collisioncheck == false)
+				{
+					_y += _moveSpeed;
+				}
+				else
+				{
+					_x += _moveSpeed;
+				}
 				move();
-				_x += _moveSpeed;
-					
+			
 			}
 			break;
 			case drleft:
 			{
-				move();
-				_x -= _moveSpeed;
+			
 
 			}
 			break;
