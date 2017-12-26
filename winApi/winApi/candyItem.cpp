@@ -45,11 +45,11 @@ void candyItem::wind(POINT playerPos)
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
 	{
-		_curRight = true;
+		_curRight = false;
 	}
 	else
 	{
-		_curRight = false;
+		_curRight = true;
 	}
 
 	if (_curRight)

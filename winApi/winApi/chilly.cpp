@@ -33,13 +33,11 @@ void chilly::update(image * pixelimage, POINT playerPoint)
 		{
 		case drright:
 		{
-			rightmove();
 			_x += _moveSpeed;
 		}
 		break;
 		case drleft:
 		{
-			leftmove();
 			_x -= _moveSpeed;
 		}
 		break;

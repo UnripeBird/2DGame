@@ -10,6 +10,7 @@ HRESULT boomBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	_y = 300.0f;
 	_rc = RectMakeCenter(_x, _y, 100, 100);
 	count = 0;
+	bullectCount = 0;
 	fieldObject::init(objectName, discernNum, mapNum, pos);
 
 	_image = IMAGEMANAGER->findImage("박스오브젝트");
@@ -34,19 +35,20 @@ void boomBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 	{
 		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
 		{
-			_state = 3;
+			_effectBullet = true;
 			bulletPos[i]->setState(2);
 		}
 	}
 
-	if (_state == 3)
+	if (_state == 3 || _effectBullet)
 	{
 		boomEffect();
+		bulletEffect();
 	}
 
 }
 
-void boomBox::move(void)
+void boomBox::move()
 {
 	if (_image == NULL)
 	{
@@ -75,4 +77,29 @@ void boomBox::boomEffect(void)
 			_state = 2;
 		}
 	}	
+}
+
+void boomBox::bulletEffect()
+{
+
+	_bulletRc = RectMakeCenter(_rcTemp.left, _rcTemp.top, 100, 100);
+
+	_effectImage = IMAGEMANAGER->findImage("총알폭발");
+
+	_effectNumberY = 0;
+
+	_bullectWorldTimer = TIMEMANAGER->getWorldTime();
+
+	if (_bullectWorldTimer - _bullectTimer > 0.05f)
+	{
+		_effectNumberX = bullectCount;
+		bullectCount++;
+		_bullectTimer = TIMEMANAGER->getWorldTime();
+
+		if (count == 6)
+		{
+			bullectCount = 0;
+			_effectBullet = false;
+		}
+	}
 }

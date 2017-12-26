@@ -62,6 +62,12 @@ void mapManager::render(void)
 		{
 			//Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
 			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
+
+			//새로 추가 브레스 불릿 터지는 이펙트
+			if (_objectPos[i]->getbulletEffect())
+			{
+				_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left-24, _objectPos[i]->getrcTemp().top-13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
+			}
 		}
 	}
 

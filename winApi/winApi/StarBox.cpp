@@ -22,7 +22,7 @@ HRESULT StarBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	_boomTimer = TIMEMANAGER->getWorldTime();
 	_boomWorldTimer = TIMEMANAGER->getWorldTime();
 	count = 0;
-
+	bullectCount = 0;
 	_curRight = true;
 
 	return S_OK;
@@ -36,7 +36,7 @@ void StarBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 	{
 		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
 		{
-			_state = 1;
+			_effectBullet = true;
 			bulletPos[i]->setState(2);
 		}
 	}
@@ -45,9 +45,10 @@ void StarBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 	{
 		boomEffect();
 	}
-	if (_state == 1)
+	else if (_effectBullet)
 	{
 		bulletEffect();
+		boomEffectBullet();
 	}
 	if (KEYMANAGER->isStayKeyDown('X'))
 	{
@@ -86,7 +87,7 @@ void StarBox::boomEffect(void)
 	}
 }
 
-void StarBox::bulletEffect(void)
+void StarBox::boomEffectBullet(void)
 {
 	_image = IMAGEMANAGER->findImage("Æø¹ßÀÌ¹ÌÁö");
 	_objNumberY = 0;
@@ -97,7 +98,7 @@ void StarBox::bulletEffect(void)
 		_objNumberX = count;
 		count++;
 		_boomTimer = TIMEMANAGER->getWorldTime();
-		if (count == 5)
+		if (count == 4)
 		{
 			count = 0;
 			_state = 4;
@@ -170,4 +171,29 @@ void StarBox::starabso(POINT playerPos)
 		}
 	}//¿ÞÂÊ Èí¼ö ³¡
 
+}
+
+void StarBox::bulletEffect()
+{
+
+	_bulletRc = RectMakeCenter(_rcTemp.left, _rcTemp.top, 100, 100);
+
+	_effectImage = IMAGEMANAGER->findImage("ÃÑ¾ËÆø¹ß");
+
+	_effectNumberY = 0;
+
+	_bullectWorldTimer = TIMEMANAGER->getWorldTime();
+
+	if (_bullectWorldTimer - _bullectTimer > 0.05f)
+	{
+		_effectNumberX = bullectCount;
+		bullectCount++;
+		_bullectTimer = TIMEMANAGER->getWorldTime();
+
+		if (bullectCount == 6)
+		{
+			bullectCount = 0;
+			_effectBullet = false;
+		}
+	}
 }

@@ -15,6 +15,7 @@ public:
 	void move();
 	void flash();
 	void starabso(POINT);
+	void wind(POINT);
 
 	drinkItem(){}
 	~drinkItem(){}

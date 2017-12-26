@@ -211,6 +211,9 @@
     <ClCompile Include="bullet.cpp">
       <Filter>커비\bullet</Filter>
     </ClCompile>
+    <ClCompile Include="mobBox.cpp">
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonMacroFiunction.h">
@@ -350,6 +353,9 @@
     </ClInclude>
     <ClInclude Include="bullet.h">
       <Filter>커비\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="mobBox.h">
+      <Filter>커비\object\box</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

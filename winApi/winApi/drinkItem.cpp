@@ -30,8 +30,35 @@ void drinkItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 	{
 		starabso(playerPosition);
 	}
+	for (int i = 0; i < bulletPos.size(); i++)
+	{
+		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
+		{
+			wind(playerPosition);
+		}
+	}
 }
+void drinkItem::wind(POINT playerPos)
+{
+	//플레이어 좌표로 좌우 방향 체크
+	if (playerPos.x < _x)
+	{
+		_curRight = false;
+	}
+	else
+	{
+		_curRight = true;
+	}
 
+	if (_curRight)
+	{
+		_x -= 1;
+	}
+	else
+	{
+		_x += 1;
+	}
+}
 void drinkItem::move()
 {
 	if (_image == NULL)

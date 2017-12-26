@@ -75,9 +75,9 @@ typedef enum OBJECTDISCERN
 	//스타박스 - 흡수 가능한 하얀색 별 박스
 	//붐 박스 - 폭탄 오브젝트
 	//스톤 박스 - 플레이어 흡수 시에만 움직이는 박스
-	//물 - 오브젝트 안에 있을경우 수영 애니메이션 출력
+	//몹 - 몬스터 오브젝트 - 파괴 흡수 불가 / 충돌시 플레이어에게 데미지
 	//아이언 - 폭탄 파괴 x 플레이어 흡수 x
-	starbox,boombox,stonbox,water,ironbox,sandbox,
+	starbox,boombox,stonbox,mob,ironbox,sandbox,
 
 	//업 아이템 - 목숨 1 증가 아이템
 	//캔디 아이템 - 체력 증가 - 지민이 맘대로

@@ -25,19 +25,27 @@ HRESULT stonBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 
 	//ÁÂ¿ìÆÇ´Ü
 	curRight = true;
+	count = 0;
 	return S_OK;
 }
 
 void stonBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
+
 	absorption(playerPosition);
+
 	for (int i = 0; i < bulletPos.size(); i++)
 	{
 		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
 		{
+			_effectBullet = true;
 			bulletPos[i]->setState(2);
 		}
+	}
+	if (_effectBullet)
+	{
+		bulletEffect();
 	}
 }
 
@@ -120,6 +128,30 @@ void stonBox::absorption(POINT playerPoint)
 		else
 		{
 			_x = box_x + 1;
+		}
+	}
+}
+
+void stonBox::bulletEffect()
+{
+
+	_bulletRc = RectMakeCenter(_rcTemp.left, _rcTemp.top, 100, 100);
+
+	_effectImage = IMAGEMANAGER->findImage("ÃÑ¾ËÆø¹ß");
+
+	_effectNumberY = 0;
+
+	_boomWorldTimer = TIMEMANAGER->getWorldTime();
+
+	if (_boomWorldTimer - _boomTimer > 0.05f)
+	{
+		_effectNumberX = count;
+		count++;
+		_boomTimer = TIMEMANAGER->getWorldTime();
+		if (count == 6)
+		{
+			count = 0;
+			_effectBullet = false;
 		}
 	}
 }

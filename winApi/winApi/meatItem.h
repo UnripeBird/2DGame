@@ -14,6 +14,7 @@ public:
 	void move();
 	void flash();
 	void starabso(POINT);
+	void wind(POINT);
 
 	meatItem(){}
 	~meatItem(){}

@@ -79,11 +79,11 @@ void cherryItem::starabso(POINT playerPos)
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
 	{
-		_curRight = true;
+		_curRight = false;
 	}
 	else
 	{
-		_curRight = false;
+		_curRight = true;
 	}
 
 	//방향에 따라 흡수위치 달라짐
@@ -140,11 +140,11 @@ void cherryItem::wind(POINT playerPos)
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
 	{
-		_curRight = true;
+		_curRight = false;
 	}
 	else
 	{
-		_curRight = false;
+		_curRight = true;
 	}
 
 	if (_curRight)

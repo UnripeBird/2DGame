@@ -6,6 +6,7 @@ class fieldObject
 {
 protected:
 	image* _image; // 오브젝트이미지
+	image* _effectImage;// 이펙트 이미지
 
 	int _appearMapNum;
 
@@ -26,13 +27,21 @@ protected:
 
 	//플레이어 방향 값 받아오자! - 오브젝트 상호작용
 	bool _curRight;
+	bool _effectBullet;
 
 	//플레이어 오브젝트 넘버
 	int _objNumberY;
 	int _objNumberX;
 
+	//이펙트 오브젝트 넘버
+	int _effectNumberX;
+	int _effectNumberY;
+
 	//공통 인터섹트렉트용 렉트
 	RECT _rcTemp;
+	//총알 충돌이펙트용 렉트
+	RECT _bulletRc;
+
 
 public:
 	virtual HRESULT init(string,OBJECTDISCERN, int, POINT);
@@ -57,6 +66,12 @@ public:
 	int getObjNumberY() { return _objNumberY; }
 	int getObjNumberX() { return _objNumberX; }
 
+	//이펙트용 추가
+	image* getEffect() { return _effectImage; }
+	RECT getrcTemp() { return _rcTemp; }
+	int getEffectNumberY() { return _effectNumberY; }
+	int getEffectNumberX() { return _effectNumberX; }
+	bool getbulletEffect() { return _effectBullet; }
 
 	fieldObject() {}
 	~fieldObject() {}
