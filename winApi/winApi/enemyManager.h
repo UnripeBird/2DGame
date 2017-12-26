@@ -1,5 +1,7 @@
 #pragma once
 #include "enemy.h"
+#include "fieldObject.h"
+#include "bullet.h"
 #include "boxEnemy.h"
 #include "waddle.h"
 #include "frog.h"
@@ -7,6 +9,7 @@
 #include "burning.h"
 #include "spark.h"
 #include "chilly.h"
+
 class enemyManager
 {
 private:
@@ -16,7 +19,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(image* pixelimage, POINT playerPoint);
+	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
 
 	vector<enemy*> getEnemy() { return _vEnemy; }
 

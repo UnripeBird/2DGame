@@ -70,6 +70,12 @@ void mapManager::render(void)
 		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
 		{
 			Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
+			for (int j = 0; j < 2; j++)
+			{
+				Rectangle(mapDC, _enemyPos[i]->getprobex(j).left, _enemyPos[i]->getprobex(j).top, _enemyPos[i]->getprobex(j).right, _enemyPos[i]->getprobex(j).bottom);
+				Rectangle(mapDC, _enemyPos[i]->getprobey(j).left, _enemyPos[i]->getprobey(j).top, _enemyPos[i]->getprobey(j).right, _enemyPos[i]->getprobey(j).bottom);
+			}
+			
 			if (_enemyPos[i]->getframex() != -1)
 			{
 				_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)

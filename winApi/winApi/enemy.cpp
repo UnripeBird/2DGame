@@ -27,8 +27,15 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_moveselect = false;
 	_collisioncheck = false;
 	_anicheck = true;
+	//true 일경우 rect이동
+	_burningselect = true;
+	//true일 경우 공격중.
 	_attactmotion = false;
+
+
 	_gravity = 3.0f;
+
+
 	return S_OK;
 }
 
@@ -37,7 +44,7 @@ void enemy::release(void)
 	SAFE_DELETE(_ani);
 }
 
-void enemy::update(image* pixelimage, POINT playerPoint)
+void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	
 
@@ -184,6 +191,108 @@ void enemy::brontocollision()
 		_y += _gravity;
 	}
 
+}
+
+void enemy::burningcollision(vector<fieldObject*> objectVec)
+{
+
+
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_burningselect = true;
+			break;
+		}
+		else
+		{
+			_burningselect = false;
+
+		}
+	}
+
+
+	if (_burningselect == false)
+	{
+		for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
+		{
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+
+				_collisioncheck = true;
+				_state = 1;
+				break;
+			}
+			else
+			{
+				_collisioncheck = false;
+			}
+		
+		
+		}
+	
+	
+
+
+		//충돌 좌우
+		
+		for (int i = _probex[0].left; i > _probex[0].left-1; i--)
+		{
+
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _probey[0].bottom);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+			
+				_wallleft = true;
+			
+				break;
+			}
+			else if(!(r == 255 && g == 0 && b == 0))
+			{
+				_wallleft = false;
+				break;
+			}
+		}
+		
+		for (int i = _probex[1].right+1; i > _probex[1].right; i--)
+		{
+
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _probey[1].bottom);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+			
+				_wallright = true;
+				break;
+			}
+			else if(!(r == 255 && g == 0 && b == 0))
+			{
+				_wallright = false;
+				break;
+			}
+		}
+		
+		if (!_collisioncheck)
+		{
+			_y += _gravity;
+		}
+	}
 }
 
 

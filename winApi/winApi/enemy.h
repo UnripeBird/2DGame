@@ -1,9 +1,19 @@
 #pragma once
 #include "animation.h"
+#include "fieldObject.h"
+#include "bullet.h"
+
 enum direction
 {
 	drright,
-	drleft
+	drleft,
+
+
+};
+enum burningdr
+{
+	bup,
+	bdown
 };
 class enemy
 {
@@ -26,26 +36,37 @@ protected:
 	BOOL _collisioncheck;
 	BOOL _anicheck;
 	BOOL _attactmotion;
+	BOOL _burningselect;
+	
+
+	BOOL _updowncheck;
+	BOOL _wallleft;
+	BOOL _wallright;
 	float _hitTimer;
 	float _hitWorldTimer;
 	float _gravity;
-
+	RECT _probex[2];
+	RECT _probey[2];
 	direction _dr;
+	burningdr _bdr;
 	int _state; //0 드랍상태 1 행동상태 2 삭제대기
 
 public:
 	HRESULT init(void);
 	virtual HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void release(void);
-	virtual void update(image* pixelimage, POINT playerPoint);
+	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
 	void pixelcollision();
 	void brontocollision();
-
+	void burningcollision(vector<fieldObject*> objectVec);
 	virtual void Hit() = 0;
 
 	animation* getAni() { return _ani; }
 	POINT getPos() { return PointMake(_x, _y); }
 	RECT getrc() { return _rc; }
+	RECT getprobex(int x) { return _probex[x]; }
+	RECT getprobey(int x) { return _probey[x]; }
+
 	ENEMYDISCERN getDiscernNum() { return _discernNum; }
 	int getAppearMapNum() { return _appearMapNum; }
 	int getState() { return _state; }

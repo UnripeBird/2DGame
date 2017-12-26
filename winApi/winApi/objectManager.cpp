@@ -43,7 +43,7 @@ HRESULT objectManager::init(void)
 	{
 		fieldObject* ston;
 		ston = new stonBox;
-		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 200 * 2.0f));
+		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 300 * 2.0f));
 		_vObject.push_back(ston);
 	}
 
@@ -61,7 +61,7 @@ HRESULT objectManager::init(void)
 	{
 		fieldObject* iron;
 		iron = new ironBox;
-		iron->init("ironBox", ironbox, i * 0, PointMake(170 * (i + 5.0f), 200 * 2.0f));
+		iron->init("ironBox", ironbox, i * 0, PointMake(170 * (i + 5.0f), 300 * 2.0f));
 		_vObject.push_back(iron);
 	}
 	//샌드 박스 - 플레이어 흡수x / 폭탄연쇄반응O 

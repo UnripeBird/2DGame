@@ -17,7 +17,7 @@ HRESULT brontoburt::init(string imageName, ENEMYDISCERN discernNum, int appearMa
 	return S_OK;
 }
 
-void brontoburt::update(image* pixelimage, POINT playerPoint)
+void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_frameWorldTimer = TIMEMANAGER->getWorldTime();
