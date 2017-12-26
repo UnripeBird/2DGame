@@ -62,6 +62,7 @@ public:
 	bool leftMove();
 
 	POINT getPos() { return PointMake(_x, _y); }
+	void setPos(POINT playPos) { _x = playPos.x; _y = playPos.y; }
 	POINT getImagePos() { return PointMake(_imageX, _imageY); }
 
 	int getLife() { return _life; }

@@ -12,6 +12,7 @@ protected:
 
 	int _countBoom;
 
+	int _numK;
 	OBJECTDISCERN _discernNum;
 	float _x, _y;
 	RECT _rc;
@@ -19,6 +20,8 @@ protected:
 
 	int _state; //0 나타남 1 삭제대기 2 터지는상태
 
+	//아이템 충돌
+	RECT itemRc;
 	//플레이어좌표 받아오자
 	POINT _playerPoint;
 
@@ -48,9 +51,15 @@ public:
 	void release(void);
 	virtual void update(POINT playerPosition, vector<bullet*> bulletPos);
 	virtual void boomEffect();
+	virtual void absorption(POINT);
 
 	POINT getPos() { return PointMake(_x, _y); }
+	void setPos(POINT rcPos) { _x = rcPos.x; _y = rcPos.y; }
 	RECT getrc() { return _rc; }
+
+	//아이템 충돌용
+	RECT getItemRc() { return itemRc; }
+
 	OBJECTDISCERN getDiscernNum() { return _discernNum; }
 	int getAppearMapNum() { return _appearMapNum; }
 	int getState() { return _state; }

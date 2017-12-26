@@ -18,7 +18,7 @@ HRESULT fieldObject::init(string imageName,OBJECTDISCERN discernNum, int appearM
 	_playerPoint.y = 500;
 	//임시 플레이어 방향 - 플레이어에서 받아와야함 - 받아와야할 값 - 플레이어cpp 에서의 _curRight
 	_curRight = true;
-
+	_numK = 0;
 	if (_image == NULL)
 	{
 		_rc = RectMakeCenter(_x, _y, 100, 100);
@@ -27,8 +27,6 @@ HRESULT fieldObject::init(string imageName,OBJECTDISCERN discernNum, int appearM
 	{
 		_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
 	}
-
-
 
 	_effectImage = IMAGEMANAGER->findImage("총알폭발");
 	_discernNum = discernNum;
@@ -66,4 +64,9 @@ void fieldObject::update(POINT playerPosition, vector<bullet*> bulletPos)
 
 void fieldObject::boomEffect()
 {
+}
+
+void fieldObject::absorption(POINT playerPos)
+{
+
 }

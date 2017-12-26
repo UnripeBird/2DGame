@@ -25,11 +25,9 @@ HRESULT boomBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 
 void boomBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
+
+
 	move();
-	if (KEYMANAGER->isOnceKeyDown('R'))
-	{
-		_state = 3;
-	}
 
 	for (int i = 0; i < bulletPos.size(); i++)
 	{

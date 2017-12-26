@@ -7,6 +7,15 @@ HRESULT playScene::init(void)
 	IMAGEMANAGER->addImage("field0", "image\\field0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("pixel0", "image\\pixel0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
 
+	IMAGEMANAGER->addImage("background1", "image\\background1.bmp", 1280, 569);
+	IMAGEMANAGER->addImage("field1", "image\\field1.bmp", 1200 * 3, 200 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("pixel1", "image\\pixel1.bmp", 1200 * 3, 200 * 3, true, RGB(255, 0, 255));
+
+	IMAGEMANAGER->addImage("background2", "image\\background2.bmp", 1280, 570);	
+	IMAGEMANAGER->addImage("field2", "image\\field2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("pixel2", "image\\pixel2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
+
+
 	IMAGEMANAGER->addImage("bossmapback", "image\\treebossmapback.bmp", 358 * 4, 159 * 4);
 	IMAGEMANAGER->addImage("bossmap", "image\\treebossmap.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("bossmappixel", "image\\treebosspixel.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));

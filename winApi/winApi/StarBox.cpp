@@ -50,10 +50,6 @@ void StarBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 		bulletEffect();
 		boomEffectBullet();
 	}
-	if (KEYMANAGER->isStayKeyDown('X'))
-	{
-		starabso(playerPosition);
-	}
 }
 
 void StarBox::move()
@@ -82,7 +78,6 @@ void StarBox::boomEffect(void)
 		if (count == 5)
 		{
 			count = 0;
-			_state = 2;
 		}
 	}
 }
@@ -107,7 +102,7 @@ void StarBox::boomEffectBullet(void)
 }
 
 //플레이어흡수 상호작용 함수
-void StarBox::starabso(POINT playerPos)
+void StarBox::absorption(POINT playerPos)
 {
 	_image = IMAGEMANAGER->findImage("별오브젝트");
 	_objNumberX = 0;
@@ -130,20 +125,11 @@ void StarBox::starabso(POINT playerPos)
 		{
 			_y-=speed;
 			_x-= speed;
-
-			if (playerPos.x+50 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y+= speed;
 			_x-= speed;
-			if (playerPos.x+50 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -155,19 +141,11 @@ void StarBox::starabso(POINT playerPos)
 		{
 			_y+= speed;
 			_x+= speed;
-			if (playerPos.x-50 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y-= speed;
 			_x+= speed;
-			if (playerPos.x-50 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//왼쪽 흡수 끝
 

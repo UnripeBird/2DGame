@@ -7,6 +7,14 @@ HRESULT mapManager::init(void)
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("field0"));
 	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel0"));
 
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background1"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("field1"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel1"));
+
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background2"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("field2"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel2"));
+
 	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("bossmapback"));
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("bossmap"));
 	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("bossmappixel"));
@@ -26,6 +34,7 @@ HRESULT mapManager::init(void)
 	_curMapNumber = 0;
 
 	mapChange(0);
+
 	return S_OK;
 }
 
@@ -43,6 +52,20 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 	_enemyPos = enemyPos;
 	_bulletPos = bulletPos;
 
+	if (KEYMANAGER->isOnceKeyDown('1'))
+	{
+		mapChange(1);
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('2'))
+	{
+		mapChange(2);
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('3'))
+	{
+		mapChange(3);
+	}
 	POINT playerPosition = _playerPos->getPos();
 
 	_cameraX = playerPosition.x - WINSIZEX / 2;
@@ -167,4 +190,5 @@ void mapManager::mapChange(int nextMap)
 
 	mapBit = (HBITMAP)CreateCompatibleBitmap(getMemDC(), _mapImageVector[nextMap]->getWidth(), _mapImageVector[nextMap]->getHeight()); //맵 크기만큼의 빈 비트맵을 생성한다
 	mapOBit = (HBITMAP)SelectObject(mapDC, mapBit);
+//여기서 맵번호에따라 플레이어 좌표  - 예외처리후 해야지 ㅎㅎ
 }

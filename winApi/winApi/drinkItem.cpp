@@ -26,10 +26,7 @@ void drinkItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	flash();
-	if (KEYMANAGER->isStayKeyDown('X'))
-	{
-		starabso(playerPosition);
-	}
+
 	for (int i = 0; i < bulletPos.size(); i++)
 	{
 		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
@@ -94,7 +91,7 @@ void drinkItem::flash()
 	}
 }
 //플레이어흡수 상호작용 함수
-void drinkItem::starabso(POINT playerPos)
+void drinkItem::absorption(POINT playerPos)
 {
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
@@ -113,20 +110,11 @@ void drinkItem::starabso(POINT playerPos)
 		{
 			_y -= speed;
 			_x -= speed;
-
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y += speed;
 			_x -= speed;
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -138,19 +126,11 @@ void drinkItem::starabso(POINT playerPos)
 		{
 			_y += speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y -= speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//왼쪽 흡수 끝
 }

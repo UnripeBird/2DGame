@@ -13,7 +13,7 @@ public:
 
 	void move();
 	void flash();
-	void starabso(POINT);
+	void absorption(POINT);
 	void wind(POINT);
 
 	meatItem(){}

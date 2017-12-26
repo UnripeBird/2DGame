@@ -33,8 +33,6 @@ void stonBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 
-	absorption(playerPosition);
-
 	for (int i = 0; i < bulletPos.size(); i++)
 	{
 		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
@@ -75,37 +73,32 @@ void stonBox::absorption(POINT playerPoint)
 
 	if (curRight) // - 플레이어 오른쪽 방향
 	{
-		if (KEYMANAGER->isStayKeyDown('X'))
+		_absoWorldTimer = TIMEMANAGER->getWorldTime();
+		countR++;
+		countL++;
+		if (countR % 8 == 0)
 		{
-			_absoWorldTimer = TIMEMANAGER->getWorldTime();
-			countR++;
-			countL++;
-			if (countR % 8 == 0)
-			{
-				_x -= 5;
-			}
-			if (countL % 16 == 0)
-			{
-				_x += 8;
-			}
-			
+			_x -= 5;
+		}
+		if (countL % 16 == 0)
+		{
+			_x += 8;
+		}
+		
 
-			if (_absoWorldTimer - _absoTimer > 0.01f)
-			{
-				box_x = _x;
-				_absoTimer = TIMEMANAGER->getWorldTime();
-			}
-		}
-		else
+		if (_absoWorldTimer - _absoTimer > 0.01f)
 		{
-			_x = box_x - 1;
+			box_x = _x;
+			_absoTimer = TIMEMANAGER->getWorldTime();
 		}
-	}//현재 방향이 트루일때
+	else
+	{
+		_x = box_x - 1;
+	}
+}//현재 방향이 트루일때
 
 	else//현재 방향이 펄스일때 - 플레이어 왼쪽 방향
 	{
-		if (KEYMANAGER->isStayKeyDown('X'))
-		{
 			_absoWorldTimer = TIMEMANAGER->getWorldTime();
 			countR++;
 			countL++;
@@ -124,7 +117,6 @@ void stonBox::absorption(POINT playerPoint)
 				box_x = _x;
 				_absoTimer = TIMEMANAGER->getWorldTime();
 			}
-		}
 		else
 		{
 			_x = box_x + 1;
