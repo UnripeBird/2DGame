@@ -1,12 +1,3 @@
-#include "stdafx.h"	em = new burning;	em = new burning;	em = new burning;	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
-	_vEnemy.push_back(em);
 #include "stdafx.h"
 #include "burning.h"
 
