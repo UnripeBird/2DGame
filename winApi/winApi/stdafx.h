@@ -96,7 +96,7 @@ typedef enum ENEMYDISCERN
 	Bronto,
 	Burning,
 	Spark,
-	chilly
+	Chilly
 };
 
 typedef enum BULLETDISCERN

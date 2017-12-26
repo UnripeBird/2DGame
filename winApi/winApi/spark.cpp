@@ -23,7 +23,7 @@ HRESULT spark::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	return S_OK;
 }
 
-void spark::update(image * pixelimage, POINT playerPoint)
+void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();

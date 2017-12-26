@@ -52,7 +52,7 @@ HRESULT objectManager::init(void)
 	{
 		fieldObject* ston;
 		ston = new stonBox;
-		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 200 * 2.0f));
+		ston->init("stonBox", stonbox, i * 0, PointMake(150 * (i + 5.0f), 300 * 2.0f));
 		_vObject.push_back(ston);
 	}
 

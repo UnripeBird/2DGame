@@ -12,84 +12,97 @@ HRESULT burning::init(string imageName, ENEMYDISCERN discernNum, int appearMapNu
 
 	_rezen = pos;
 	_state = 0;
+	_dr = drright;
 	_framey = 0;
+	_framex = -1;
+	_ani->init(933 * 3, 600 * 3, 200, 100 * 3);
+	_ani->setPlayFrame(0, 3, false, true);
+	_ani->setFPS(3);
+	_ani->start();
 	return S_OK;
 }
 
-void burning::update(image * pixelimage, POINT playerPoint)
+void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
-	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-	//움직이는 방향
-	if (getDistance(_rezen.x, _rezen.y, _x, _y) <= 0)
-	{
-		_dr = drleft;
 
-	}
-	else if (getDistance(_rezen.x, _rezen.y, _x, _y) > 400)
-	{
-		_dr = drright;
-	}
+	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
+	_hitWorldTimer = TIMEMANAGER->getWorldTime();
+
+	burningcollision(objectVec);
+	//움직이는 방향
 
 	//움직임
-	if (_hitCount == false)
+	if (!_collisioncheck)
 	{
-		_frameWorldTimer = TIMEMANAGER->getWorldTime();
-		if (_frameWorldTimer - _frameTimer > 0.25f)
-		{
-			_frameTimer = TIMEMANAGER->getWorldTime();
-			_framex++;
-			if (3 < _framex)
+		_y += _gravity;
+	}
+	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
+	{
+	
+			switch (_dr)
 			{
-				_framex = 0;
+			case drright:
+			{
+				
+				move();
+		//		_x += _moveSpeed;
+				
+				
+					
 			}
-		}
+			break;
+			case drleft:
+			{
+				move();
+				_x -= _moveSpeed;
 
-		switch (_dr)
-		{
-		case drright:
-		{
-			_x += _moveSpeed;
-		
-		}
-		break;
-		case drleft:
-		{
-			_x -= _moveSpeed;
-		
-		}
-		break;
-		}
+			}
+			break;
+
+			}
+	
+	
+	
+	
 	}
 	//피격
-	if (_hitCount == true)
+	if (_hitCount == true && _state == 1)
 	{
-
-
-
-		if (_framey == 0)
+		hitmove();
+		if (_hitWorldTimer - _hitTimer > 1.0f)
 		{
-			_framey = 3;
-			_framex = 0;
-
-
-		}
-
-		if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 0)
-		{
-
-			_framey = 0;
 			_hitCount = false;
+			_state = 2;
 
 		}
-		else if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 1)
-		{
-			_framex = 0;
-			_framey = 0;
-			_hitCount = false;
-		}
+	
 	}
 
+	//공격
+
+	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200)
+	{
+	//	_attactmotion = true;
+
+	}
+	if (_attactmotion == true)
+	{
+	
+		if (_ani->isPlay() == false)
+		{
+			_anicheck = false;
+			_attactmotion = false;
+		}
+	}
 	_rc = RectMakeCenter(_x, _y, 50, 50);
+
+	_probe[0] = RectMakeCenter(_rc.left-5, _rc.bottom+5, 10, 10);
+
+	_probe[1] = RectMakeCenter(_rc.right+5, _rc.bottom+5, 10, 10);
+
+	_probe[2] = RectMakeCenter(_rc.left-5, _rc.top-5, 10, 10);
+
+	_probe[3] = RectMakeCenter(_rc.right+5, _rc.top -5, 10, 10);
 }
 
 void burning::Hit()
@@ -97,4 +110,38 @@ void burning::Hit()
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
+}
+
+void burning::move()
+{
+	_ani->setPlayFrame(0, 3, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+
+void burning::attackmoveleft()
+{
+
+	_ani->setPlayFrame(14, 27, false, true);
+	_ani->setFPS(3);
+	
+}
+
+void burning::attackmoveright()
+{
+	_ani->setPlayFrame(28, 41, false, true);
+	_ani->setFPS(3);
+	
+}
+
+void burning::hitmove()
+{
+
+	_ani->setPlayFrame(42, 42, false, true);
+	_ani->setFPS(3);
+	_ani->start();
 }
