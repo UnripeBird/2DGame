@@ -78,7 +78,6 @@ void StarBox::boomEffect(void)
 		if (count == 5)
 		{
 			count = 0;
-			_state = 2;
 		}
 	}
 }
@@ -126,20 +125,11 @@ void StarBox::absorption(POINT playerPos)
 		{
 			_y-=speed;
 			_x-= speed;
-
-			if (playerPos.x+50 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y+= speed;
 			_x-= speed;
-			if (playerPos.x+50 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -151,19 +141,11 @@ void StarBox::absorption(POINT playerPos)
 		{
 			_y+= speed;
 			_x+= speed;
-			if (playerPos.x-50 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y-= speed;
 			_x+= speed;
-			if (playerPos.x-50 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//¿ÞÂÊ Èí¼ö ³¡
 

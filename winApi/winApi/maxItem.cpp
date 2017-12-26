@@ -82,20 +82,11 @@ void maxItem::absorption(POINT playerPos)
 		{
 			_y -= speed;
 			_x -= speed;
-
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y += speed;
 			_x -= speed;
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 

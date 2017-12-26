@@ -28,8 +28,6 @@ HRESULT fieldObject::init(string imageName,OBJECTDISCERN discernNum, int appearM
 		_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
 	}
 
-
-
 	_effectImage = IMAGEMANAGER->findImage("ÃÑ¾ËÆø¹ß");
 	_discernNum = discernNum;
 	_appearMapNum = appearMapNum;

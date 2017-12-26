@@ -82,20 +82,11 @@ void lifeItem::absorption(POINT playerPos)
 		{
 			_y -= speed;
 			_x -= speed;
-
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y += speed;
 			_x -= speed;
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -107,19 +98,11 @@ void lifeItem::absorption(POINT playerPos)
 		{
 			_y += speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y -= speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//¿ÞÂÊ Èí¼ö ³¡
 }
