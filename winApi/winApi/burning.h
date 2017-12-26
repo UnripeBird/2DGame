@@ -14,7 +14,6 @@ public:
 	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
 	void Hit();
 
-
 	void move();
 
 	void attackmoveleft();

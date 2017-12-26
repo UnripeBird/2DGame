@@ -192,6 +192,3 @@ void enemy::brontocollision(image * pixelimage)
 	}
 
 }
-
-
-

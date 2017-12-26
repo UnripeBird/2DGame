@@ -1,7 +1,6 @@
 #include "stdafx.h"
+#include "stdafx.h"
 #include "burning.h"
-
-
 
 HRESULT burning::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, POINT pos)
 {
@@ -52,14 +51,14 @@ void burning::attackmoveleft()
 
 	_ani->setPlayFrame(14, 27, false, true);
 	_ani->setFPS(3);
-	
+
 }
 
 void burning::attackmoveright()
 {
 	_ani->setPlayFrame(28, 41, false, true);
 	_ani->setFPS(3);
-	
+
 }
 
 void burning::hitmove()
