@@ -27,8 +27,15 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_moveselect = false;
 	_collisioncheck = false;
 	_anicheck = true;
+	//true 일경우 rect이동
+	_burningselect = true;
+	//true일 경우 공격중.
 	_attactmotion = false;
+	//burning bool
+
 	_gravity = 3.0f;
+
+
 	return S_OK;
 }
 
@@ -37,7 +44,7 @@ void enemy::release(void)
 	SAFE_DELETE(_ani);
 }
 
-void enemy::update(image* pixelimage, POINT playerPoint)
+void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	
 
@@ -184,6 +191,59 @@ void enemy::brontocollision()
 		_y += _gravity;
 	}
 
+}
+
+void enemy::burningcollision(vector<fieldObject*> objectVec)
+{
+
+
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_burningselect = true;
+			break;
+		}
+		else
+		{
+			_burningselect = false;
+
+		}
+	}
+
+
+	if (_burningselect == false)
+	{
+		for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
+		{
+			COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+
+			int r = GetRValue(color);
+			int g = GetGValue(color);
+			int b = GetBValue(color);
+
+			if (r == 255 && g == 0 && b == 0)
+			{
+
+				_collisioncheck = true;
+			
+				_state = 1;
+				break;
+			}
+			else if (!(r == 255 && g == 0 && b == 0))
+			{
+				_collisioncheck = false;
+			}
+			
+	}
+	
+		//충돌 좌우
+		
+
+	
+	
+	}
 }
 
 

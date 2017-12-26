@@ -15,7 +15,7 @@ HRESULT waddle::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum
 	return S_OK;
 }
 
-void waddle::update(image* pixelimage, POINT playerPoint)
+void waddle::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();

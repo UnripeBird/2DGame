@@ -9,7 +9,7 @@ HRESULT boxEnemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapN
 	return S_OK;
 }
 
-void boxEnemy::update(image* pixelimage, POINT playerPoint)
+void boxEnemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	_x += _boxSpeed;
 	_boxSpeed += _acceleration;

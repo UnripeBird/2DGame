@@ -7,7 +7,7 @@ HRESULT enemyManager::init(void)
 	IMAGEMANAGER->addFrameImage("½½¸®ÇÇ", "enemy/frog.bmp", 333*3, 300*3, 5, 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("ºê·ÐÅä","enemy/bronto.bmp", 200 * 3, 500 * 3, 3, 5, true, RGB(0, 255, 0));
 	IMAGEMANAGER->addFrameImage("½ºÆÄÅ©", "enemy/spark.bmp", 1000 * 3, 400 * 3, 15, 4, true, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("Ä¥¸®", "enemy/chilly.bmp", 533 * 3, 600 * 3, 8, 5, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("Ä¥¸®", "enemy/chilly.bmp", 533 * 3, 300 * 3, 8, 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("¹ö´×", "enemy/burning.bmp", 933*3, 600*3, 14, 6, true, RGB(255, 0, 255));
 
 	enemy* em;
@@ -26,6 +26,14 @@ HRESULT enemyManager::init(void)
 	em = new spark;
 	em->init("½ºÆÄÅ©", Spark, 0, PointMake(1000, -500));
 	_vEnemy.push_back(em);
+
+	em = new chilly;
+	em->init("Ä¥¸®", Chilly, 0, PointMake(600, 300));
+	_vEnemy.push_back(em);
+
+	em = new burning;
+	em->init("¹ö´×", Burning, 0, PointMake(600, 300));
+	_vEnemy.push_back(em);
 	return S_OK;
 }
 
@@ -39,11 +47,11 @@ void enemyManager::release(void)
 	}
 }
 
-void enemyManager::update(image* pixelimage, POINT playerPoint)
+void enemyManager::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end();)
 	{
-		(*_viEnemy)->update(pixelimage,playerPoint);
+		(*_viEnemy)->update(pixelimage, playerPoint, objectVec, bulletVec);
 		if ((*_viEnemy)->getState() == 2)
 		{
 			(*_viEnemy)->release();

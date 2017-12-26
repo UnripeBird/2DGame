@@ -9,15 +9,16 @@ HRESULT chilly::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum
 
 	_rezen = pos;
 	_state = 0;
-
-	_ani->init(1000 * 3, 400 * 3, 200, 100 * 3);
-	_ani->setPlayFrame(0, 3, false, true);
+	_framex = -1;
+	_ani->init(533 * 3, 300 * 3, 199, 100 * 3);
+	_ani->setPlayFrame(0, 5, false, true);
 	_ani->setFPS(3);
 	_ani->start();
+
 	return S_OK;
 }
 
-void chilly::update(image * pixelimage, POINT playerPoint)
+void chilly::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
 {
 
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
@@ -29,21 +30,7 @@ void chilly::update(image * pixelimage, POINT playerPoint)
 	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
 	{
 
-		switch (_dr)
-		{
-		case drright:
-		{
-			rightmove();
-			_x += _moveSpeed;
-		}
-		break;
-		case drleft:
-		{
-			leftmove();
-			_x -= _moveSpeed;
-		}
-		break;
-		}
+		chillymove();
 	}
 	//피격
 	if (_hitCount == true && _state == 1)
@@ -84,7 +71,7 @@ void chilly::update(image * pixelimage, POINT playerPoint)
 
 	//공격
 
-	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 50)
+	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200)
 	{
 		_attactmotion = true;
 
@@ -110,8 +97,9 @@ void chilly::Hit()
 
 void chilly::chillymove()
 {
-	_ani->setPlayFrame(15, 18, false, true);
+	_ani->setPlayFrame(0, 5, false, true);
 	_ani->setFPS(3);
+	
 	if (_ani->isPlay() == false)
 	{
 		_ani->start();
@@ -120,21 +108,21 @@ void chilly::chillymove()
 
 void chilly::attackmove()
 {
-	_ani->setPlayFrame(attackarr, 16, false);
-	_ani->setFPS(10);
+	_ani->setPlayFrame(attackarr, 24, false);
+	_ani->setFPS(5);
 
 }
 
 void chilly::hitmoveleft()
 {
-	_ani->setPlayFrame(30, 30, false, true);
+	_ani->setPlayFrame(16, 16, false, true);
 	_ani->setFPS(3);
 	_ani->start();
 }
 
 void chilly::hitmoveright()
 {
-	_ani->setPlayFrame(31, 31, false, true);
+	_ani->setPlayFrame(17, 17, false, true);
 	_ani->setFPS(3);
 	_ani->start();
 }
