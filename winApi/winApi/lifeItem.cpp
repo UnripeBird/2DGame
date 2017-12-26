@@ -25,10 +25,6 @@ void lifeItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	flash();
-	if (KEYMANAGER->isStayKeyDown('X'))
-	{
-		starabso(playerPosition);
-	}
 }
 
 void lifeItem::move()
@@ -67,7 +63,7 @@ void lifeItem::flash()
 }
 
 //플레이어흡수 상호작용 함수
-void lifeItem::starabso(POINT playerPos)
+void lifeItem::absorption(POINT playerPos)
 {
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
@@ -86,20 +82,11 @@ void lifeItem::starabso(POINT playerPos)
 		{
 			_y -= speed;
 			_x -= speed;
-
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y += speed;
 			_x -= speed;
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -111,19 +98,11 @@ void lifeItem::starabso(POINT playerPos)
 		{
 			_y += speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y -= speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//왼쪽 흡수 끝
 }

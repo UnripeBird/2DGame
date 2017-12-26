@@ -77,6 +77,15 @@
     <Filter Include="커비\bullet\Manager">
       <UniqueIdentifier>{b26513e8-7b2b-4451-979f-4caa0f73080a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="커비\object\mapObj">
+      <UniqueIdentifier>{827f2d8a-b032-4c8b-89f7-adefbd79cae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="커비\object\mapObj\맵폭발">
+      <UniqueIdentifier>{c36011ce-4a27-4cec-89d6-35d6aebfd802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="커비\object\mapObj\맵오브젝트">
+      <UniqueIdentifier>{022616bd-516f-4160-a357-b71f2e128215}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="keyManager.cpp">
@@ -210,6 +219,39 @@
     </ClCompile>
     <ClCompile Include="bullet.cpp">
       <Filter>커비\bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="mobBox.cpp">
+      <Filter>커비\object\box</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoom0.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoom0_1.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoomleft.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoomMid.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoomRight.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClCompile>
+    <ClCompile Include="mapObject01.cpp">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="mapObject02.cpp">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="mapObject02_1.cpp">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="mapObject03.cpp">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldBoom2.cpp">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,6 +392,39 @@
     </ClInclude>
     <ClInclude Include="bullet.h">
       <Filter>커비\bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="mobBox.h">
+      <Filter>커비\object\box</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoom0.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoom0_1.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoomleft.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoomMid.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoomRight.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="mapObject01.h">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="mapObject02.h">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="mapObject02_1.h">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="mapObject03.h">
+      <Filter>커비\object\mapObj\맵오브젝트</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldBoom2.h">
+      <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,12 @@
-#include "stdafx.h"
+#include "stdafx.h"	em = new burning;	em = new burning;	em = new burning;	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
 #include "burning.h"
 
 
@@ -32,6 +40,14 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	//¿òÁ÷ÀÌ´Â ¹æÇâ
 
 	//¿òÁ÷ÀÓ
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	_vEnemy.push_back(em);
 
 	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
 	{

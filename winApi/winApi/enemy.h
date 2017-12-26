@@ -38,15 +38,12 @@ protected:
 	BOOL _attactmotion;
 	BOOL _burningselect;
 	
-
-	BOOL _updowncheck;
-	BOOL _wallleft;
-	BOOL _wallright;
+	
 	float _hitTimer;
 	float _hitWorldTimer;
 	float _gravity;
-	RECT _probex[2];
-	RECT _probey[2];
+	RECT _probe[4];
+	
 	direction _dr;
 	burningdr _bdr;
 	int _state; //0 드랍상태 1 행동상태 2 삭제대기
@@ -64,8 +61,8 @@ public:
 	animation* getAni() { return _ani; }
 	POINT getPos() { return PointMake(_x, _y); }
 	RECT getrc() { return _rc; }
-	RECT getprobex(int x) { return _probex[x]; }
-	RECT getprobey(int x) { return _probey[x]; }
+	RECT getprobex(int x) { return _probe[x]; }
+
 
 	ENEMYDISCERN getDiscernNum() { return _discernNum; }
 	int getAppearMapNum() { return _appearMapNum; }

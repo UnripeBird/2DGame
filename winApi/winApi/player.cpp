@@ -12,7 +12,12 @@ enum POSE
 	JUMPING,
 	FALLING,
 	LANDING,
-	FLY
+	FLY, //날기 대기상태
+	FLYMOVE, //날기 무빙상태
+	INHALE,	//공기 들이 마심
+	EXHALE, //공기 내쉼
+	M_INHALE, //몹 흡입
+	M_EXHALE //별 뱉기
 };
 
 HRESULT player::init(void)
@@ -24,6 +29,9 @@ HRESULT player::init(void)
 	_curSliding = 0;
 	_maxSliding = 0;
 	_gravity = 4;
+	_life = 99;
+	_maxHp = 6;
+	_curHp = _maxHp;
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
@@ -45,6 +53,7 @@ HRESULT player::init(void)
 	_keyDownNum = 0;
 	_playAni = false;
 	_curSwallow = false;
+	_curjumping = false;
 	groundCollision = false;
 
 	_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
@@ -68,7 +77,7 @@ void player::release(void)
 {
 }
 
-void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage)
+void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage, bulletManager* BulletManager)
 {
 	groundCollision = false; //
 	_pixelImage = pixelimage;
@@ -76,6 +85,11 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
+	
+	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
+	{
+		BulletManager->bulletFire(Star, PointMake(_x, _y), !_curRight);
+	}
 
 	if (_pose == LANDING)
 	{
@@ -86,7 +100,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	//충돌 - 아래
 	for (int i = _rc.bottom - 1; i < _rc.bottom + 1; i++)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), _x, i);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), _x, i);
 	
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -96,9 +110,9 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		{
 			_y = i - 25 ;
 			groundCollision = true;
-			
 			if (_pose == FALLING)
 				{
+					_curjumping =	false;
 					_pose = LANDING;
 					_playAni = true;
 				}
@@ -110,7 +124,14 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	//바닥에 충돌할때까지 하강
 	if (!groundCollision)
 	{
-		_y += _gravity;
+		if (_pose != FLY)
+		{
+			_y += _gravity;
+		}
+		else //_pose == FLY 일때 하강 속도
+		{
+			_y += _gravity / 2;
+		}
 	}
 	
 	if (_pose == JUMPING && _curJump >= _maxJump) //올라가는 중
@@ -157,11 +178,10 @@ void player::move(vector<fieldObject*> objectPos)
 	int direction = 0;
 	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
 
-	
 	//오른쪽
-	if (KEYMANAGER->isOnceKeyDown(VK_RIGHT) && _pose == IDLE)
+	if (KEYMANAGER->isOnceKeyDown(VK_RIGHT))
 	{
-		if (_pose != SWALLOW)
+		if (_pose != SWALLOW && _pose == IDLE)
 		{
 			if (_keyDownNum < 1)
 			{
@@ -183,12 +203,12 @@ void player::move(vector<fieldObject*> objectPos)
 		{
 			_x += PLAYERSPEED;
 		}
-		else if(_pose == RUN && rightMove())
+		else if (_pose == RUN && rightMove())
 		{
 			_x += PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && rightMove())
+		else if (_pose == JUMPING && rightMove() || _pose == FLY && rightMove())
 		{
 			_x += PLAYERSPEED;
 			_curRight = true;
@@ -200,7 +220,7 @@ void player::move(vector<fieldObject*> objectPos)
 		}
 	}
 
-	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
+	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING && _pose != FLY)
 	{
 		_pose = IDLE;
 		_playAni = true;
@@ -214,9 +234,9 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 
 	//왼쪽
-	if (KEYMANAGER->isOnceKeyDown(VK_LEFT) && _pose == IDLE)
+	if (KEYMANAGER->isOnceKeyDown(VK_LEFT))
 	{
-		if (_pose != SWALLOW)
+		if (_pose != SWALLOW && _pose == IDLE)
 		{
 			if (_keyDownNum < 1)
 			{
@@ -243,7 +263,7 @@ void player::move(vector<fieldObject*> objectPos)
 			_x -= PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && leftMove())
+		else if (_pose == JUMPING && leftMove() || _pose == FLY && leftMove())
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
@@ -254,7 +274,7 @@ void player::move(vector<fieldObject*> objectPos)
 			_curRight = false;
 		}
 	}
-	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING)
+	if (KEYMANAGER->isOnceKeyUp(VK_LEFT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING && _pose != FLY)
 	{
 		_pose = IDLE;
 		_playAni = true;
@@ -264,24 +284,36 @@ void player::move(vector<fieldObject*> objectPos)
 	//아래키
 	if (KEYMANAGER->isOnceKeyDown(VK_DOWN))
 	{
-		_pose = SWALLOW;
-		_playAni = true;
+		if (_pose == IDLE || _pose == WALK || _pose == RUN)
+		{
+			_pose = SWALLOW;
+			_playAni = true;
+			_curSwallow = true;
+		}
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
-		_curSwallow = true;
 	}
-	if (KEYMANAGER->isOnceKeyUp(VK_DOWN))
+	if (KEYMANAGER->isOnceKeyUp(VK_DOWN) && _pose == SWALLOW)
 	{
 		_pose = IDLE;
 		_playAni = true;
 		_curSwallow = false;
 	}
 
+	if (KEYMANAGER->isStayKeyDown(VK_UP))
+	{
+		if (_pose == FLY)
+		{
+			_y -= PLAYERSPEED + 1.5;
+		}
+	}
+
+
 	//Z - 점프, 날기, 공격
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
-		if (_pose == SWALLOW)
+		if (_pose == SWALLOW) //슬라이딩
 		{
 			_pose = SLIDING;
 			_playAni = true;
@@ -298,18 +330,50 @@ void player::move(vector<fieldObject*> objectPos)
 				_maxSliding = _curSliding - 120;
 			}
 		}
-		else if(_pose != SLIDING)
+		else if(_pose != SLIDING && _pose != FLY && _curjumping == false && _pose != EXHALE) //점프
 		{
 			_pose = JUMPING;
 			_playAni = true;
+			_curjumping = true;
 			_curJump = _y;
 			_maxJump = _curJump - 200;
+		}
+		else if (_curjumping == true || _pose == FALLING || _pose == EXHALE)
+		{
+			_pose = FLY;
+			_curjumping = false;
+			_playAni = true;
 		}
 	}
 	if (KEYMANAGER->isStayKeyDown('Z'))
 	{
+		if (_pose == FLY)
+		{
+			_y -= PLAYERSPEED + 1.5;
+		}
 	}
 	if (KEYMANAGER->isOnceKeyUp('Z'))
+	{
+	}
+
+	//x - 흡입, 뱉기
+	if (KEYMANAGER->isOnceKeyDown('X'))
+	{
+		if (_pose == FLY)
+		{
+			_pose = EXHALE;
+			_playAni = true;
+		}
+		else if(_pose != M_INHALE)
+		{
+			_pose = M_INHALE;
+			_playAni = true;
+		}
+	}
+	if (KEYMANAGER->isStayKeyDown('X'))
+	{
+	}
+	if (KEYMANAGER->isOnceKeyUp('X'))
 	{
 	}
 
@@ -349,13 +413,38 @@ void player::move(vector<fieldObject*> objectPos)
 		else { _starFrame = 135; _endFrame = 135; }
 		break;
 	case FLY:
-		if (_curRight == true) { _starFrame = 218; _endFrame = 120; }
-		else { _starFrame = 135; _endFrame = 135; }
+		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
+		else { _starFrame = 306; _endFrame = 309; }
+		break;
+	case FLYMOVE:
+		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
+		else { _starFrame = 306; _endFrame = 309; }
+		break;
+	case INHALE:
+		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
+		else { _starFrame = 306; _endFrame = 309; }
+		break;
+	case EXHALE:
+		if (_curRight == true) { _starFrame = 324; _endFrame = 325; }
+		else { _starFrame = 342; _endFrame = 343; }
+		if (_ani->isPlay() == false && _pose == EXHALE)
+		{
+			_pose = FALLING;
+			_playAni = true;
+		}
+		break;
+	case M_INHALE:
+		if (_curRight == true) { _starFrame = 398; _endFrame = 400; }
+		else { _starFrame = 416; _endFrame = 418; }
+		break;
+	case M_EXHALE:
+		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
+		else { _starFrame = 306; _endFrame = 309; }
 		break;
 	default:
 		break;
 	}
-	if (_playAni == true && _pose != FALLING)
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
@@ -386,49 +475,53 @@ void player::moveCollision(vector<fieldObject*> objectPos)
 	{
 		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
 		{
-			//캐릭터 기준 왼쪽 충돌
-			//if (objectPos[i]->getrc().right > _rc.left)
-			//{
-			//	_x = objectPos[i]->getrc().left + 75;
-			//	break;
-			//}
-			//캐릭터 기준 오른쪽 충돌
-			//if (objectPos[i]->getrc().left < _rc.right)
-			//{
-			//	_x = objectPos[i]->getrc().right - 75;
-			//	break;
-			//}
+
 			//캐릭터 기준 위쪽 충돌
-			//if (objectPos[i]->getrc().bottom > _rc.top)
-			//{
-			//	_y = objectPos[i]->getrc().top + 75;
-			//	_pose = FALLING;
-			//	break;
-			//}
-			////캐릭터 기준 아래쪽 충돌
-			if (objectPos[i]->getrc().top < _rc.bottom)
+			if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
+				_rc.top > objectPos[i]->getrc().top && _rc.bottom > objectPos[i]->getrc().bottom)
 			{
-				_y = objectPos[i]->getrc().bottom - 65;
-				groundCollision = false;
-				//_pose = LANDING;
-				//_playAni = true;
+				//_y = objectPos[i]->getrc().top + 75;
+				if (_pose == FLY)
+				{
+					_y += PLAYERSPEED + 1.5;
+				}
+				else
+				{
+					_pose = FALLING;
+				}
 				break;
 			}
-			//switch (direction)
-			//{
-			//	case 1:
-			//		_x = objectPos[i]->getrc().left + 75;
-			//		break;
-			//	case 2:
-			//		_x = objectPos[i]->getrc().right + 25;
-			//		break;
-			//	case 3:
-			//		_y = objectPos[i]->getrc().top - 25;
-			//		break;
-			//	case 4:
-			//		_y = objectPos[i]->getrc().bottom + 25;
-			//		break;
-			//}
+			//캐릭터 기준 아래쪽 충돌
+			if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
+				_rc.top < objectPos[i]->getrc().top && _rc.bottom < objectPos[i]->getrc().bottom && !groundCollision)
+			{
+				_y = objectPos[i]->getrc().bottom - (objectPos[i]->getrc().bottom - objectPos[i]->getrc().top) - 25;
+				groundCollision = false;
+				if (_pose == FALLING || _pose == EXHALE)
+				{
+					_curjumping = false;
+					_pose = LANDING;
+					_playAni = true;
+				}
+				break;
+			}
+			//캐릭터 기준 왼쪽 충돌
+			if (_rc.left > objectPos[i]->getrc().left && _rc.right > objectPos[i]->getrc().right &&
+				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+			{
+				//_x += PLAYERSPEED;
+				_x = objectPos[i]->getrc().left + (objectPos[i]->getrc().right - objectPos[i]->getrc().left) + 25;
+				break;
+			}
+			//캐릭터 기준 오른쪽 충돌
+			if (_rc.left < objectPos[i]->getrc().left && _rc.right < objectPos[i]->getrc().right &&
+				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+			{
+				//_x -= PLAYERSPEED;
+				_x = objectPos[i]->getrc().right - (objectPos[i]->getrc().right - objectPos[i]->getrc().left) - 25;
+				break;
+			}
+			
 		}
 	}
 }
@@ -496,7 +589,7 @@ bool player::rightMove()
 	bool _horizonMove = true;
 	for (int i = _rc.right - 1; i < _rc.right + 1; i++)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);
@@ -517,7 +610,7 @@ bool player::leftMove()
 	bool _horizonMove = true;
 	for (int i = _rc.left + 1; i > _rc.left - 1; i--)
 	{
-		COLORREF color = GetPixel(IMAGEMANAGER->findImage("pixel0")->getMemDC(), i, _y);
+		COLORREF color = GetPixel(_pixelImage->getMemDC(), i, _y);
 
 		int r = GetRValue(color);
 		int g = GetGValue(color);

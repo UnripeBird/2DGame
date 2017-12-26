@@ -3,9 +3,22 @@
 
 HRESULT playScene::init(void)
 {
-	IMAGEMANAGER->addImage("background0", "image\\background0.bmp", 1280*3, 569*3, true, RGB(0, 0, 0));
+	IMAGEMANAGER->addImage("background0", "image\\background0.bmp", 1280, 569);
 	IMAGEMANAGER->addImage("field0", "image\\field0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("pixel0", "image\\pixel0.bmp", 1007 * 3, 200 * 3, true, RGB(255, 0, 255));
+
+	IMAGEMANAGER->addImage("background1", "image\\background1.bmp", 1280, 569);
+	IMAGEMANAGER->addImage("field1", "image\\field1.bmp", 1200 * 3, 200 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("pixel1", "image\\pixel1.bmp", 1200 * 3, 200 * 3, true, RGB(255, 0, 255));
+
+	IMAGEMANAGER->addImage("background2", "image\\background2.bmp", 1280, 570);	
+	IMAGEMANAGER->addImage("field2", "image\\field2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("pixel2", "image\\pixel2.bmp", 1280 * 3, 178 * 3, true, RGB(255, 0, 255));
+
+
+	IMAGEMANAGER->addImage("bossmapback", "image\\treebossmapback.bmp", 358 * 4, 159 * 4);
+	IMAGEMANAGER->addImage("bossmap", "image\\treebossmap.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addImage("bossmappixel", "image\\treebosspixel.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
 
 	_mapManager = new mapManager;
 	_mapManager->init();
@@ -45,12 +58,14 @@ void playScene::release(void)
 void playScene::update(void)
 {
 	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos(),_objectManager->getObject(),_bulletManager->getBullet());
-
-	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(), _mapManager->getPixelImage());
+	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage(), _bulletManager);
 
 	_objectManager->update(_player->getPos(), _bulletManager->getBullet());
 
 	_bulletManager->update();
+	_enemyManager->update(_mapManager->getPixelImage(), _player->getPos(),_objectManager->getObject(),_bulletManager->getBullet());
+
+	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
 
 	_mapManager->update(_player, _objectManager->getObject(), _enemyManager->getEnemy(), _bulletManager->getBullet());
 }

@@ -25,9 +25,35 @@ void meatItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	flash();
-	if (KEYMANAGER->isStayKeyDown('X'))
+
+	for (int i = 0; i < bulletPos.size(); i++)
 	{
-		starabso(playerPosition);
+		if (IntersectRect(&_rcTemp, &bulletPos[i]->getrc(), &_rc))
+		{
+			wind(playerPosition);
+		}
+	}
+}
+
+void meatItem::wind(POINT playerPos)
+{
+	//플레이어 좌표로 좌우 방향 체크
+	if (playerPos.x < _x)
+	{
+		_curRight = false;
+	}
+	else
+	{
+		_curRight = true;
+	}
+
+	if (_curRight)
+	{
+		_x -= 1;
+	}
+	else
+	{
+		_x += 1;
 	}
 }
 
@@ -67,7 +93,7 @@ void meatItem::flash()
 }
 
 //플레이어흡수 상호작용 함수
-void meatItem::starabso(POINT playerPos)
+void meatItem::absorption(POINT playerPos)
 {
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)
@@ -86,20 +112,11 @@ void meatItem::starabso(POINT playerPos)
 		{
 			_y -= speed;
 			_x -= speed;
-
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y += speed;
 			_x -= speed;
-			if (playerPos.x + 60 >= _x)
-			{
-				_state = 4;
-			}
 		}
 
 
@@ -111,19 +128,11 @@ void meatItem::starabso(POINT playerPos)
 		{
 			_y += speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 		else
 		{
 			_y -= speed;
 			_x += speed;
-			if (playerPos.x - 60 <= _x)
-			{
-				_state = 4;
-			}
 		}
 	}//왼쪽 흡수 끝
 }

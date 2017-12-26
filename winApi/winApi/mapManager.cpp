@@ -7,17 +7,34 @@ HRESULT mapManager::init(void)
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("field0"));
 	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel0"));
 
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background1"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("field1"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel1"));
+
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("background2"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("field2"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("pixel2"));
+
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("bossmapback"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("bossmap"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("bossmappixel"));
+
+	IMAGEMANAGER->addImage("LifeUI", "image\\kirbyLifeUI.bmp", 24 * 3, 14 * 3, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("LifeNum", "image\\kirbyLifeNum.bmp", 80 * 2.5, 11 * 2.5, 10, 1, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("HpBar", "image\\kirbyHpBarUI.bmp", 10 * 3, 14 * 3, 2, 1, true, RGB(255, 0, 255));
+
 	mapDC = CreateCompatibleDC(getMemDC()); // 그냥 써
 	mapBit = NULL;
 	mapOBit = NULL;
-
-	mapChange(0);
 
 	_cameraX = 0;
 	_cameraY = 0;
 
 	_afterMapNumber = 0;
 	_curMapNumber = 0;
+
+	mapChange(0);
+
 	return S_OK;
 }
 
@@ -35,6 +52,20 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 	_enemyPos = enemyPos;
 	_bulletPos = bulletPos;
 
+	if (KEYMANAGER->isOnceKeyDown('1'))
+	{
+		mapChange(1);
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('2'))
+	{
+		mapChange(2);
+	}
+
+	if (KEYMANAGER->isOnceKeyDown('3'))
+	{
+		mapChange(3);
+	}
 	POINT playerPosition = _playerPos->getPos();
 
 	_cameraX = playerPosition.x - WINSIZEX / 2;
@@ -62,6 +93,12 @@ void mapManager::render(void)
 		{
 			//Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
 			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
+
+			//새로 추가 브레스 불릿 터지는 이펙트
+			if (_objectPos[i]->getbulletEffect())
+			{
+				_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left-24, _objectPos[i]->getrcTemp().top-13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
+			}
 		}
 	}
 
@@ -70,10 +107,10 @@ void mapManager::render(void)
 		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
 		{
 			Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
-			for (int j = 0; j < 2; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				Rectangle(mapDC, _enemyPos[i]->getprobex(j).left, _enemyPos[i]->getprobex(j).top, _enemyPos[i]->getprobex(j).right, _enemyPos[i]->getprobex(j).bottom);
-				Rectangle(mapDC, _enemyPos[i]->getprobey(j).left, _enemyPos[i]->getprobey(j).top, _enemyPos[i]->getprobey(j).right, _enemyPos[i]->getprobey(j).bottom);
+				
 			}
 			
 			if (_enemyPos[i]->getframex() != -1)
@@ -101,6 +138,43 @@ void mapManager::render(void)
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 
 		mapDC, _cameraX, _cameraY, SRCCOPY);
+
+	///////////////// UI render /////////////////////////////////
+
+	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
+
+	static int _Life = _playerPos->getLife();
+	int Life = _Life;
+
+	vector<int> LifeVec;
+
+	if (Life < 10)
+	{
+		LifeVec.push_back(Life);
+		LifeVec.push_back(0);
+	}
+	else
+	{
+		while (Life > 0)
+		{
+			LifeVec.push_back(Life % 10);
+			Life /= 10;
+		}
+	}
+
+	for (int i = 0; i < LifeVec.size(); i++)
+	{
+		IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
+	}
+
+	static int Hp = _playerPos->getCurHp();
+
+	for (int i = 0; i < 6; i++)
+	{
+		int frameX = 0;
+		if (i + 1 > Hp) frameX = 1;
+		IMAGEMANAGER->frameRender("HpBar", getMemDC(), 330 + (IMAGEMANAGER->findImage("HpBar")->getFrameWidth() * i), WINSIZEY - 45, frameX, 0);
+	}
 }
 
 void mapManager::mapChange(int nextMap)
@@ -116,4 +190,5 @@ void mapManager::mapChange(int nextMap)
 
 	mapBit = (HBITMAP)CreateCompatibleBitmap(getMemDC(), _mapImageVector[nextMap]->getWidth(), _mapImageVector[nextMap]->getHeight()); //맵 크기만큼의 빈 비트맵을 생성한다
 	mapOBit = (HBITMAP)SelectObject(mapDC, mapBit);
+//여기서 맵번호에따라 플레이어 좌표  - 예외처리후 해야지 ㅎㅎ
 }

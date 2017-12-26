@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -154,6 +154,12 @@
     <ClCompile Include="drinkItem.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyManager.cpp" />
+    <ClCompile Include="fieldBoom0.cpp" />
+    <ClCompile Include="fieldBoom0_1.cpp" />
+    <ClCompile Include="fieldBoom2.cpp" />
+    <ClCompile Include="fieldBoomleft.cpp" />
+    <ClCompile Include="fieldBoomMid.cpp" />
+    <ClCompile Include="fieldBoomRight.cpp" />
     <ClCompile Include="fieldObject.cpp" />
     <ClCompile Include="frog.cpp" />
     <ClCompile Include="gameNode.cpp" />
@@ -165,8 +171,13 @@
     <ClCompile Include="lifeItem.cpp" />
     <ClCompile Include="mainGame.cpp" />
     <ClCompile Include="mapManager.cpp" />
+    <ClCompile Include="mapObject01.cpp" />
+    <ClCompile Include="mapObject02.cpp" />
+    <ClCompile Include="mapObject02_1.cpp" />
+    <ClCompile Include="mapObject03.cpp" />
     <ClCompile Include="maxItem.cpp" />
     <ClCompile Include="meatItem.cpp" />
+    <ClCompile Include="mobBox.cpp" />
     <ClCompile Include="sandBox.cpp" />
     <ClCompile Include="spark.cpp" />
     <ClCompile Include="StarBox.cpp" />
@@ -204,6 +215,12 @@
     <ClInclude Include="drinkItem.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
+    <ClInclude Include="fieldBoom0.h" />
+    <ClInclude Include="fieldBoom0_1.h" />
+    <ClInclude Include="fieldBoom2.h" />
+    <ClInclude Include="fieldBoomleft.h" />
+    <ClInclude Include="fieldBoomMid.h" />
+    <ClInclude Include="fieldBoomRight.h" />
     <ClInclude Include="fieldObject.h" />
     <ClInclude Include="frog.h" />
     <ClInclude Include="gameNode.h" />
@@ -215,8 +232,13 @@
     <ClInclude Include="lifeItem.h" />
     <ClInclude Include="mainGame.h" />
     <ClInclude Include="mapManager.h" />
+    <ClInclude Include="mapObject01.h" />
+    <ClInclude Include="mapObject02.h" />
+    <ClInclude Include="mapObject02_1.h" />
+    <ClInclude Include="mapObject03.h" />
     <ClInclude Include="maxItem.h" />
     <ClInclude Include="meatItem.h" />
+    <ClInclude Include="mobBox.h" />
     <ClInclude Include="sandBox.h" />
     <ClInclude Include="spark.h" />
     <ClInclude Include="StarBox.h" />

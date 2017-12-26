@@ -8,6 +8,12 @@ private:
 	float _boomTimer;
 	float _boomWorldTimer;
 
+
+	//불릿 폭발 이펙트때 사용
+	int bullectCount;
+	float _bullectTimer;
+	float _bullectWorldTimer;
+
 	//플레이어 방향체크
 	bool _curRight;
 
@@ -18,9 +24,12 @@ public:
 	void update(POINT playerPosition, vector<bullet*> bulletPos);
 
 	void move();
-	void boomEffect();
-	void bulletEffect();
-	void starabso(POINT playerPos);
+	void boomEffect();			//폭탄 연쇄 반응으로 터지는 이펙트
+	void boomEffectBullet();	//커비 브레스 공격으로 터지는 이펙트
+	void bulletEffect();		//커비 브레스 사라지는 이펙트
+
+	void absorption(POINT);
+
 
 	StarBox() {}
 	~StarBox() {}
