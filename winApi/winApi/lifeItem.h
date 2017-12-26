@@ -14,7 +14,7 @@ public:
 
 	void move();
 	void flash();
-	void starabso(POINT);
+	void absorption(POINT);
 
 	lifeItem(){}
 	~lifeItem(){}

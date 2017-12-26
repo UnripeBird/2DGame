@@ -15,7 +15,7 @@ public:
 	void wind(POINT);
 	void move();
 	void flash();
-	void starabso(POINT);
+	void absorption(POINT);
 
 	candyItem(){}
 	~candyItem(){}

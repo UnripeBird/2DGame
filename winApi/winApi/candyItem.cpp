@@ -25,10 +25,6 @@ void candyItem::update(POINT playerPosition, vector<bullet*> bulletPos)
 {
 	move();
 	flash();
-	if (KEYMANAGER->isStayKeyDown('X'))
-	{
-		starabso(playerPosition);
-	}
 
 	for (int i = 0; i < bulletPos.size(); i++)
 	{
@@ -96,7 +92,7 @@ void candyItem::flash()
 	}
 }
 //플레이어흡수 상호작용 함수
-void candyItem::starabso(POINT playerPos)
+void candyItem::absorption(POINT playerPos)
 {
 	//플레이어 좌표로 좌우 방향 체크
 	if (playerPos.x < _x)

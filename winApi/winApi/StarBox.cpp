@@ -50,10 +50,6 @@ void StarBox::update(POINT playerPosition, vector<bullet*> bulletPos)
 		bulletEffect();
 		boomEffectBullet();
 	}
-	if (KEYMANAGER->isStayKeyDown('X'))
-	{
-		starabso(playerPosition);
-	}
 }
 
 void StarBox::move()
@@ -107,7 +103,7 @@ void StarBox::boomEffectBullet(void)
 }
 
 //플레이어흡수 상호작용 함수
-void StarBox::starabso(POINT playerPos)
+void StarBox::absorption(POINT playerPos)
 {
 	_image = IMAGEMANAGER->findImage("별오브젝트");
 	_objNumberX = 0;

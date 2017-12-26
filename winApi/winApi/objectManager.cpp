@@ -212,6 +212,20 @@ void objectManager::update(POINT playerPosition, vector<bullet*> bulletPos)
 			_viObject = _vObject.erase(_viObject);
 		}
 			break;
+		//case 9:
+		//{
+		//	for (int i = 0; i < _vObject.size(); i++)
+		//	{
+		//		for (int j = 0; i < _vObject.size(); j++)
+		//		{
+		//			if (IntersectRect(&_vObject[i]->getItemRc(), &_vObject[i]->getrc(), &_vObject[j]->getrc()))
+		//			{
+		//				_vObject[i]->setPos(PointMake(_vObject[i]->getPos().x - 24, _vObject[i]->getPos().y));
+		//			}
+		//		}
+		//	}
+		//}
+		//break;
 		default:
 		{
 			++_viObject;

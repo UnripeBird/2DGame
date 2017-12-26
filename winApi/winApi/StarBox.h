@@ -28,7 +28,7 @@ public:
 	void boomEffectBullet();	//커비 브레스 공격으로 터지는 이펙트
 	void bulletEffect();		//커비 브레스 사라지는 이펙트
 
-	void starabso(POINT playerPos);
+	void absorption(POINT);
 
 
 	StarBox() {}

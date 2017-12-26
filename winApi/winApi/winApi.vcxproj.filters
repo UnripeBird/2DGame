@@ -77,6 +77,9 @@
     <Filter Include="커비\bullet\Manager">
       <UniqueIdentifier>{b26513e8-7b2b-4451-979f-4caa0f73080a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="커비\object\mapObj">
+      <UniqueIdentifier>{827f2d8a-b032-4c8b-89f7-adefbd79cae1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="keyManager.cpp">
@@ -213,6 +216,9 @@
     </ClCompile>
     <ClCompile Include="mobBox.cpp">
       <Filter>커비\object\box</Filter>
+    </ClCompile>
+    <ClCompile Include="woodMapObj.cpp">
+      <Filter>커비\object\mapObj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -356,6 +362,9 @@
     </ClInclude>
     <ClInclude Include="mobBox.h">
       <Filter>커비\object\box</Filter>
+    </ClInclude>
+    <ClInclude Include="woodMapObj.h">
+      <Filter>커비\object\mapObj</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
