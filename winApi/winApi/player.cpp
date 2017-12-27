@@ -12,12 +12,30 @@ enum POSE
 	JUMPING,
 	FALLING,
 	LANDING,
+	//벽 충돌
 	FLY, //날기 대기상태
 	FLYMOVE, //날기 무빙상태
 	INHALE,	//공기 들이 마심
 	EXHALE, //공기 내쉼
+	FAIL_INHALE,//흡입 실패
+	//막 흡입했을때
 	M_INHALE, //몹 흡입
-	M_EXHALE //별 뱉기
+	M_EXHALE, //몹 뱉기
+	M_SWALLOW,//삼키기, 변신
+	//M_IDLE,//흡입 상태 기본
+	M_WALK,//흡입 상태 걷기
+	M_JUMP,//흡입 상태 점프
+	COLLISION,//충돌
+	DIE,//죽음
+	ATTACK//변신 커비 공격
+};
+
+enum INHALE_KIND
+{
+	KIRBY,
+	BURNING,
+	FREEZE,
+	SPARK
 };
 
 HRESULT player::init(void)
@@ -32,6 +50,8 @@ HRESULT player::init(void)
 	_life = 99;
 	_maxHp = 6;
 	_curHp = _maxHp;
+	_inhaleKind = KIRBY;
+	_curInhale = false;
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
@@ -81,7 +101,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 {
 	groundCollision = false; //
 	_pixelImage = pixelimage;
-	move(objectPos);
+	move(objectPos, BulletManager);
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
@@ -95,6 +115,21 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	{
 		_pose = IDLE;
 		_playAni = true;
+	}
+
+	//애니메이션이 정지 했을때
+	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true)
+	{
+		if (_inhaleKind == BURNING)
+		{
+			_curInhale = false;
+			_pose = IDLE;
+			_playAni = true;
+			_ani->setFPS(8);
+			_fileNum = 1;
+		}
+		_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
+		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 	}
 
 	//충돌 - 아래
@@ -173,7 +208,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	}
 }
 
-void player::move(vector<fieldObject*> objectPos)
+void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 {
 	int direction = 0;
 	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
@@ -183,15 +218,22 @@ void player::move(vector<fieldObject*> objectPos)
 	{
 		if (_pose != SWALLOW && _pose == IDLE)
 		{
-			if (_keyDownNum < 1)
+			if (_curInhale == true)
 			{
-				_keyDownNum += 1;
 				_pose = WALK;
 			}
 			else
 			{
-				_keyDownNum += 1;
-				_pose = RUN;
+				if (_keyDownNum < 1)
+				{
+					_keyDownNum += 1;
+					_pose = WALK;
+				}
+				else
+				{
+					_keyDownNum += 1;
+					_pose = RUN;
+				}
 			}
 		}
 		_curRight = true;
@@ -199,25 +241,28 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT) && _pose != SWALLOW)
 	{
-		if (_pose == WALK && rightMove())
+		if (_pose == WALK && rightMove() && !objectRightMove(objectPos))
 		{
 			_x += PLAYERSPEED;
 		}
-		else if (_pose == RUN && rightMove())
+		else if (_pose == RUN && rightMove() && !objectRightMove(objectPos))
 		{
 			_x += PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && rightMove() || _pose == FLY && rightMove())
+		else if (_pose == JUMPING && rightMove() && !objectRightMove(objectPos) || _pose == FLY && rightMove() && !objectRightMove(objectPos))
 		{
 			_x += PLAYERSPEED;
 			_curRight = true;
 		}
-		else if (_pose == FALLING && rightMove())
+		else if (_pose == FALLING && rightMove() && !objectRightMove(objectPos))
 		{
 			_x += PLAYERSPEED;
 			_curRight = true;
 		}
+		RECT temp;
+
+		_rc = RectMakeCenter(_x, _y, 50, 50);
 	}
 
 	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING && _pose != FLY)
@@ -238,15 +283,22 @@ void player::move(vector<fieldObject*> objectPos)
 	{
 		if (_pose != SWALLOW && _pose == IDLE)
 		{
-			if (_keyDownNum < 1)
+			if (_curInhale == true)
 			{
-				_keyDownNum += 1;
 				_pose = WALK;
 			}
 			else
 			{
-				_keyDownNum += 1;
-				_pose = RUN;
+				if (_keyDownNum < 1)
+				{
+					_keyDownNum += 1;
+					_pose = WALK;
+				}
+				else
+				{
+					_keyDownNum += 1;
+					_pose = RUN;
+				}
 			}
 		}
 		_curRight = false;
@@ -254,21 +306,21 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT) && _pose != SWALLOW)
 	{
-		if (_pose == WALK && leftMove())
+		if (_pose == WALK && leftMove() && !objectLeftMove(objectPos))
 		{
 			_x -= PLAYERSPEED;
 		}
-		else if (_pose == RUN && leftMove())
+		else if (_pose == RUN && leftMove() && !objectLeftMove(objectPos))
 		{
 			_x -= PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && leftMove() || _pose == FLY && leftMove())
+		else if (_pose == JUMPING && leftMove() && !objectLeftMove(objectPos) || _pose == FLY && leftMove() && !objectLeftMove(objectPos))
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
 		}
-		else if (_pose == FALLING && leftMove())
+		else if (_pose == FALLING && leftMove() && !objectLeftMove(objectPos))
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
@@ -293,12 +345,16 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
+		cout << _pose << endl;
 	}
 	if (KEYMANAGER->isOnceKeyUp(VK_DOWN) && _pose == SWALLOW)
 	{
-		_pose = IDLE;
-		_playAni = true;
-		_curSwallow = false;
+		if (_curInhale == false)
+		{
+			_pose = IDLE;
+			_playAni = true;
+			_curSwallow = false;
+		}
 	}
 
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
@@ -313,7 +369,7 @@ void player::move(vector<fieldObject*> objectPos)
 	//Z - 점프, 날기, 공격
 	if (KEYMANAGER->isOnceKeyDown('Z'))
 	{
-		if (_pose == SWALLOW) //슬라이딩
+		if (_pose == SWALLOW  && _curInhale == false) //슬라이딩
 		{
 			_pose = SLIDING;
 			_playAni = true;
@@ -347,7 +403,7 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 	if (KEYMANAGER->isStayKeyDown('Z'))
 	{
-		if (_pose == FLY)
+		if (_pose == FLY && !objectTopMove(objectPos))
 		{
 			_y -= PLAYERSPEED + 1.5;
 		}
@@ -359,12 +415,13 @@ void player::move(vector<fieldObject*> objectPos)
 	//x - 흡입, 뱉기
 	if (KEYMANAGER->isOnceKeyDown('X'))
 	{
-		if (_pose == FLY)
+		if (_pose == FLY)// 공기 뱉기
 		{
+			BulletManager->bulletFire(Breath, PointMake(_x, _y), !_curRight);
 			_pose = EXHALE;
 			_playAni = true;
 		}
-		else if(_pose != M_INHALE)
+		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입, 기본 커비일때만 가능
 		{
 			_pose = M_INHALE;
 			_playAni = true;
@@ -372,61 +429,271 @@ void player::move(vector<fieldObject*> objectPos)
 	}
 	if (KEYMANAGER->isStayKeyDown('X'))
 	{
+		if (_inhaleKind == KIRBY) //기본 커비시에만 흡입 모션, 다른 모션으로 흡입시에 이미지 초기화가 다르기 때문에 터짐
+		{
+			RECT temp;
+			RECT rc_inhale;
+			if (_curRight == true)
+			{
+				rc_inhale.left = _x;
+				rc_inhale.right = _x + 100;
+				rc_inhale.top = _y - 40;
+				rc_inhale.bottom = _y + 20;
+			}
+			else
+			{
+				rc_inhale.left = _x - 100;
+				rc_inhale.right = _x;
+				rc_inhale.top = _y - 40;
+				rc_inhale.bottom = _y + 20;
+			}
+			for (int i = 0; i < objectPos.size(); i++)
+			{
+				//흡입 할 때 지워지는 것들
+				if (IntersectRect(&temp, &rc_inhale, &objectPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false)
+				{
+					objectPos[i]->absorption(PointMake(_x, _y));
+					//흡입 도중 플레이어와 부딪혔을 때
+					if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+					{
+						if (objectPos[i]->getDiscernNum() == starbox ||
+							objectPos[i]->getDiscernNum() == upItem ||
+							objectPos[i]->getDiscernNum() == candyitem ||
+							objectPos[i]->getDiscernNum() == maxtem ||
+							objectPos[i]->getDiscernNum() == meat ||
+							objectPos[i]->getDiscernNum() == drink ||
+							objectPos[i]->getDiscernNum() == cherry)
+						{
+							//입에 담고 있어야하는 것들
+							//if ()
+							//{
+							//
+							//}
+							_pose = IDLE;
+							_playAni = true;
+							_curInhale = true;
+							//_inhaleKind = OBJECT;
+							objectPos[i]->setState(4);
+
+						}
+
+						if (objectPos[i]->getDiscernNum() == starbox)
+						{
+							_inhaleKind = BURNING;
+						}
+					}
+				}
+			}
+		}
 	}
 	if (KEYMANAGER->isOnceKeyUp('X'))
 	{
+		if (_pose == M_INHALE && _curInhale == false)
+		{
+			_pose = IDLE;
+			_playAni = true;
+		}
+	}
+
+	if (KEYMANAGER->isOnceKeyDown(VK_BACK))
+	{
+
 	}
 
 	//애니메이션
 	switch (_pose)
 	{
 	case IDLE:
-		if (_curRight == true) { _starFrame = 0; _endFrame = 0; }
-		else { _starFrame = 18; _endFrame = 18; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 18; _endFrame = 18; }
+
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 0; _endFrame = 3; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 24; _endFrame = 26; }
+
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 540; _endFrame = 540; }
+			else if (_curRight == false) { _starFrame = 558; _endFrame = 558; }
+		}
 		break;
 	case WALK:
-		if (_curRight == true) { _starFrame = 144; _endFrame = 153; }
-		else { _starFrame = 162; _endFrame = 171; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 144; _endFrame = 153; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 162; _endFrame = 171; }
+
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 184; _endFrame = 203; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 207; _endFrame = 226; }
+
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 612; _endFrame = 627; }
+			else if (_curRight == false) { _starFrame = 630; _endFrame = 645; }
+		}
 		break;
 	case RUN:
-		if (_curRight == true) { _starFrame = 180;  _endFrame = 187; }
-		else { _starFrame = 198; _endFrame = 205; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 180; _endFrame = 187; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 198; _endFrame = 205; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 230; _endFrame = 237; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 253; _endFrame = 260; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
 		break;
 	case SWALLOW:
-		if (_curRight == true) { _starFrame = 36; _endFrame = 37; }
-		else { _starFrame = 54; _endFrame = 55; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 36; _endFrame = 36; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 54; _endFrame = 54; }
+
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 46; _endFrame = 49; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 69; _endFrame = 72; }
+
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 504; _endFrame = 512; }
+			else { _starFrame = 522; _endFrame = 530; }
+		}
 		break;
 	case SLIDING:
-		if (_curRight == true) { _starFrame = 72; _endFrame = 72; }
-		else { _starFrame = 90; _endFrame = 90; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 72; _endFrame = 72; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 90; _endFrame = 90; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 92; _endFrame = 95; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 115; _endFrame = 118; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
 		break;
 	case JUMPING:
-		if (_curRight == true) { _starFrame = 108; _endFrame = 108; }
-		else { _starFrame = 126; _endFrame = 126; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 108; _endFrame = 108; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 126; _endFrame = 126; }
+
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 138; _endFrame = 139; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 161; _endFrame = 162; }
+
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 576; _endFrame = 578; }
+			else if (_curRight == false) { _starFrame = 594; _endFrame = 596; }
+		}
 		break;
 	case FALLING:
-		if (_curRight == true) { _starFrame = 109; _endFrame = 116; }
-		else { _starFrame = 127; _endFrame = 134; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 109; _endFrame = 116; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 127; _endFrame = 134; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 140; _endFrame = 147; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 163; _endFrame = 170; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
 		break;
 	case LANDING:
-		if (_curRight == true) { _starFrame = 117; _endFrame = 117; }
-		else { _starFrame = 135; _endFrame = 135; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 117; _endFrame = 117; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 135; _endFrame = 135; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 148; _endFrame = 148; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 171; _endFrame = 171; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+
 		break;
 	case FLY:
-		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
-		else { _starFrame = 306; _endFrame = 309; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 306; _endFrame = 309; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 368; _endFrame = 373; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 391; _endFrame = 396; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+
 		break;
 	case FLYMOVE:
-		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
-		else { _starFrame = 306; _endFrame = 309; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 306; _endFrame = 309; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 368; _endFrame = 373; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 391; _endFrame = 396; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+
 		break;
 	case INHALE:
-		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
-		else { _starFrame = 306; _endFrame = 309; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 306; _endFrame = 309; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 278; _endFrame = 280; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 301; _endFrame = 303; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		
 		break;
 	case EXHALE:
-		if (_curRight == true) { _starFrame = 324; _endFrame = 325; }
-		else { _starFrame = 342; _endFrame = 343; }
+		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 324; _endFrame = 325; }
+		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 342; _endFrame = 343; }
+
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 0; _endFrame = 3; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
 		if (_ani->isPlay() == false && _pose == EXHALE)
 		{
 			_pose = FALLING;
@@ -434,8 +701,8 @@ void player::move(vector<fieldObject*> objectPos)
 		}
 		break;
 	case M_INHALE:
-		if (_curRight == true) { _starFrame = 398; _endFrame = 400; }
-		else { _starFrame = 416; _endFrame = 418; }
+		if (_curRight == true) { _starFrame = 399; _endFrame = 400; }
+		else { _starFrame = 417; _endFrame = 418; }
 		break;
 	case M_EXHALE:
 		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
@@ -444,14 +711,14 @@ void player::move(vector<fieldObject*> objectPos)
 	default:
 		break;
 	}
-	if (_playAni == true && _pose != FALLING && _pose != EXHALE)
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _curInhale == false)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
 		_playAni = false;
 	}
 	else if (_playAni == true)
-	{
+	{ 
 		_ani->setPlayFrame(_starFrame, _endFrame, false, false);
 		_ani->start();
 		_playAni = false;
@@ -460,9 +727,16 @@ void player::move(vector<fieldObject*> objectPos)
 
 	//플레이어 이미지 위치 업데이트
 	//기본 커비일때 위치 초기화
-	_imageX = _x - (_ani->getFrameWidth() / 2);
-	_imageY = _y - (_ani->getFrameHeight() / 2) - 23;
-
+	if (_inhaleKind == KIRBY || _curInhale == true)
+	{
+		_imageX = _x - (_ani->getFrameWidth() / 2);
+		_imageY = _y - (_ani->getFrameHeight() / 2) - 23;
+	}
+	else if (_inhaleKind == BURNING)
+	{
+		_imageX = _x - (_ani->getFrameWidth() / 2);
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+	}
 }
 
 void player::moveCollision(vector<fieldObject*> objectPos)
@@ -475,17 +749,21 @@ void player::moveCollision(vector<fieldObject*> objectPos)
 	{
 		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
 		{
-
+			//부딪힐 때 지워지는 것들
+			if (objectPos[i]->getDiscernNum() == upItem ||
+				objectPos[i]->getDiscernNum() == candyitem ||
+				objectPos[i]->getDiscernNum() == maxtem ||
+				objectPos[i]->getDiscernNum() == meat ||
+				objectPos[i]->getDiscernNum() == drink ||
+				objectPos[i]->getDiscernNum() == cherry)
+			{
+				objectPos[i]->setState(4);
+			}
 			//캐릭터 기준 위쪽 충돌
 			if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
 				_rc.top > objectPos[i]->getrc().top && _rc.bottom > objectPos[i]->getrc().bottom)
 			{
-				//_y = objectPos[i]->getrc().top + 75;
-				if (_pose == FLY)
-				{
-					_y += PLAYERSPEED + 1.5;
-				}
-				else
+				if(_pose == JUMPING)
 				{
 					_pose = FALLING;
 				}
@@ -504,24 +782,7 @@ void player::moveCollision(vector<fieldObject*> objectPos)
 					_playAni = true;
 				}
 				break;
-			}
-			//캐릭터 기준 왼쪽 충돌
-			if (_rc.left > objectPos[i]->getrc().left && _rc.right > objectPos[i]->getrc().right &&
-				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
-			{
-				//_x += PLAYERSPEED;
-				_x = objectPos[i]->getrc().left + (objectPos[i]->getrc().right - objectPos[i]->getrc().left) + 25;
-				break;
-			}
-			//캐릭터 기준 오른쪽 충돌
-			if (_rc.left < objectPos[i]->getrc().left && _rc.right < objectPos[i]->getrc().right &&
-				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
-			{
-				//_x -= PLAYERSPEED;
-				_x = objectPos[i]->getrc().right - (objectPos[i]->getrc().right - objectPos[i]->getrc().left) - 25;
-				break;
-			}
-			
+			}		
 		}
 	}
 }
@@ -626,3 +887,70 @@ bool player::leftMove()
 	return _horizonMove;
 }
 
+bool player::objectRightMove(vector<fieldObject*> objectPos)
+{
+	bool collision;
+	collision = false;
+	RECT temp;
+
+	for (int i = 0; i < objectPos.size(); i++)
+	{
+		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+		{
+			//캐릭터 기준 오른쪽 충돌
+			if (_rc.left < objectPos[i]->getrc().left && _rc.right < objectPos[i]->getrc().right &&
+				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+			{
+				_x = objectPos[i]->getrc().right - (objectPos[i]->getrc().right - objectPos[i]->getrc().left) - 25;
+				return true;
+				break;
+			}
+		}
+	}
+
+	return collision;
+}
+
+bool player::objectLeftMove(vector<fieldObject*> objectPos)
+{
+	bool collision;
+	collision = false;
+	RECT temp;
+
+	for (int i = 0; i < objectPos.size(); i++)
+	{
+		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+		{
+			//캐릭터 기준 왼쪽 충돌
+			if (_rc.left > objectPos[i]->getrc().left && _rc.right > objectPos[i]->getrc().right &&
+				_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+			{
+				_x = objectPos[i]->getrc().left + (objectPos[i]->getrc().right - objectPos[i]->getrc().left) + 25;
+				return true;
+				break;
+			}
+		}
+	}
+
+	return collision;
+}
+
+bool player::objectTopMove(vector<fieldObject*> objectPos)
+{
+	bool collision;
+	collision = false;
+	RECT temp;
+
+	for (int i = 0; i < objectPos.size(); i++)
+	{
+		//캐릭터 기준 위쪽 충돌
+		if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
+			_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+		{
+			return true;
+			break;
+		}
+	}
+
+	return collision;
+}
