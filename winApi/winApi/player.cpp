@@ -21,10 +21,7 @@ enum POSE
 	//막 흡입했을때
 	M_INHALE, //몹 흡입
 	M_EXHALE, //몹 뱉기
-	M_SWALLOW,//삼키기, 변신
 	//M_IDLE,//흡입 상태 기본
-	M_WALK,//흡입 상태 걷기
-	M_JUMP,//흡입 상태 점프
 	COLLISION,//충돌
 	DIE,//죽음
 	ATTACK//변신 커비 공격
@@ -55,7 +52,7 @@ HRESULT player::init(void)
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
-	IMAGEMANAGER->addFrameImage("kirby_freeze", "image/kirby_freeze.bmp", 1872, 6048, 18, 24, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("kirby_freeze", "image/kirby_freeze.bmp", 864 * 3, 2016 * 3, 18, 24, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_spark", "image/kirby_spark.bmp", 3840, 5412, 20, 22, true, RGB(255, 0, 255));
 
 	_fileName[0] = "kirby";
@@ -99,9 +96,9 @@ void player::release(void)
 
 void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage, bulletManager* BulletManager)
 {
-	groundCollision = false; //
+	groundCollision = false;
 	_pixelImage = pixelimage;
-	move(objectPos, BulletManager);
+	move(objectPos, enemyPos, BulletManager);
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
@@ -117,8 +114,8 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		_playAni = true;
 	}
 
-	//애니메이션이 정지 했을때
-	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true)
+	//애니메이션이 정지 했을때 여기서 처리해 주기
+	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true) //변신 몬스터를 삼켰을 때 관리해주는 곳
 	{
 		if (_inhaleKind == BURNING)
 		{
@@ -128,8 +125,35 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 			_ani->setFPS(8);
 			_fileNum = 1;
 		}
+		if (_inhaleKind == FREEZE)
+		{
+			_curInhale = false;
+			_pose = IDLE;
+			_playAni = true;
+			_ani->setFPS(5);
+			_fileNum = 2;
+		}
+		if (_inhaleKind == SPARK)
+		{
+			_curInhale = false;
+			_pose = IDLE;
+			_playAni = true;
+			_ani->setFPS(8);
+			_fileNum = 3;
+		}
 		_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
 		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
+	}
+	if (_pose == EXHALE && _ani->isPlay() == false)
+	{
+		_pose = FALLING;
+		_playAni = true;
+	}
+	if (_pose == M_EXHALE && _ani->isPlay() == false)
+	{
+		_pose = IDLE;
+		_playAni = true;
+		_ani->setFPS(5);
 	}
 
 	//충돌 - 아래
@@ -208,7 +232,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	}
 }
 
-void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
+void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulletManager* BulletManager)
 {
 	int direction = 0;
 	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
@@ -394,7 +418,7 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 			_curJump = _y;
 			_maxJump = _curJump - 200;
 		}
-		else if (_curjumping == true || _pose == FALLING || _pose == EXHALE)
+		else if (_curInhale == false && (_curjumping == true || _pose == FALLING || _pose == EXHALE)) //날기
 		{
 			_pose = FLY;
 			_curjumping = false;
@@ -415,19 +439,28 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 	//x - 흡입, 뱉기
 	if (KEYMANAGER->isOnceKeyDown('X'))
 	{
-		if (_pose == FLY)// 공기 뱉기
+		if (_pose == FLY)//공기 뱉기, 공기를 머금은 모션(FLY)에서만 가능
 		{
 			BulletManager->bulletFire(Breath, PointMake(_x, _y), !_curRight);
 			_pose = EXHALE;
 			_playAni = true;
 		}
-		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입, 기본 커비일때만 가능
+		else if (_curInhale == true)//별 뱉기
+		{
+			BulletManager->bulletFire(Star, PointMake(_x, _y), !_curRight);
+			_pose = M_EXHALE;
+			_playAni = true;
+			_ani->setFPS(7);
+			_curInhale = false;
+			_inhaleKind = KIRBY;
+		}
+		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입 / 기본 커비일때만 가능
 		{
 			_pose = M_INHALE;
 			_playAni = true;
 		}
 	}
-	if (KEYMANAGER->isStayKeyDown('X'))
+	if (KEYMANAGER->isStayKeyDown('X')) //빨아 들이기
 	{
 		if (_inhaleKind == KIRBY) //기본 커비시에만 흡입 모션, 다른 모션으로 흡입시에 이미지 초기화가 다르기 때문에 터짐
 		{
@@ -447,39 +480,73 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 				rc_inhale.top = _y - 40;
 				rc_inhale.bottom = _y + 20;
 			}
+			//오브젝트 흡입
 			for (int i = 0; i < objectPos.size(); i++)
-			{
-				//흡입 할 때 지워지는 것들
+			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
 				if (IntersectRect(&temp, &rc_inhale, &objectPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false)
 				{
 					objectPos[i]->absorption(PointMake(_x, _y));
 					//흡입 도중 플레이어와 부딪혔을 때
 					if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
 					{
-						if (objectPos[i]->getDiscernNum() == starbox ||
-							objectPos[i]->getDiscernNum() == upItem ||
+						//사라져야하는 것들
+						if (objectPos[i]->getDiscernNum() == upItem ||
 							objectPos[i]->getDiscernNum() == candyitem ||
 							objectPos[i]->getDiscernNum() == maxtem ||
 							objectPos[i]->getDiscernNum() == meat ||
 							objectPos[i]->getDiscernNum() == drink ||
 							objectPos[i]->getDiscernNum() == cherry)
 						{
-							//입에 담고 있어야하는 것들
-							//if ()
-							//{
-							//
-							//}
+							_pose = IDLE;
+							_playAni = true;
+							objectPos[i]->setState(4);
+						}
+						//입에 담고 있어야하는 것들
+						if (objectPos[i]->getDiscernNum() == starbox)
+						{
 							_pose = IDLE;
 							_playAni = true;
 							_curInhale = true;
-							//_inhaleKind = OBJECT;
 							objectPos[i]->setState(4);
+						}				   
+					}
+				}
+			}
 
+			//몬스터 흡입
+			for (int i = 0; i < enemyPos.size(); i++)
+			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
+				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false)
+				{
+					//enemyPos[i]->absorption(PointMake(_x, _y));
+					//흡입 도중 플레이어와 부딪혔을 때
+					if (IntersectRect(&temp, &_rc, &enemyPos[i]->getrc()))
+					{
+						//입에 담고 있어야하는 것들
+						if (enemyPos[i]->getDiscernNum() == waddledee ||	//기본 몬스터~
+							enemyPos[i]->getDiscernNum() == Frog ||
+							enemyPos[i]->getDiscernNum() == Bronto ||
+							enemyPos[i]->getDiscernNum() == Burning ||		//특수 몬스터~
+							enemyPos[i]->getDiscernNum() == Chilly ||
+							enemyPos[i]->getDiscernNum() == Spark)
+						{
+							_pose = IDLE;
+							_playAni = true;
+							_curInhale = true;
+							enemyPos[i]->setState(3);
 						}
 
-						if (objectPos[i]->getDiscernNum() == starbox)
+						if (enemyPos[i]->getDiscernNum() == Burning)
 						{
 							_inhaleKind = BURNING;
+						}
+						if (enemyPos[i]->getDiscernNum() == Chilly)
+						{
+							_inhaleKind = FREEZE;
+						}
+						if (enemyPos[i]->getDiscernNum() == Spark)
+						{
+							_inhaleKind = SPARK;
 						}
 					}
 				}
@@ -515,8 +582,8 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
 			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
 
-			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 3; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 20; _endFrame = 23; }
 		}
 		else if (_curInhale == true)
 		{
@@ -533,11 +600,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 184; _endFrame = 203; }
 			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 207; _endFrame = 226; }
 
-			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 144; _endFrame = 153; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 162; _endFrame = 171; }
 
-			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 160; _endFrame = 179; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 180; _endFrame = 199; }
 		}
 		else if (_curInhale == true)
 		{
@@ -552,11 +619,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 230; _endFrame = 237; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 253; _endFrame = 260; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 180; _endFrame = 187; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 198; _endFrame = 205; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 200; _endFrame = 207; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 220; _endFrame = 227; }
 		break;
 	case SWALLOW:
 		if (_curInhale == false)
@@ -567,11 +634,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 46; _endFrame = 49; }
 			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 69; _endFrame = 72; }
 
-			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 36; _endFrame = 36; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 54; _endFrame = 54; }
 
-			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 40; _endFrame = 43; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 60; _endFrame = 63; }
 		}
 		else if (_curInhale == true)
 		{
@@ -586,11 +653,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 92; _endFrame = 95; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 115; _endFrame = 118; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 72; _endFrame = 72; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 90; _endFrame = 90; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 80; _endFrame = 83; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 100; _endFrame = 103; }
 		break;
 	case JUMPING:
 		if (_curInhale == false)
@@ -601,11 +668,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 138; _endFrame = 139; }
 			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 161; _endFrame = 162; }
 
-			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 108; _endFrame = 108; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 126; _endFrame = 126; }
 
-			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 120; _endFrame = 121; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 140; _endFrame = 141; }
 		}
 		else if (_curInhale == true)
 		{
@@ -614,31 +681,46 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		}
 		break;
 	case FALLING:
-		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 109; _endFrame = 116; }
-		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 127; _endFrame = 134; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 109; _endFrame = 116; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 127; _endFrame = 134; }
 
-		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 140; _endFrame = 147; }
-		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 163; _endFrame = 170; }
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 140; _endFrame = 147; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 163; _endFrame = 170; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 109; _endFrame = 116; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 127; _endFrame = 134; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 122; _endFrame = 129; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 142; _endFrame = 149; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 579; _endFrame = 582; }
+			else if (_curRight == false) { _starFrame = 597; _endFrame = 600; }
+		}
 		break;
 	case LANDING:
-		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 117; _endFrame = 117; }
-		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 135; _endFrame = 135; }
+		if (_curInhale == false)
+		{
+			if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 117; _endFrame = 117; }
+			else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 135; _endFrame = 135; }
 
-		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 148; _endFrame = 148; }
-		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 171; _endFrame = 171; }
+			if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 148; _endFrame = 148; }
+			else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 171; _endFrame = 171; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+			if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 117; _endFrame = 117; }
+			else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 135; _endFrame = 135; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
-
+			if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 130; _endFrame = 130; }
+			else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 150; _endFrame = 150; }
+		}
+		else if (_curInhale == true)
+		{
+			if (_curRight == true) { _starFrame = 583; _endFrame = 583; }
+			else if (_curRight == false) { _starFrame = 601; _endFrame = 601; }
+		}
 		break;
 	case FLY:
 		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
@@ -647,12 +729,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 368; _endFrame = 373; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 391; _endFrame = 396; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 288; _endFrame = 291; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 306; _endFrame = 309; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
-
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 320; _endFrame = 325; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 340; _endFrame = 345; }
 		break;
 	case FLYMOVE:
 		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
@@ -661,12 +742,11 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 368; _endFrame = 373; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 391; _endFrame = 396; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 288; _endFrame = 291; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 306; _endFrame = 309; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
-
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 320; _endFrame = 325; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 340; _endFrame = 345; }
 		break;
 	case INHALE:
 		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 288; _endFrame = 291; }
@@ -675,43 +755,57 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 278; _endFrame = 280; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 301; _endFrame = 303; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 218; _endFrame = 220; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 236; _endFrame = 238; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 242; _endFrame = 244; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 262; _endFrame = 264; }
 		
 		break;
 	case EXHALE:
 		if (_curRight == true && _inhaleKind == KIRBY) { _starFrame = 324; _endFrame = 325; }
 		else if (_curRight == false && _inhaleKind == KIRBY) { _starFrame = 342; _endFrame = 343; }
 
-		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 0; _endFrame = 3; }
-		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 414; _endFrame = 415; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 437; _endFrame = 438; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 18; _endFrame = 18; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 324; _endFrame = 325; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 342; _endFrame = 343; }
 
-		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 0; _endFrame = 0; }
-		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 18; _endFrame = 18; }
-		if (_ani->isPlay() == false && _pose == EXHALE)
-		{
-			_pose = FALLING;
-			_playAni = true;
-		}
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 360; _endFrame = 361; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 380; _endFrame = 381; }
 		break;
 	case M_INHALE:
 		if (_curRight == true) { _starFrame = 399; _endFrame = 400; }
 		else { _starFrame = 417; _endFrame = 418; }
 		break;
 	case M_EXHALE:
-		if (_curRight == true) { _starFrame = 288; _endFrame = 291; }
-		else { _starFrame = 306; _endFrame = 309; }
+		if (_curRight == true) { _starFrame = 468; _endFrame = 472; }
+		else { _starFrame = 486; _endFrame = 490; }
+		break;
+	case ATTACK:
+		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 460; _endFrame = 482; }
+		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 483; _endFrame = 505; }
+
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 396; _endFrame = 405; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 414; _endFrame = 423; }
+
+		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 400; _endFrame = 406; }
+		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 420; _endFrame = 426; }
+		break;
+	case COLLISION:
+		if (_curRight == true) { _starFrame = 649; _endFrame = 656; }
+		else { _starFrame = 667; _endFrame = 664; }
+		break;
+	case DIE:
+		if (_curRight == true) { _starFrame = 360; _endFrame = 375; }
+		else { _starFrame = 378; _endFrame = 393; }
 		break;
 	default:
 		break;
 	}
-	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _curInhale == false)
+
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _curInhale == false)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
@@ -733,6 +827,16 @@ void player::move(vector<fieldObject*> objectPos, bulletManager* BulletManager)
 		_imageY = _y - (_ani->getFrameHeight() / 2) - 23;
 	}
 	else if (_inhaleKind == BURNING)
+	{
+		_imageX = _x - (_ani->getFrameWidth() / 2);
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+	}
+	else if (_inhaleKind == FREEZE)
+	{
+		_imageX = _x - (_ani->getFrameWidth() / 2);
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+	}
+	else if (_inhaleKind == SPARK)
 	{
 		_imageX = _x - (_ani->getFrameWidth() / 2);
 		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;

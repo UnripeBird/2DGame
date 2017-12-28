@@ -51,7 +51,7 @@ public:
 	void release(void);
 	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*);
 
-	void move(vector<fieldObject*>, bulletManager*);
+	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*);
 	void moveCollision(vector<fieldObject*>);
 
 
