@@ -82,7 +82,7 @@ void mapManager::render(void)
 	POINT playerPosition = _playerPos->getPos();
 	POINT playerImagePosition = _playerPos->getImagePos();
 
-	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
+	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - 400)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);

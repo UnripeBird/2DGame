@@ -378,21 +378,21 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT) && _pose != SWALLOW)
 	{
-		if (_pose == WALK && rightMove() && !objectRightMove(objectPos))
+		if (_pose == WALK && rightMove() && !objectRightMove(objectPos, curMapNumber))
 		{
 			_x += PLAYERSPEED;
 		}
-		else if (_pose == RUN && rightMove() && !objectRightMove(objectPos))
+		else if (_pose == RUN && rightMove() && !objectRightMove(objectPos, curMapNumber))
 		{
 			_x += PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && rightMove() && !objectRightMove(objectPos) || _pose == FLY && rightMove() && !objectRightMove(objectPos))
+		else if (_pose == JUMPING && rightMove() && !objectRightMove(objectPos, curMapNumber) || _pose == FLY && rightMove() && !objectRightMove(objectPos, curMapNumber))
 		{
 			_x += PLAYERSPEED;
 			_curRight = true;
 		}
-		else if (_pose == FALLING && rightMove() && !objectRightMove(objectPos))
+		else if (_pose == FALLING && rightMove() && !objectRightMove(objectPos, curMapNumber))
 		{
 			_x += PLAYERSPEED;
 			_curRight = true;
@@ -443,21 +443,21 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT) && _pose != SWALLOW)
 	{
-		if (_pose == WALK && leftMove() && !objectLeftMove(objectPos))
+		if (_pose == WALK && leftMove() && !objectLeftMove(objectPos, curMapNumber))
 		{
 			_x -= PLAYERSPEED;
 		}
-		else if (_pose == RUN && leftMove() && !objectLeftMove(objectPos))
+		else if (_pose == RUN && leftMove() && !objectLeftMove(objectPos, curMapNumber))
 		{
 			_x -= PLAYERSPEED * 1.5;
 			_keyDownNum = 0;
 		}
-		else if (_pose == JUMPING && leftMove() && !objectLeftMove(objectPos) || _pose == FLY && leftMove() && !objectLeftMove(objectPos))
+		else if (_pose == JUMPING && leftMove() && !objectLeftMove(objectPos, curMapNumber) || _pose == FLY && leftMove() && !objectLeftMove(objectPos, curMapNumber))
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
 		}
-		else if (_pose == FALLING && leftMove() && !objectLeftMove(objectPos))
+		else if (_pose == FALLING && leftMove() && !objectLeftMove(objectPos, curMapNumber))
 		{
 			_x -= PLAYERSPEED;
 			_curRight = false;
@@ -545,7 +545,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	if (KEYMANAGER->isStayKeyDown('Z'))
 	{
-		if (_pose == FLY && !objectTopMove(objectPos))
+		if (_pose == FLY && !objectTopMove(objectPos, curMapNumber))
 		{
 			_y -= PLAYERSPEED + 1.5;
 		}
@@ -1177,7 +1177,7 @@ bool player::leftMove()
 	return _horizonMove;
 }
 
-bool player::objectRightMove(vector<fieldObject*> objectPos)
+bool player::objectRightMove(vector<fieldObject*> objectPos, int curMapNumber)
 {
 	bool collision;
 	collision = false;
@@ -1185,7 +1185,7 @@ bool player::objectRightMove(vector<fieldObject*> objectPos)
 
 	for (int i = 0; i < objectPos.size(); i++)
 	{
-		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()) && curMapNumber == objectPos[i]->getAppearMapNum())
 		{
 			//캐릭터 기준 오른쪽 충돌
 			if (_rc.left < objectPos[i]->getrc().left && _rc.right < objectPos[i]->getrc().right &&
@@ -1201,7 +1201,7 @@ bool player::objectRightMove(vector<fieldObject*> objectPos)
 	return collision;
 }
 
-bool player::objectLeftMove(vector<fieldObject*> objectPos)
+bool player::objectLeftMove(vector<fieldObject*> objectPos, int curMapNumber)
 {
 	bool collision;
 	collision = false;
@@ -1209,7 +1209,7 @@ bool player::objectLeftMove(vector<fieldObject*> objectPos)
 
 	for (int i = 0; i < objectPos.size(); i++)
 	{
-		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()) && curMapNumber == objectPos[i]->getAppearMapNum())
 		{
 			//캐릭터 기준 왼쪽 충돌
 			if (_rc.left > objectPos[i]->getrc().left && _rc.right > objectPos[i]->getrc().right &&
@@ -1225,7 +1225,7 @@ bool player::objectLeftMove(vector<fieldObject*> objectPos)
 	return collision;
 }
 
-bool player::objectTopMove(vector<fieldObject*> objectPos)
+bool player::objectTopMove(vector<fieldObject*> objectPos, int curMapNumber)
 {
 	bool collision;
 	collision = false;
@@ -1235,7 +1235,7 @@ bool player::objectTopMove(vector<fieldObject*> objectPos)
 	{
 		//캐릭터 기준 위쪽 충돌
 		if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
-			_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top)
+			_rc.top < objectPos[i]->getrc().bottom && _rc.bottom > objectPos[i]->getrc().top && curMapNumber == objectPos[i]->getAppearMapNum())
 		{
 			return true;
 			break;

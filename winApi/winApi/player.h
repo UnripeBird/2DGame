@@ -68,9 +68,9 @@ public:
 	bool rightMove();
 	bool leftMove();
 
-	bool objectRightMove(vector<fieldObject*> objectPos);
-	bool objectLeftMove(vector<fieldObject*> objectPos);
-	bool objectTopMove(vector<fieldObject*> objectPos);
+	bool objectRightMove(vector<fieldObject*> objectPos, int curMapNumber);
+	bool objectLeftMove(vector<fieldObject*> objectPos, int curMapNumber);
+	bool objectTopMove(vector<fieldObject*> objectPos , int curMapNumber);
 
 	POINT getPos() { return PointMake(_x, _y); }
 	POINT getImagePos() { return PointMake(_imageX, _imageY); }
