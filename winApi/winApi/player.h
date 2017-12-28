@@ -49,7 +49,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*);
+	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*,int);
 
 	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*);
 	void moveCollision(vector<fieldObject*>);

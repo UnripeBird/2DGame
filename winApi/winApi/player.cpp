@@ -94,7 +94,7 @@ void player::release(void)
 {
 }
 
-void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage, bulletManager* BulletManager)
+void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, image* pixelimage, bulletManager* BulletManager,int curMapNumber)
 {
 	groundCollision = false;
 	_pixelImage = pixelimage;
