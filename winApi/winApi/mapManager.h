@@ -19,6 +19,7 @@ private:
 	vector<fieldObject*> _objectPos;
 	vector<enemy*> _enemyPos;
 	vector<bullet*> _bulletPos;
+	vector<bullet*> _enemyBullet;
 
 	float _cameraX;
 	float _cameraY;
@@ -30,7 +31,7 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(player*, vector<fieldObject*>, vector<enemy*>, vector<bullet*>);
+	void update(player*, vector<fieldObject*>, vector<enemy*>, vector<bullet*>, vector<bullet*>);
 	void render(void);
 
 	void mapChange(int);

@@ -10,15 +10,16 @@ private:
 
 public:
 	HRESULT init(string, ENEMYDISCERN, int, POINT);
-	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
+	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager);
 	void Hit();
+	void Eating(POINT playerpoint);
 
 	void rightmove();
 	void leftmove();
 	void attackmove();
 	void hitmoveleft();
 	void hitmoveright();
-	
+	void death(vector<bullet*> bulletVec);
 	spark() {}
 	~spark() {}
 };

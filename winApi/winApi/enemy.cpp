@@ -31,7 +31,8 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_burningselect = true;
 	//trueÀÏ °æ¿ì °ø°ÝÁß.
 	_attactmotion = false;
-
+	//¸Ô´ÂÇÔ¼ö true ÀÏ °æ¿ì ¸ÔÈû
+	_eating = false;
 
 	_gravity = 3.0f;
 
@@ -44,7 +45,7 @@ void enemy::release(void)
 	SAFE_DELETE(_ani);
 }
 
-void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
+void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager)
 {
 	
 
@@ -147,48 +148,10 @@ void enemy::brontocollision(image * pixelimage)
 	}
 
 
-	//Ãæµ¹ ÁÂ¿ì
-	for (int i = _rc.right; i > _rc.right - 1; i--)
-	{
-
-		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
-
-		int r = GetRValue(color);
-		int g = GetGValue(color);
-		int b = GetBValue(color);
-
-		if (r == 255 && g == 0 && b == 0)
-		{
-
-			if (_dr == drright)
-			{
-				_dr = drleft;
-			}
-			break;
-		}
-	}
-	for (int i = _rc.left; i > _rc.left - 1; i--)
-	{
-
-		COLORREF color = GetPixel(pixelimage->getMemDC(), i, _y);
-
-		int r = GetRValue(color);
-		int g = GetGValue(color);
-		int b = GetBValue(color);
-
-		if (r == 255 && g == 0 && b == 0)
-		{
-
-			if (_dr == drleft)
-			{
-				_dr = drright;
-			}
-			break;
-		}
-	}
 	if (!_collisioncheck)
 	{
 		_y += _gravity;
 	}
 
 }
+

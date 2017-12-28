@@ -23,14 +23,17 @@ HRESULT spark::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	return S_OK;
 }
 
-void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
+void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager)
 {
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	//움직이는 방향
+	if (_hitCount == false && _eating == false)
+	{
 	pixelcollision(pixelimage);
+	}
 	//움직임
-	
+	death(bulletVec);
 	if (_hitCount == false && _collisioncheck == true && _state == 1 && _attactmotion == false)
 	{
 
@@ -49,51 +52,68 @@ void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> o
 		}
 		break;
 		}
+		if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 100)
+		{
+			_attactmotion = true;
+
+		}
 	}
 	//피격
-	if (_hitCount == true && _state == 1)
+	if (_hitCount == true)
 	{
-
-		switch (_dr)
+		if (_state == 1)
 		{
-		case drright:
-		{
-			hitmoveright();
-			
-		
-			if (_hitWorldTimer - _hitTimer > 1.0f)
+			switch (_dr)
 			{
-				_hitCount = false;
-				_state = 2;
-		
+			case drright:
+			{
+				hitmoveright();
+
+			}
+			break;
+			case drleft:
+			{
+				hitmoveleft();
+
+			}
+			break;
+
 			}
 
-		}
-			break;
-		case drleft:
-		{
-			hitmoveleft();
-
 			if (_hitWorldTimer - _hitTimer > 1.0f)
 			{
-				_hitCount = false;
+
 				_state = 2;
 
 			}
 		}
+		else if (_state == 3)
+		{
+			switch (_dr)
+			{
+			case drright:
+			{
+				hitmoveright();
+
+			}
 			break;
-		
+			case drleft:
+			{
+				hitmoveleft();
+
+			}
+			break;
+
+			}
+
 		}
+	
 	
 	}
 	
 	//공격
 
-	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 50)
-	{
-		_attactmotion = true;
 	
-	}
 	if (_attactmotion == true)
 	{
 		attackmove();
@@ -103,7 +123,14 @@ void spark::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> o
 			_attactmotion = false;
 		}
 	}
-	_rc = RectMakeCenter(_x, _y, 50, 50);
+	if (_attactmotion == true)
+	{
+		_rc = RectMakeCenter(_x, _y, 100, 100);
+	}
+	else
+	{
+		_rc = RectMakeCenter(_x, _y, 50, 50);
+	}
 }
 
 void spark::Hit()
@@ -111,6 +138,36 @@ void spark::Hit()
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
+}
+
+void spark::Eating(POINT playerpoint)
+{
+	_hitCount = true;
+	_state = 3;
+	if (playerpoint.x > _x)
+	{
+		_x += _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
+	else if (playerpoint.x < _x)
+	{
+		_x -= _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
 }
 
 void spark::rightmove()
@@ -158,5 +215,19 @@ void spark::hitmoveright()
 	_ani->setPlayFrame(31, 31, false, true);
 	_ani->setFPS(3);
 	_ani->start();
+}
+
+void spark::death(vector<bullet*> bulletVec)
+{
+	for (int i = 0; i < bulletVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &bulletVec[i]->getrc(), &_rc))
+		{
+			Hit();
+			bulletVec[i]->setState(2);
+		}
+
+	}
 }
 

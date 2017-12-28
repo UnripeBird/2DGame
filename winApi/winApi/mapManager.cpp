@@ -45,12 +45,13 @@ void mapManager::release(void)
 	_mapPixelCollisionVector.clear();
 }
 
-void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos, vector<bullet*> bulletPos)
+void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos, vector<bullet*> bulletPos, vector<bullet*> enemyBullet)
 {
 	_playerPos = playerPos;
 	_objectPos = objectPos;
 	_enemyPos = enemyPos;
 	_bulletPos = bulletPos;
+	_enemyBullet = enemyBullet;
 
 	if (KEYMANAGER->isOnceKeyDown('1'))
 	{
@@ -83,7 +84,7 @@ void mapManager::render(void)
 
 	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
-	
+
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
 	_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
 
@@ -97,7 +98,7 @@ void mapManager::render(void)
 			//새로 추가 브레스 불릿 터지는 이펙트
 			if (_objectPos[i]->getbulletEffect())
 			{
-				_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left-24, _objectPos[i]->getrcTemp().top-13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
+				_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left - 24, _objectPos[i]->getrcTemp().top - 13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
 			}
 		}
 	}
@@ -107,12 +108,7 @@ void mapManager::render(void)
 		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
 		{
 			Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
-			for (int j = 0; j < 4; j++)
-			{
-				Rectangle(mapDC, _enemyPos[i]->getprobex(j).left, _enemyPos[i]->getprobex(j).top, _enemyPos[i]->getprobex(j).right, _enemyPos[i]->getprobex(j).bottom);
-				
-			}
-			
+
 			if (_enemyPos[i]->getframex() != -1)
 			{
 				_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
@@ -134,6 +130,14 @@ void mapManager::render(void)
 			_bulletPos[i]->getPos().x - (_bulletPos[i]->getImage()->getFrameWidth() / 2),
 			_bulletPos[i]->getPos().y - (_bulletPos[i]->getImage()->getFrameHeight() / 2),
 			_bulletPos[i]->getImageFrame().x, _bulletPos[i]->getImageFrame().y);
+	}
+
+	for (int i = 0; i < _enemyBullet.size(); i++)
+	{
+		_enemyBullet[i]->getImage()->frameRender(mapDC,
+			_enemyBullet[i]->getPos().x - (_enemyBullet[i]->getImage()->getFrameWidth() / 2),
+			_enemyBullet[i]->getPos().y - (_enemyBullet[i]->getImage()->getFrameHeight() / 2),
+			_enemyBullet[i]->getImageFrame().x, _enemyBullet[i]->getImageFrame().y);
 	}
 
 	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 

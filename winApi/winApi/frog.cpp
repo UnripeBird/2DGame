@@ -10,90 +10,95 @@ HRESULT frog::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum, 
 
 	_rezen = pos;
 	_state = 0;
+	_framex = -1;
 	_dr = drright;
+	_ani->init(333 * 3, 300 * 3, 199, 100 * 3);
+	_ani->setPlayFrame(5, 9, false, true);
+	_ani->setFPS(3);
+	_ani->start();
 
 	return S_OK;
 }
 
-void frog::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
+void frog::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager)
 {
 
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
+	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
+	if (_hitCount == false && _eating == false)
+	{
+		pixelcollision(pixelimage);
 
+	}
 
+	death(bulletVec);
 	//움직임
 	if (_hitCount == false && _state == 1)
 	{
-		_frameWorldTimer = TIMEMANAGER->getWorldTime();
-		if (_frameWorldTimer - _frameTimer > 0.25f)
-		{
-			_frameTimer = TIMEMANAGER->getWorldTime();
-			_framex++;
-			if (_image->getMaxFrameX() < _framex)
-			{
-				_framex = 0;
-			}
-		}
-
+	
 		switch (_dr)
 		{
 		case drright:
 		{
+			moveright();
 			_x += _moveSpeed;
-			_framey = 1;
+	
 		}
 		break;
 		case drleft:
 		{
+			moveleft();
 			_x -= _moveSpeed;
-			_framey = 0;
+		
 		}
 		break;
 		}
 	}
 	//피격
-	if (_hitCount == true && _state == 1)
+	if (_hitCount == true)
 	{
-
-
-
-		if (_framey == 0)
+		
+		if (_state == 1)
 		{
-			_framey = 2;
-			_framex = 0;
+			switch (_dr)
+			{
+			case drright:
+			{
+				hitright();
+			}
+			break;
+			case drleft:
+			{
+				hitleft();
+			}
+			break;
 
+			}
+			if (_hitWorldTimer - _hitTimer > 1.0f)
+			{
 
+				_state = 2;
+
+			}
 		}
-
-		else if (_framey == 1)
+		else if (_state == 3)
 		{
-			_framey = 2;
-			_framex = 1;
+			switch (_dr)
+			{
+			case drright:
+			{
+				hitright();
+			}
+			break;
+			case drleft:
+			{
+				hitleft();
+			}
+			break;
 
-		}
-		if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 0)
-		{
-
-			_framey = 0;
-			_hitCount = false;
-			_state = 2;
-
-		}
-		else if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 1)
-		{
-			_framex = 0;
-			_framey = 1;
-			_hitCount = false;
-			_state = 2;
+			}
 		}
 	}
-
-
-
-
-
-
-	pixelcollision(pixelimage);
 
 
 	_rc = RectMakeCenter(_x, _y, 50, 50);
@@ -101,8 +106,98 @@ void frog::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> obj
 
 void frog::Hit()
 {
+	_ani->stop();
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
 
+}
+
+void frog::moveright()
+{
+	_ani->setPlayFrame(5, 9, false, true);
+	_ani->setFPS(3);
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void frog::moveleft()
+{
+	_ani->setPlayFrame(0, 4, false, true);
+	_ani->setFPS(3);
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void frog::hitright()
+{
+	_ani->setPlayFrame(11, 11, false, true);
+	_ani->setFPS(3);
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void frog::hitleft()
+{
+	_ani->setPlayFrame(10, 10, false, true);
+	_ani->setFPS(3);
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void frog::Eating(POINT playerpoint)
+{
+	_ani->stop();
+	_hitCount = true;
+	_state = 3;
+	if (playerpoint.x > _x)
+	{
+		_x += _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
+	else if (playerpoint.x < _x)
+	{
+		_x -= _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
+}
+
+void frog::death(vector<bullet*> bulletVec)
+{
+	for (int i = 0; i < bulletVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &bulletVec[i]->getrc(), &_rc))
+		{
+			Hit();
+			bulletVec[i]->setState(2);
+		}
+
+	}
 }
