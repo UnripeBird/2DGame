@@ -18,11 +18,13 @@ protected:
 	bool _fireLeftRight;
 	int _speed;
 
+	float _angle;
+
 	int _state; //0 생존 1 삭제모션 2 삭제대기
 
 public:
 	HRESULT init(void);
-	virtual HRESULT init(BULLETDISCERN, POINT, bool);
+	virtual HRESULT init(BULLETDISCERN, POINT, bool, float angle = -1);
 	void release(void);
 	virtual void update(void);
 

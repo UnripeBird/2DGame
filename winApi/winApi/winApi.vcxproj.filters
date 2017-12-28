@@ -253,7 +253,12 @@
     <ClCompile Include="fieldBoom2.cpp">
       <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClCompile>
-    <ClCompile Include="woodboss.cpp" />
+    <ClCompile Include="woodboss.cpp">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClCompile>
+    <ClCompile Include="titleScene.cpp">
+      <Filter>커비\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonMacroFiunction.h">
@@ -427,6 +432,11 @@
     <ClInclude Include="fieldBoom2.h">
       <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClInclude>
-    <ClInclude Include="woodboss.h" />
+    <ClInclude Include="woodboss.h">
+      <Filter>커비\enemy\파생몬스터</Filter>
+    </ClInclude>
+    <ClInclude Include="titleScene.h">
+      <Filter>커비\scene</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

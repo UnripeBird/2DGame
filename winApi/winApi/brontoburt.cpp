@@ -11,18 +11,28 @@ HRESULT brontoburt::init(string imageName, ENEMYDISCERN discernNum, int appearMa
 	_rezen = pos;
 	_state = 0;
 	_sitdown = true;
-	_framex = 0;
-	_framey = 3;
+	_framex = -1;
+	_triangle = 0;
 	_dr = drright;
+	_ani->init(200 * 3, 500 * 3, 200, 100 * 3);
+	_ani->setPlayFrame(4, 4, false, true);
+	_ani->setFPS(3);
+	_ani->start();
 	return S_OK;
 }
 
-void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec)
+void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager)
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-	_frameWorldTimer = TIMEMANAGER->getWorldTime();
+	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
+	brontocollision(pixelimage);
+	death(bulletVec);
 	//움직이는 방향
-	
+	_triangle++;
+	if (_triangle > 180)
+	{
+		_triangle = 0;
+	}
 	if (playerPoint.x < _rezen.x && _moveselect == false)
 	{
 		_dr = drleft;
@@ -33,167 +43,133 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 		_dr = drright;
 	}
 
-	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200)
-	{
-		_moveselect = true;
 
-	}
+	//움직임 판정
 
-	//움직임
-
-		if (_hitCount == false && _moveselect == true && _state == 1)
+		if (_hitCount == false && _state == 1 && _moveselect == false)
 		{
 
 			//상하이동 움직임 조정 
 			if (_sitdown == true)
 			{
-			
-				if (_framex < 1)
-				{
-					_framey = 3;
-					switch (_dr)
-					{
-					case drright:
-					{
-
-						_framey = 3;
-					}
-					break;
-					case drleft:
-					{
-
-						_framey = 2;
-					}
-					break;
-					}
-
-				}
-			
-				if (_framex >= 1)
-				{
-
-					if (_frameWorldTimer - _frameTimer > 1.0f)
-					{
-						_frameTimer = TIMEMANAGER->getWorldTime();
-						_framex++;
-
-						if (_image->getMaxFrameX() < _framex)
-						{
-							_framex = 0;
-						}
-
-					}
-
-					switch (_dr)
-					{
-					case drright:
-					{
-						_y -= _moveSpeed;
-						_framey = 1;
-					}
-					break;
-					case drleft:
-					{
-						_y -= _moveSpeed;
-						_framey = 0;
-					}
-					break;
-					}
-					if (getDistance(_rezen.x, _rezen.y, _x, _y) > 100)
-					{
-						_sitdown = false;
-					}
-				}
-				if (_framex == 0)
-				{
-					if (_frameWorldTimer - _frameTimer > 0.5f)
-					{
-						_frameTimer = TIMEMANAGER->getWorldTime();
-						_framex++;
-						if (_image->getMaxFrameX() < _framex)
-						{
-							_framex = 1;
-
-						}
-					}
-				}
-
-			}
-
-			//좌우 이동 
-			else if (_sitdown == false && _state == 1)
-			{
-				if (_frameWorldTimer - _frameTimer > 0.25f)
-				{
-					_frameTimer = TIMEMANAGER->getWorldTime();
-					_framex++;
-					if (_image->getMaxFrameX() < _framex)
-					{
-						_framex = 0;
-					}
-				}
-
 				switch (_dr)
 				{
 				case drright:
 				{
-					_x += _moveSpeed;
-					_framey = 1;
+					sitright();
 				}
 				break;
 				case drleft:
 				{
-					_x -= _moveSpeed;
-					_framey = 0;
+					sitleft();
 				}
 				break;
 				}
+
+				if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 150)
+				{
+					_sitdown = false;
+					_moveselect = true;
+				}
+
 			}
 		}
 
+		//좌우 이동 
+
+		if (_hitCount == false && _sitdown == false && _state == 1 && _moveselect == true)
+		{
+			if (getDistance(_rezen.x, _rezen.y, _x, _y) < 200)
+			{
+				switch (_dr)
+				{
+				case drright:
+				{
+					moveright();
+					
+				}
+				break;
+				case drleft:
+				{
+					moveleft();
+				
+				}
+				break;
+				}
+				_y -= _moveSpeed;
+			}
+			else
+			{
+				switch (_dr)
+				{
+					case drright:
+					{
+						moveright();
+						_x += _moveSpeed;
+					}
+					break;
+					case drleft:
+					{
+						moveleft();
+						_x -= _moveSpeed;
+						_y += -sinf((PI / 90) * _triangle) * _moveSpeed;
+						
+					}
+					break;
+				}
+			}
+			
+		}
 
 		//피격
-		if (_hitCount == true && _moveselect == true)
+		if (_hitCount == true)
 		{
-
-
-
-			if (_framey == 0)
+			if (_state == 1)
 			{
-				_framey = 4;
-				_framex = 0;
+				switch (_dr)
+				{
+				case drright:
+				{
+					hitright();
+				}
+				break;
+				case drleft:
+				{
+					hitleft();
+				}
+				break;
+				}
 
+				if (_hitTimer > 0)
+				{
+					if (_hitWorldTimer - _hitTimer > 1.0f)
+					{
+						_state = 2;
+					}
+				}
+	
+			}
+			else if (_state == 3)
+			{
+				switch (_dr)
+				{
+				case drright:
+				{
+					hitright();
+				}
+				break;
+				case drleft:
+				{
+					hitleft();
+				}
+				break;
+				}
 
 			}
-
-			else if (_framey == 1)
-			{
-				_framey = 4;
-				_framex = 1;
-
-			}
-			if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 0)
-			{
-
-				_framey = 0;
-				_hitCount = false;
-				_state = 2;
-
-			}
-			else if (_hitWorldTimer - _hitTimer > 1.0f && _framex == 1)
-			{
-				_framex = 0;
-				_framey = 1;
-				_hitCount = false;
-				_state = 2;
-			}
+		
+		
 		}
 
-
-
-
-
-		brontocollision(pixelimage);
 		_rc = RectMakeCenter(_x, _y, 50, 50);
 	
 
@@ -206,4 +182,110 @@ void brontoburt::Hit()
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
 
+}
+
+void brontoburt::moveright()
+{
+	_ani->setPlayFrame(3, 5, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::moveleft()
+{
+	_ani->setPlayFrame(0, 2, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::hitright()
+{
+	_ani->setPlayFrame(12, 12, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::hitleft()
+{
+	_ani->setPlayFrame(13, 13, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::sitright()
+{
+	_ani->setPlayFrame(3, 3, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::sitleft()
+{
+	_ani->setPlayFrame(0, 0, false, true);
+	_ani->setFPS(3);
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
+}
+
+void brontoburt::Eating(POINT playerpoint)
+{
+	_hitCount = true;
+	_state = 3;
+	if (playerpoint.x > _x)
+	{
+		_x += _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
+	else if (playerpoint.x < _x)
+	{
+		_x -= _moveSpeed;
+		if (playerpoint.y > _y)
+		{
+			_y += _moveSpeed;
+		}
+		else if (playerpoint.y < _y)
+		{
+			_y -= _moveSpeed;
+		}
+	}
+}
+
+void brontoburt::death(vector<bullet*> bulletVec)
+{
+	
+	for (int i = 0; i < bulletVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &bulletVec[i]->getrc(), &_rc))
+		{
+			Hit();
+			bulletVec[i]->setState(2);
+			_ani->stop();
+		}
+
+	}
 }

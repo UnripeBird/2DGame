@@ -32,7 +32,7 @@ HRESULT enemyManager::init(void)
 	_vEnemy.push_back(em);
 
 	em = new burning;
-	em->init("¹ö´×", Burning, 2, PointMake(900, 0));
+	em->init("¹ö´×", Burning, 0, PointMake(900, 400));
 	_vEnemy.push_back(em);
 
 	em = new woodboss;
@@ -51,13 +51,13 @@ void enemyManager::release(void)
 	}
 }
 
-void enemyManager::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, int curMapNum)
+void enemyManager::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, int curMapNum, bulletManager* BulletManager)
 {
 	for (_viEnemy = _vEnemy.begin(); _viEnemy != _vEnemy.end();)
 	{
 		if (curMapNum == (*_viEnemy)->getAppearMapNum())
 		{
-			(*_viEnemy)->update(pixelimage, playerPoint, objectVec, bulletVec);
+			(*_viEnemy)->update(pixelimage, playerPoint, objectVec, bulletVec, BulletManager);
 			if ((*_viEnemy)->getState() == 2)
 			{
 				(*_viEnemy)->release();

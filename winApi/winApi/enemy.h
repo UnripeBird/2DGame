@@ -1,14 +1,14 @@
 #pragma once
 #include "animation.h"
 #include "fieldObject.h"
+#include "bulletManager.h"
 #include "bullet.h"
 
 enum direction
 {
 	drright,
-	drleft,
-	drup,
-	drdown
+	drleft
+	
 
 };
 
@@ -34,17 +34,18 @@ protected:
 	BOOL _anicheck;
 	BOOL _attactmotion;
 	BOOL _burningselect;
-	
+	BOOL _eating;
 	
 	float _hitTimer;
 	float _hitWorldTimer;
 	float _gravity;
-	RECT _probe[4];
-	
+
+	int _triangle;
+	float _attacktimer;
 	direction _dr;
 
 
-	int _state; //0 드랍상태 1 행동상태 2 삭제대기
+	int _state; //0 드랍상태 1 행동상태 2 삭제대기 3 빨려가기
 
 	//보스 공격
 	bullet* _bullet;
@@ -52,16 +53,17 @@ public:
 	HRESULT init(void);
 	virtual HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void release(void);
-	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec);
+	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager);
 	void pixelcollision(image * pixelimage);
 	void brontocollision(image * pixelimage);
 	
 	virtual void Hit() = 0;
-
+	virtual void Eating(POINT playerpoint) = 0;
+	
 	animation* getAni() { return _ani; }
 	POINT getPos() { return PointMake(_x, _y); }
 	RECT getrc() { return _rc; }
-	RECT getprobex(int x) { return _probe[x]; }
+
 
 
 	ENEMYDISCERN getDiscernNum() { return _discernNum; }

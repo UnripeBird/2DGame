@@ -196,6 +196,7 @@
     <ClCompile Include="stonBox.cpp" />
     <ClCompile Include="timeManager.cpp" />
     <ClCompile Include="timer.cpp" />
+    <ClCompile Include="titleScene.cpp" />
     <ClCompile Include="utils.cpp" />
     <ClCompile Include="waddle.cpp" />
     <ClCompile Include="winMain.cpp" />
@@ -257,6 +258,7 @@
     <ClInclude Include="stonBox.h" />
     <ClInclude Include="timeManager.h" />
     <ClInclude Include="timer.h" />
+    <ClInclude Include="titleScene.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="waddle.h" />
     <ClInclude Include="woodboss.h" />

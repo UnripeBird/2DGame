@@ -108,5 +108,7 @@ typedef enum ENEMYDISCERN
 typedef enum BULLETDISCERN
 {
 	Breath,
-	Star
+	Star,
+	BossBreath,
+	BossApple
 };
