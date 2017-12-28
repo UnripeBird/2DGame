@@ -13,6 +13,10 @@ HRESULT titleScene::init(void)
 
 void titleScene::release(void)
 {
+	if(KEYMANAGER->isOnceKeyDown(VK_RETURN))
+	{
+		SCENEMANAGER->changeScene("play");
+	}
 }
 
 void titleScene::update(void)
