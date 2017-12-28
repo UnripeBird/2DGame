@@ -106,31 +106,32 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
 	{
 		BulletManager->bulletFire(Star, PointMake(_x, _y), !_curRight);
-		for (int i = 0; i < 5; i++)
-		{
-	//		enemyPos[i]->Hit();
-		}
+
 	//BulletManager->getBullet()[0]->getrc()
 
 	}
+	// 김영준이 만든거 나중에 지움
 	if (KEYMANAGER->isStayKeyDown(VK_SPACE))
 	{
 
-		for (int i = 2; i < 5; i++)
+		for (int i = 0; i < enemyPos.size(); i++)
 		{
-			enemyPos[i]->Eating(getPos());
+			enemyPos[i]->Hit();
+			//	enemyPos[i]->Eating(getPos());
+			
 		}
 
 
 	}
 	if (KEYMANAGER->isOnceKeyUp(VK_SPACE))
 	{
-		for (int i = 2; i < 5; i++)
+		for (int i = 0; i <  enemyPos.size(); i++)
 		{
-			enemyPos[i]->setState(2);
+		  //	enemyPos[i]->setState(2);
 		}
 
 	}
+	// 김영준이 만든거 여기까지
 	if (_pose == LANDING)
 	{
 		_pose = IDLE;

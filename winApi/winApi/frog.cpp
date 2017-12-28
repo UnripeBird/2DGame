@@ -25,7 +25,7 @@ void frog::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> obj
 
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
-	if (_hitCount == false && _eating == false)
+	if (_hitCount == false)
 	{
 		pixelcollision(pixelimage);
 

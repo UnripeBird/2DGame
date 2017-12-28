@@ -26,14 +26,15 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-	if (_state == 1 && _attactmotion == false && _burningselect == false)
+	death(bulletVec);
+	if (_hitCount == false &&_state == 1 && _attactmotion == false && _burningselect == false)
 	{
 		move();
 	}
 	//πÊ«‚¡¬«•
 	if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200 && _burningselect == false)
 	{
-		if (_attactmotion == false && _moveselect == false)
+		if (_hitCount == false && _attactmotion == false && _moveselect == false)
 		{
 			if (playerPoint.x > _x)
 			{
@@ -52,7 +53,7 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 		
 	}
 	
-	if (_attactmotion == true && _burningselect== true)
+	if (_hitCount == false && _attactmotion == true && _burningselect== true)
 	{
 	
 		switch (_dr)
@@ -92,11 +93,22 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 	
 	
 	}
-
-	if (_attactmotion == false && _moveselect == true)
+	if (_hitCount == true)
 	{
-		//_moveselect = false;
+		if (_state == 1)
+		{
+			hitmove();
+			if (_hitWorldTimer - _hitTimer > 1.0f)
+			{
+				_state = 2;
+			}
+		}
+		else if (_state == 3)
+		{
+			hitmove();
+		}
 	}
+
 	_rc = RectMakeCenter(_x, _y, 50, 50);
 }
 

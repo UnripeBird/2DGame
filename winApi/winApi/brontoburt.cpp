@@ -25,7 +25,12 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
-	brontocollision(pixelimage);
+	if (_hitCount == false && _eating == false)
+	{
+
+		brontocollision(pixelimage);
+	}
+	
 	death(bulletVec);
 	//움직이는 방향
 	_triangle++;
@@ -139,14 +144,11 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 				}
 				break;
 				}
-
-				if (_hitTimer > 0)
+				if (_hitWorldTimer - _hitTimer > 1.0f)
 				{
-					if (_hitWorldTimer - _hitTimer > 1.0f)
-					{
-						_state = 2;
-					}
+					_state = 2;
 				}
+			
 	
 			}
 			else if (_state == 3)
