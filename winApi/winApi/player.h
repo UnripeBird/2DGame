@@ -37,6 +37,7 @@ private:
 	bool groundCollision;
 	int _inhaleKind;
 	bool _curInhale;
+	bool _ReleaseTrans;
 
 	float DubbleKeyTimer;
 	float DublleKeyWorldTimer;
@@ -51,8 +52,8 @@ public:
 	void release(void);
 	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*,int);
 
-	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*);
-	void moveCollision(vector<fieldObject*>);
+	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*, int curMapNumber);
+	void moveCollision(vector<fieldObject*>, int curMapNumber);
 
 
 	bool objectCollision(vector<fieldObject*>);

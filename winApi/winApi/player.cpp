@@ -49,6 +49,7 @@ HRESULT player::init(void)
 	_curHp = _maxHp;
 	_inhaleKind = KIRBY;
 	_curInhale = false;
+	_ReleaseTrans = false;
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
@@ -98,7 +99,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 {
 	groundCollision = false;
 	_pixelImage = pixelimage;
-	move(objectPos, enemyPos, BulletManager);
+	move(objectPos, enemyPos, BulletManager, curMapNumber);
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
@@ -115,8 +116,16 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	}
 
 	//애니메이션이 정지 했을때 여기서 처리해 주기
-	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true) //변신 몬스터를 삼켰을 때 관리해주는 곳
+	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true) //변신 몬스터나 오브젝트를 삼켰을 때 관리해주는 곳
 	{
+		if (_inhaleKind == KIRBY)
+		{
+			_curInhale = false;
+			_pose = IDLE;
+			_playAni = true;
+			_ani->setFPS(5);
+			_fileNum = 0;
+		}
 		if (_inhaleKind == BURNING)
 		{
 			_curInhale = false;
@@ -144,7 +153,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
 		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 	}
-	if (_pose == EXHALE && _ani->isPlay() == false)
+	if (_pose == EXHALE && _ani->isPlay() == false && _ReleaseTrans != true)
 	{
 		_pose = FALLING;
 		_playAni = true;
@@ -154,6 +163,23 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		_pose = IDLE;
 		_playAni = true;
 		_ani->setFPS(5);
+	}
+	if (_pose == ATTACK && _ani->isPlay() == false)
+	{
+		_pose = IDLE;
+		_playAni = true;
+	}
+
+	if (_ReleaseTrans == true)
+	{
+		_pose = IDLE;
+		_playAni = true;
+		_ani->setFPS(5);
+		_inhaleKind = KIRBY;
+		_ReleaseTrans = false;
+
+		_image = IMAGEMANAGER->findImage(_fileName[0]);
+		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 	}
 
 	//충돌 - 아래
@@ -232,7 +258,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	}
 }
 
-void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulletManager* BulletManager)
+void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulletManager* BulletManager, int curMapNumber)
 {
 	int direction = 0;
 	DublleKeyWorldTimer = TIMEMANAGER->getWorldTime();
@@ -360,18 +386,14 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	//아래키
 	if (KEYMANAGER->isOnceKeyDown(VK_DOWN))
 	{
-		if (_pose == IDLE || _pose == WALK || _pose == RUN)
+		if (_pose == IDLE || _pose == WALK || _pose == RUN) //엎드리기
 		{
 			_pose = SWALLOW;
 			_playAni = true;
 			_curSwallow = true;
 		}
 	}
-	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-	{
-		cout << _pose << endl;
-	}
-	if (KEYMANAGER->isOnceKeyUp(VK_DOWN) && _pose == SWALLOW)
+	if (KEYMANAGER->isOnceKeyUp(VK_DOWN) && _pose == SWALLOW) //삼키기
 	{
 		if (_curInhale == false)
 		{
@@ -389,6 +411,15 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		}
 	}
 
+	if (KEYMANAGER->isOnceKeyDown(VK_BACK)) //변신 해제
+	{
+		if (_inhaleKind != KIRBY)
+		{
+			//_pose = EXHALE;
+			//_playAni = true;
+			_ReleaseTrans = true;
+		}
+	}
 
 	//Z - 점프, 날기, 공격
 	if (KEYMANAGER->isOnceKeyDown('Z'))
@@ -445,7 +476,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_pose = EXHALE;
 			_playAni = true;
 		}
-		else if (_curInhale == true)//별 뱉기
+		else if (_curInhale == true)//별 뱉기 - 기본 커비일때만 가능
 		{
 			BulletManager->bulletFire(Star, PointMake(_x, _y), !_curRight);
 			_pose = M_EXHALE;
@@ -454,7 +485,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_curInhale = false;
 			_inhaleKind = KIRBY;
 		}
-		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입 / 기본 커비일때만 가능
+		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입 - 기본 커비일때만 가능
 		{
 			_pose = M_INHALE;
 			_playAni = true;
@@ -462,6 +493,24 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	if (KEYMANAGER->isStayKeyDown('X')) //빨아 들이기
 	{
+		if (_inhaleKind != KIRBY && _pose != ATTACK && _pose != EXHALE) //공격 - 변신 커비일때만 가능
+		{
+			if (_inhaleKind == BURNING)
+			{
+				_pose = ATTACK;
+				_playAni = true;
+			}
+			if (_inhaleKind == FREEZE)
+			{
+				_pose = ATTACK;
+				_playAni = true;
+			}
+			if (_inhaleKind == SPARK)
+			{
+				_pose = ATTACK;
+				_playAni = true;
+			}
+		}
 		if (_inhaleKind == KIRBY) //기본 커비시에만 흡입 모션, 다른 모션으로 흡입시에 이미지 초기화가 다르기 때문에 터짐
 		{
 			RECT temp;
@@ -483,7 +532,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			//오브젝트 흡입
 			for (int i = 0; i < objectPos.size(); i++)
 			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
-				if (IntersectRect(&temp, &rc_inhale, &objectPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false)
+				if (IntersectRect(&temp, &rc_inhale, &objectPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false && objectPos[i]->getAppearMapNum() == curMapNumber)
 				{
 					objectPos[i]->absorption(PointMake(_x, _y));
 					//흡입 도중 플레이어와 부딪혔을 때
@@ -516,7 +565,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			//몬스터 흡입
 			for (int i = 0; i < enemyPos.size(); i++)
 			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
-				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false)
+				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false && objectPos[i]->getAppearMapNum() == curMapNumber)
 				{
 					//enemyPos[i]->absorption(PointMake(_x, _y));
 					//흡입 도중 플레이어와 부딪혔을 때
@@ -562,10 +611,6 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		}
 	}
 
-	if (KEYMANAGER->isOnceKeyDown(VK_BACK))
-	{
-
-	}
 
 	//애니메이션
 	switch (_pose)
@@ -642,8 +687,8 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		}
 		else if (_curInhale == true)
 		{
-			if (_curRight == true) { _starFrame = 504; _endFrame = 512; }
-			else { _starFrame = 522; _endFrame = 530; }
+			if (_curRight == true) { _starFrame = 504; _endFrame = 511; }
+			else { _starFrame = 522; _endFrame = 529; }
 		}
 		break;
 	case SLIDING:
@@ -787,8 +832,8 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		if (_curRight == true && _inhaleKind == BURNING) { _starFrame = 460; _endFrame = 482; }
 		else if (_curRight == false && _inhaleKind == BURNING) { _starFrame = 483; _endFrame = 505; }
 
-		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 396; _endFrame = 405; }
-		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 414; _endFrame = 423; }
+		if (_curRight == true && _inhaleKind == FREEZE) { _starFrame = 397; _endFrame = 404; }
+		else if (_curRight == false && _inhaleKind == FREEZE) { _starFrame = 415; _endFrame = 422; }
 
 		if (_curRight == true && _inhaleKind == SPARK) { _starFrame = 400; _endFrame = 406; }
 		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 420; _endFrame = 426; }
@@ -804,20 +849,21 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	default:
 		break;
 	}
-
-	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _curInhale == false)
+	
+	//반복 할 애니메이션
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _pose != ATTACK &&_curInhale == false)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
 		_playAni = false;
 	}
-	else if (_playAni == true)
+	else if (_playAni == true) //멈출 애니메이션
 	{ 
 		_ani->setPlayFrame(_starFrame, _endFrame, false, false);
 		_ani->start();
 		_playAni = false;
 	}
-	moveCollision(objectPos);
+	moveCollision(objectPos, curMapNumber);
 
 	//플레이어 이미지 위치 업데이트
 	//기본 커비일때 위치 초기화
@@ -829,21 +875,21 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	else if (_inhaleKind == BURNING)
 	{
 		_imageX = _x - (_ani->getFrameWidth() / 2);
-		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 24;
 	}
 	else if (_inhaleKind == FREEZE)
 	{
 		_imageX = _x - (_ani->getFrameWidth() / 2);
-		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 24;
 	}
 	else if (_inhaleKind == SPARK)
 	{
 		_imageX = _x - (_ani->getFrameWidth() / 2);
-		_imageY = _y - (_ani->getFrameHeight() / 2) + 23;
+		_imageY = _y - (_ani->getFrameHeight() / 2) + 24;
 	}
 }
 
-void player::moveCollision(vector<fieldObject*> objectPos)
+void player::moveCollision(vector<fieldObject*> objectPos, int curMapNumber)
 {
 	RECT temp;
 
@@ -851,7 +897,7 @@ void player::moveCollision(vector<fieldObject*> objectPos)
 
 	for (int i = 0; i < objectPos.size(); i++)
 	{
-		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()))
+		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()) && objectPos[i]->getAppearMapNum() == curMapNumber)
 		{
 			//부딪힐 때 지워지는 것들
 			if (objectPos[i]->getDiscernNum() == upItem ||
