@@ -35,6 +35,8 @@ private:
 	bool _curSwallow;
 	bool _curjumping; //점핑 상태인가
 	bool groundCollision;
+	int _inhaleKind;
+	bool _curInhale;
 
 	float DubbleKeyTimer;
 	float DublleKeyWorldTimer;
@@ -47,10 +49,11 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*);
+	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*,int);
 
-	void move(vector<fieldObject*>);
+	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*);
 	void moveCollision(vector<fieldObject*>);
+
 
 	bool objectCollision(vector<fieldObject*>);
 	void objectCollisionReaction(vector<fieldObject*>, int);
@@ -61,8 +64,11 @@ public:
 	bool rightMove();
 	bool leftMove();
 
+	bool objectRightMove(vector<fieldObject*> objectPos);
+	bool objectLeftMove(vector<fieldObject*> objectPos);
+	bool objectTopMove(vector<fieldObject*> objectPos);
+
 	POINT getPos() { return PointMake(_x, _y); }
-	void setPos(POINT playPos) { _x = playPos.x; _y = playPos.y; }
 	POINT getImagePos() { return PointMake(_imageX, _imageY); }
 
 	int getLife() { return _life; }
