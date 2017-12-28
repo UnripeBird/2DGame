@@ -44,12 +44,14 @@ HRESULT player::init(void)
 	_curSliding = 0;
 	_maxSliding = 0;
 	_gravity = 4;
-	_life = 99;
+	_life = 9;
 	_maxHp = 6;
 	_curHp = _maxHp;
 	_inhaleKind = KIRBY;
 	_curInhale = false;
 	_ReleaseTrans = false;
+	_hitWorldTimer = TIMEMANAGER->getWorldTime();
+	_hitTimer = TIMEMANAGER->getWorldTime();
 
 	IMAGEMANAGER->addFrameImage("kirby", "image/kirby.bmp", 1728, 3648, 18, 38, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
@@ -103,34 +105,22 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 	objectCollision(objectPos);
 	enemyCollision(enemyPos);
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
-	
-	if (KEYMANAGER->isOnceKeyDown(VK_LBUTTON))
-	{
-		BulletManager->bulletFire(Star, PointMake(_x, _y), !_curRight);
-		for (int i = 0; i < 5; i++)
-		{
-	//		enemyPos[i]->Hit();
-		}
-	//BulletManager->getBullet()[0]->getrc()
+	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 
+	if (_ReleaseTrans == true && _pose != COLLISION) //변신 지웠을때 처리해 줄 것
+	{
+		_pose = IDLE;
+		_playAni = true;
+		_ani->setFPS(5);
+		_inhaleKind = KIRBY;
+		_ReleaseTrans = false;
+		_fileNum = 0;
+		_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
+		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 	}
-	if (KEYMANAGER->isStayKeyDown(VK_SPACE))
+	if (_pose == DIE && _ani->isPlay() == true)
 	{
-
-		for (int i = 2; i < 5; i++)
-		{
-			enemyPos[i]->Eating(getPos());
-		}
-
-
-	}
-	if (KEYMANAGER->isOnceKeyUp(VK_SPACE))
-	{
-		for (int i = 2; i < 5; i++)
-		{
-			enemyPos[i]->setState(2);
-		}
-
+		_y -= 50;
 	}
 	if (_pose == LANDING)
 	{
@@ -138,6 +128,82 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		_playAni = true;
 	}
 
+	//공격 충돌
+	if (_inhaleKind != KIRBY && _pose == ATTACK)
+	{
+		RECT temp;
+		RECT rcAttack;
+
+		if (_inhaleKind == BURNING)
+		{
+			if (_curRight == true)
+			{
+				_x += 3;
+				rcAttack.left = _x - 80;
+				rcAttack.right = _x + 25;
+				rcAttack.top = _y - 30;
+				rcAttack.bottom = _y + 30;
+			}
+			else if (_curRight == false)
+			{
+				_x -= 3;
+				rcAttack.left = _x - 25;
+				rcAttack.right = _x + 80;
+				rcAttack.top = _y - 30;
+				rcAttack.bottom = _y + 30;
+			}
+		}
+		if (_inhaleKind == FREEZE)
+		{
+			rcAttack.left = _x - 50;
+			rcAttack.right = _x + 50;
+			rcAttack.top = _y - 80;
+			rcAttack.bottom = _y + 60;
+		}
+		if (_inhaleKind == SPARK)
+		{
+			rcAttack.left = _x - 70;
+			rcAttack.right = _x + 70;
+			rcAttack.top = _y - 70;
+			rcAttack.bottom = _y + 70;
+		}
+		for (int i = 0; i < enemyPos.size(); i++) //몬스터 충돌
+		{
+			if (IntersectRect(&temp, &rcAttack, &enemyPos[i]->getrc()) && _pose == ATTACK && enemyPos[i]->getAppearMapNum() == curMapNumber)
+			{
+				if (enemyPos[i]->getDiscernNum() == waddledee ||	//기본 몬스터~
+					enemyPos[i]->getDiscernNum() == Frog ||
+					enemyPos[i]->getDiscernNum() == Bronto ||
+					enemyPos[i]->getDiscernNum() == Burning ||		//특수 몬스터~
+					enemyPos[i]->getDiscernNum() == Chilly ||
+					enemyPos[i]->getDiscernNum() == Spark)
+				{
+					enemyPos[i]->Hit();
+				}
+			}
+		}
+		for (int i = 0; i < objectPos.size(); i++) //오브젝트 충돌
+		{
+			if (IntersectRect(&temp, &rcAttack, &objectPos[i]->getrc()) && _pose == ATTACK && objectPos[i]->getAppearMapNum() == curMapNumber)
+			{
+				if (objectPos[i]->getDiscernNum() == boombox)
+				{
+					objectPos[i]->setState(2);
+				}
+			}
+		}
+	}
+	if (_pose == COLLISION && _ani->isPlay() == true)
+	{
+		if (_curRight == true)
+		{
+			_x -= 3;
+		}
+		else if (_curRight == false)
+		{
+			_x += 3;
+		}
+	}
 	//애니메이션이 정지 했을때 여기서 처리해 주기
 	if (_pose == SWALLOW && _ani->isPlay() == false && _curInhale == true) //변신 몬스터나 오브젝트를 삼켰을 때 관리해주는 곳
 	{
@@ -192,17 +258,15 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		_pose = IDLE;
 		_playAni = true;
 	}
-
-	if (_ReleaseTrans == true)
+	if (_pose == COLLISION && _ani->isPlay() == false)
 	{
 		_pose = IDLE;
 		_playAni = true;
 		_ani->setFPS(5);
-		_inhaleKind = KIRBY;
-		_ReleaseTrans = false;
+	}
+	if (_pose == DIE && _ani->isPlay() == false)
+	{
 
-		_image = IMAGEMANAGER->findImage(_fileName[0]);
-		_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 	}
 
 	//충돌 - 아래
@@ -516,7 +580,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	if (KEYMANAGER->isStayKeyDown('X')) //빨아 들이기
 	{
-		if (_inhaleKind != KIRBY && _pose != ATTACK && _pose != EXHALE) //공격 - 변신 커비일때만 가능
+		if (_inhaleKind != KIRBY && _pose != ATTACK && _pose != EXHALE && _curInhale == false) //공격 - 변신 커비일때만 가능
 		{
 			if (_inhaleKind == BURNING)
 			{
@@ -572,6 +636,12 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 							_pose = IDLE;
 							_playAni = true;
 							objectPos[i]->setState(4);
+							if (objectPos[i]->getDiscernNum() == upItem) { _life += 1; }
+							if (objectPos[i]->getDiscernNum() == candyitem) { _curHp += 1; }
+							if (objectPos[i]->getDiscernNum() == maxtem) { _curHp = _maxHp; }
+							if (objectPos[i]->getDiscernNum() == meat) { _curHp += 1; }
+							if (objectPos[i]->getDiscernNum() == drink) { _curHp += 2; }
+							if (objectPos[i]->getDiscernNum() == cherry) { _curHp += 1; }
 						}
 						//입에 담고 있어야하는 것들
 						if (objectPos[i]->getDiscernNum() == starbox)
@@ -590,7 +660,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
 				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false && objectPos[i]->getAppearMapNum() == curMapNumber)
 				{
-					//enemyPos[i]->absorption(PointMake(_x, _y));
+					enemyPos[i]->Eating(PointMake(_x, _y));
 					//흡입 도중 플레이어와 부딪혔을 때
 					if (IntersectRect(&temp, &_rc, &enemyPos[i]->getrc()))
 					{
@@ -605,7 +675,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 							_pose = IDLE;
 							_playAni = true;
 							_curInhale = true;
-							enemyPos[i]->setState(3);
+							enemyPos[i]->setState(2);
 						}
 
 						if (enemyPos[i]->getDiscernNum() == Burning)
@@ -844,8 +914,8 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		else if (_curRight == false && _inhaleKind == SPARK) { _starFrame = 380; _endFrame = 381; }
 		break;
 	case M_INHALE:
-		if (_curRight == true) { _starFrame = 399; _endFrame = 400; }
-		else { _starFrame = 417; _endFrame = 418; }
+		if (_curRight == true) { _starFrame = 398; _endFrame = 400; }
+		else { _starFrame = 416; _endFrame = 418; }
 		break;
 	case M_EXHALE:
 		if (_curRight == true) { _starFrame = 468; _endFrame = 472; }
@@ -863,18 +933,18 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		break;
 	case COLLISION:
 		if (_curRight == true) { _starFrame = 649; _endFrame = 656; }
-		else { _starFrame = 667; _endFrame = 664; }
+		else { _starFrame = 667; _endFrame = 674; }
 		break;
 	case DIE:
 		if (_curRight == true) { _starFrame = 360; _endFrame = 375; }
-		else { _starFrame = 378; _endFrame = 393; }
+		else { _starFrame = 378; _endFrame = 374; }
 		break;
 	default:
 		break;
 	}
 	
 	//반복 할 애니메이션
-	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _pose != ATTACK &&_curInhale == false)
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _pose != ATTACK && _pose != COLLISION && _pose != DIE && _curInhale == false)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
@@ -886,7 +956,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		_ani->start();
 		_playAni = false;
 	}
-	moveCollision(objectPos, curMapNumber);
+	moveCollision(objectPos, enemyPos, curMapNumber);
 
 	//플레이어 이미지 위치 업데이트
 	//기본 커비일때 위치 초기화
@@ -912,12 +982,53 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 }
 
-void player::moveCollision(vector<fieldObject*> objectPos, int curMapNumber)
+void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, int curMapNumber)
 {
 	RECT temp;
 
 	_rc = RectMakeCenter(_x, _y, 50, 50);
 
+	//적 충돌 - 커비 데미지 입음
+	if (_pose != ATTACK && _pose != M_INHALE && _curInhale != true && _pose != DIE)
+	{
+		RECT temp;
+
+		for (int i = 0; i < enemyPos.size(); i++) //몬스터 충돌
+		{
+			if (IntersectRect(&temp, &_rc, &enemyPos[i]->getrc()) && enemyPos[i]->getAppearMapNum() == curMapNumber)
+			{
+				if (enemyPos[i]->getDiscernNum() == waddledee ||	//기본 몬스터~
+					enemyPos[i]->getDiscernNum() == Frog ||
+					enemyPos[i]->getDiscernNum() == Bronto ||
+					enemyPos[i]->getDiscernNum() == Burning ||		//특수 몬스터~
+					enemyPos[i]->getDiscernNum() == Chilly ||
+					enemyPos[i]->getDiscernNum() == Spark)
+				{
+					if (_pose != COLLISION && _hitWorldTimer - _hitTimer > 1.5f)
+					{
+						_hitTimer = TIMEMANAGER->getWorldTime();
+						_curHp -= 1;
+						_pose = COLLISION;
+						_playAni = true;
+						_ani->setFPS(7);
+						_ReleaseTrans = true;
+						_image = IMAGEMANAGER->findImage(_fileName[0]);
+						_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
+
+						if (_curHp < 1)
+						{
+							_pose = DIE;
+							_playAni = true;
+							_life -= 1;
+							_curHp = _maxHp;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//오브젝트 충돌
 	for (int i = 0; i < objectPos.size(); i++)
 	{
 		if (IntersectRect(&temp, &_rc, &objectPos[i]->getrc()) && objectPos[i]->getAppearMapNum() == curMapNumber)
@@ -931,6 +1042,12 @@ void player::moveCollision(vector<fieldObject*> objectPos, int curMapNumber)
 				objectPos[i]->getDiscernNum() == cherry)
 			{
 				objectPos[i]->setState(4);
+				if (objectPos[i]->getDiscernNum() == upItem) { _life += 1; }
+				if (objectPos[i]->getDiscernNum() == candyitem) { _curHp += 1; }
+				if (objectPos[i]->getDiscernNum() == maxtem) { _curHp = _maxHp; }
+				if (objectPos[i]->getDiscernNum() == meat) { _curHp += 1; }
+				if (objectPos[i]->getDiscernNum() == drink) { _curHp += 2; }
+				if (objectPos[i]->getDiscernNum() == cherry) { _curHp += 1; }
 			}
 			//캐릭터 기준 위쪽 충돌
 			if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
@@ -940,7 +1057,7 @@ void player::moveCollision(vector<fieldObject*> objectPos, int curMapNumber)
 				{
 					_pose = FALLING;
 				}
-				break;
+				//break;
 			}
 			//캐릭터 기준 아래쪽 충돌
 			if (_rc.left < objectPos[i]->getrc().right && _rc.right > objectPos[i]->getrc().left &&
@@ -954,7 +1071,7 @@ void player::moveCollision(vector<fieldObject*> objectPos, int curMapNumber)
 					_pose = LANDING;
 					_playAni = true;
 				}
-				break;
+				//break;
 			}		
 		}
 	}

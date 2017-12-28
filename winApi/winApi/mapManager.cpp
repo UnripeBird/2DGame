@@ -147,7 +147,7 @@ void mapManager::render(void)
 
 	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
 
-	static int _Life = _playerPos->getLife();
+	int _Life = _playerPos->getLife();
 	int Life = _Life;
 
 	vector<int> LifeVec;
@@ -171,7 +171,7 @@ void mapManager::render(void)
 		IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
 	}
 
-	static int Hp = _playerPos->getCurHp();
+	int Hp = _playerPos->getCurHp();
 
 	for (int i = 0; i < 6; i++)
 	{
