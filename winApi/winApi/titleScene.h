@@ -1,16 +1,17 @@
 #pragma once
 #include "gameNode.h"
 
-class mainGame : public gameNode
+class titleScene : public gameNode
 {
 private:
+	int _alpha;
 public:
 	HRESULT init(void);
 	void release(void);
 	void update(void);
-	void render(float);
+	void render(void);
 
-	mainGame() {}
-	~mainGame() {}
+	titleScene() {}
+	~titleScene() {}
 };
 

@@ -82,7 +82,7 @@ void mapManager::render(void)
 	POINT playerPosition = _playerPos->getPos();
 	POINT playerImagePosition = _playerPos->getImagePos();
 
-	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - WINSIZEX)) * 100), _cameraY);
+	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - 400)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 
 	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
@@ -147,7 +147,7 @@ void mapManager::render(void)
 
 	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
 
-	static int _Life = _playerPos->getLife();
+	int _Life = _playerPos->getLife();
 	int Life = _Life;
 
 	vector<int> LifeVec;
@@ -171,7 +171,7 @@ void mapManager::render(void)
 		IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
 	}
 
-	static int Hp = _playerPos->getCurHp();
+	int Hp = _playerPos->getCurHp();
 
 	for (int i = 0; i < 6; i++)
 	{

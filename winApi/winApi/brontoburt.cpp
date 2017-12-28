@@ -182,7 +182,7 @@ void brontoburt::Hit()
 {
 
 	_hitCount = true;
-
+	_ani->stop();
 	_hitTimer = TIMEMANAGER->getWorldTime();
 
 }
