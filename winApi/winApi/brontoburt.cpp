@@ -84,7 +84,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 
 		if (_hitCount == false && _sitdown == false && _state == 1 && _moveselect == true)
 		{
-			if (getDistance(_rezen.x, _rezen.y, _x, _y) < 200)
+			if (getDistance(_rezen.x, _rezen.y, _x, _y) < 100)
 			{
 				switch (_dr)
 				{
@@ -111,6 +111,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 					{
 						moveright();
 						_x += _moveSpeed;
+						_y += -sinf((PI / 90) * _triangle) * _moveSpeed;
 					}
 					break;
 					case drleft:

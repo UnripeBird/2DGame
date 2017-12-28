@@ -131,6 +131,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		}
 
 	}
+	
 	// 김영준이 만든거 여기까지
 	if (_pose == LANDING)
 	{
@@ -254,6 +255,7 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 			_playAni = true;
 		}
 	}
+	cout << _x << "," << _y << endl;
 }
 
 void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulletManager* BulletManager)

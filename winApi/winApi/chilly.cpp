@@ -6,7 +6,7 @@ HRESULT chilly::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum
 	enemy::init(imageName, discernNum, appearMapNum, pos);
 	//이동속도 1.0
 	_moveSpeed = 1.0f;
-
+	
 	_rezen = pos;
 	_state = 1;
 	_framex = -1;
@@ -127,6 +127,7 @@ void chilly::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> 
 
 void chilly::Hit()
 {
+	_ani->stop();
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
@@ -185,14 +186,22 @@ void chilly::hitmoveleft()
 {
 	_ani->setPlayFrame(16, 16, false, true);
 	_ani->setFPS(3);
-	_ani->start();
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
 }
 
 void chilly::hitmoveright()
 {
 	_ani->setPlayFrame(17, 17, false, true);
 	_ani->setFPS(3);
-	_ani->start();
+
+	if (_ani->isPlay() == false)
+	{
+		_ani->start();
+	}
 }
 
 void chilly::death(vector<bullet*> bulletVec)

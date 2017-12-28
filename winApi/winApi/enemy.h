@@ -35,6 +35,7 @@ protected:
 	BOOL _attactmotion;
 	BOOL _burningselect;
 	BOOL _eating;
+	BOOL _atkreset;
 	
 	float _hitTimer;
 	float _hitWorldTimer;
@@ -42,6 +43,7 @@ protected:
 
 	int _triangle;
 	float _attacktimer;
+	float _missileTimer;
 	direction _dr;
 
 

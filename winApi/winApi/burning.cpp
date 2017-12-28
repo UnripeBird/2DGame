@@ -190,9 +190,10 @@ void burning::attackmoveright()
 void burning::hitmove()
 {
 
-	_ani->setPlayFrame(42, 42, false, true);
+	_ani->setPlayFrame(13, 13, false, true);
 	_ani->setFPS(3);
 	_ani->start();
+
 }
 
 void burning::death(vector<bullet*> bulletVec)

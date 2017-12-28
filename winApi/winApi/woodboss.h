@@ -10,7 +10,9 @@ private:
 	BOOL _whisle;
 	BOOL _missile;
 	POINT _rezen;
+	BOOL _livecheck;
 	int _hp;
+
 public:
 	HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager);
@@ -19,7 +21,7 @@ public:
 	void Eating(POINT playerpoint);
 	void face();
 	void attackface();
-	void missileattack();
+	void missileattack(bulletManager* BulletManager,int x, POINT playerPoint);
 	void whisleattack(bulletManager* BulletManager);
 	void hitmove();
 	

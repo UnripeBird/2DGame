@@ -22,7 +22,10 @@ public:
 	HRESULT init(void);
 	void release(void);
 	void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, int curMapNum, bulletManager* BulletManager);
-
+	void mapsetting(int i);
+	void mapmonster1();
+	void mapmonster2();
+	void mapmonster3();
 	vector<enemy*> getEnemy() { return _vEnemy; }
 
 	enemyManager() {}

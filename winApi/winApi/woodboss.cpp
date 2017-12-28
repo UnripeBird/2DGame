@@ -8,18 +8,21 @@ HRESULT woodboss::init(string imageName, ENEMYDISCERN discernNum, int appearMapN
 	_moveSpeed = 1.0f;
 
 	_rezen = pos;
-	_state = 0;
+	_state = 1;
 	
 	_framey = 0;
 	_framex = -1;
 	_whisle = false;
 	_missile = false;
+	_atkreset = false;
+	_livecheck = true;
 	_hp = 10;
 	_ani->init(200 * 3, 380 * 3, 120, 76 * 3);
 	_ani->setPlayFrame(0, 1, false, true);
 	_ani->setFPS(3);
 	_ani->start();
 	_attacktimer = TIMEMANAGER->getWorldTime();
+	_missileTimer = TIMEMANAGER->getWorldTime();
 	return S_OK;
 }
 
@@ -27,37 +30,98 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 {
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
-
-
+	//보스 입냄새 공격 사거리 길게 늘리기
 	
-	
-	/*if (_hitWorldTimer - _attacktimer > 1.0f)
-	{
-		
-		_whisle = true;
-		attackface();
-		//whisleattack(BulletManager);
-	}
-//	whisleattack(BulletManager);*/
-	if (_whisle == false && _hitCount == false)
-	{
-		face();
-	}
-	if (_hitCount == true)
+	if (_hp == 0)
 	{
 		hitmove();
-
-
 		if (_hitWorldTimer - _hitTimer > 1.0f)
-		{
+		{	
+			_livecheck = false;
 			_hitCount = false;
-			
+			_state = 2;
 
 		}
+	
 	}
+	if (_livecheck == true)
+	{
+		if (_whisle == false && _hitCount == false)
+		{
+			face();
+		}
+		if (_hitCount == true)
+		{
+			hitmove();
 
-	_rc = RectMakeCenter(_x+30, _y+50, 250, 500);
 
+			if (_hitWorldTimer - _hitTimer > 1.0f)
+			{
+				_hitCount = false;
+
+
+			}
+		}
+		//공격 모션
+		if (_hitWorldTimer - _attacktimer > 5.0f)
+		{
+			if (_ani->isPlay() == true)
+			{
+				_ani->stop();
+			}
+			attackface();
+			if (_atkreset == false)
+			{
+				_whisle = true;
+				_atkreset = true;
+			}
+
+			if (_hitWorldTimer - _attacktimer > 7.0f)
+			{
+				_attacktimer = TIMEMANAGER->getWorldTime();
+				_atkreset = false;
+			}
+
+
+		}
+
+		if (_hitWorldTimer - _missileTimer > 2.0f)
+		{
+			if (_missile == false)
+			{
+
+				if (_hitWorldTimer - _missileTimer > 3.0f)
+				{
+					_missileTimer = TIMEMANAGER->getWorldTime();
+					_missile = true;
+				}
+			}
+
+
+		}
+
+
+
+		if (_whisle == true)
+		{
+			whisleattack(BulletManager);
+			_whisle = false;
+
+		}
+
+		if (_missile == true)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+				missileattack(BulletManager, i, playerPoint);
+
+			}
+			_missile = false;
+		}
+		_rc = RectMakeCenter(_x + 30, _y + 50, 250, 500);
+
+	}
+	
 }
 
 void woodboss::Hit()
@@ -65,6 +129,7 @@ void woodboss::Hit()
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
+	_hp -= 1;
 }
 
 void woodboss::Eating(POINT playerpoint)
@@ -84,6 +149,7 @@ void woodboss::face()
 
 void woodboss::attackface()
 {
+	
 	_ani->setPlayFrame(15, 17, false, true);
 	_ani->setFPS(3);
 	if (_ani->isPlay() == false)
@@ -101,22 +167,19 @@ void woodboss::hitmove()
 		_ani->start();
 	}
 }
-void woodboss::missileattack()
+void woodboss::missileattack(bulletManager* BulletManager,int x, POINT playerPoint)
 {
-		
+	
+		BulletManager->enemyFire(BossApple, PointMake(x* 80, 200), getAngle(x*80, 200, playerPoint.x, playerPoint.y));
+
+	
+	
+	
 }
 void woodboss::whisleattack(bulletManager* BulletManager)
 {	
-	_attacktimer = TIMEMANAGER->getWorldTime();
-
-
-	BulletManager->enemyFire(BossBreath, PointMake(700,600));
 	
-
-	if (_ani->isPlay() == false)
-	{
-		_whisle = false;
-	}
-
+	BulletManager->enemyFire(BossBreath, PointMake(700,700));
+	
 }
 
