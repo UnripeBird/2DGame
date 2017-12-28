@@ -58,6 +58,7 @@ void playScene::update(void)
 {
 	_bulletManager->update();
 
+
 	_player->update(_objectManager->getObject(), _enemyManager->getEnemy(),_mapManager->getPixelImage(), _bulletManager);
 
 	_objectManager->update(_player->getPos(), _bulletManager->getBullet());
