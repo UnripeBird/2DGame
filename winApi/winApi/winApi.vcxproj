@@ -42,8 +42,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -157,6 +157,7 @@
     <ClCompile Include="fieldBoom0.cpp" />
     <ClCompile Include="fieldBoom0_1.cpp" />
     <ClCompile Include="fieldBoom2.cpp" />
+    <ClCompile Include="fieldBoom2_1.cpp" />
     <ClCompile Include="fieldBoomleft.cpp" />
     <ClCompile Include="fieldBoomMid.cpp" />
     <ClCompile Include="fieldBoomRight.cpp" />
@@ -220,6 +221,7 @@
     <ClInclude Include="fieldBoom0.h" />
     <ClInclude Include="fieldBoom0_1.h" />
     <ClInclude Include="fieldBoom2.h" />
+    <ClInclude Include="fieldBoom2_1.h" />
     <ClInclude Include="fieldBoomleft.h" />
     <ClInclude Include="fieldBoomMid.h" />
     <ClInclude Include="fieldBoomRight.h" />

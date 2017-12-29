@@ -3,6 +3,8 @@
 class StarBox : public fieldObject
 {
 private:
+	int _mapState;
+	bool _Loop;
 	//폭발 이펙트때 사용
 	int count;
 	float _boomTimer;
@@ -29,7 +31,6 @@ public:
 	void bulletEffect();		//커비 브레스 사라지는 이펙트
 
 	void absorption(POINT);
-
 
 	StarBox() {}
 	~StarBox() {}

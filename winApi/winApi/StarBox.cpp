@@ -15,7 +15,7 @@ HRESULT StarBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	fieldObject::init(objectName, discernNum, mapNum, pos);
 
 	_image = IMAGEMANAGER->findImage("박스오브젝트");
-
+	_mapState = mapNum;
 	//오브젝트 상자 번호
 	_objNumberX = 0;
 	_objNumberY = 4;
@@ -24,7 +24,7 @@ HRESULT StarBox::init(string objectName, OBJECTDISCERN discernNum, int mapNum, P
 	count = 0;
 	bullectCount = 0;
 	_curRight = true;
-
+	_Loop = false;
 	return S_OK;
 }
 
@@ -62,6 +62,24 @@ void StarBox::move()
 	{
 		_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
 	}
+	if (_mapState != 3) return;
+
+	if (_x <= 592 && !_Loop)
+	{
+		_x += 1.0f;
+	}
+	else
+	{
+		_Loop = true;
+	}
+	if(_x>=31&&_Loop)
+	{
+		_x -= 1.0f;
+	}
+	else
+	{
+		_Loop = false;
+	}
 }
 
 void StarBox::boomEffect(void)
@@ -78,6 +96,7 @@ void StarBox::boomEffect(void)
 		if (count == 5)
 		{
 			count = 0;
+			_state = 2;
 		}
 	}
 }

@@ -73,6 +73,7 @@ public:
 	bool objectTopMove(vector<fieldObject*> objectPos , int curMapNumber);
 
 	POINT getPos() { return PointMake(_x, _y); }
+	void setPos(POINT pos) { _x = pos.x; _y = pos.y; }
 	POINT getImagePos() { return PointMake(_imageX, _imageY); }
 
 	int getLife() { return _life; }

@@ -55,7 +55,7 @@ void stonBox::move()
 	}
 	else
 	{
-		_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
+		_rc = RectMakeCenter(_x, _y, _image->getFrameWidth()+5, _image->getFrameHeight());
 	}
 }
 

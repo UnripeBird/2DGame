@@ -10,7 +10,8 @@ private:
 public:
 	HRESULT init(void);
 	void release(void);
-	void update(POINT playerPosition, vector<bullet*> bulletPos);
+	void update(POINT playerPosition, vector<bullet*> bulletPos, int curMapNum);
+	void reStar();
 
 	vector<fieldObject*> getObject() { return _vObject; }
 

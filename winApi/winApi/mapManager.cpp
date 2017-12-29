@@ -30,10 +30,10 @@ HRESULT mapManager::init(void)
 	_cameraX = 0;
 	_cameraY = 0;
 
+	_playerPos = nullptr;
+
 	_afterMapNumber = 0;
 	_curMapNumber = 0;
-
-	mapChange(0);
 
 	return S_OK;
 }
@@ -47,6 +47,11 @@ void mapManager::release(void)
 
 void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vector<enemy*> enemyPos, vector<bullet*> bulletPos, vector<bullet*> enemyBullet)
 {
+	if (_playerPos == nullptr)
+	{
+		_playerPos = playerPos;
+		mapChange(0);
+	}
 	_playerPos = playerPos;
 	_objectPos = objectPos;
 	_enemyPos = enemyPos;
@@ -195,4 +200,13 @@ void mapManager::mapChange(int nextMap)
 	mapBit = (HBITMAP)CreateCompatibleBitmap(getMemDC(), _mapImageVector[nextMap]->getWidth(), _mapImageVector[nextMap]->getHeight()); //맵 크기만큼의 빈 비트맵을 생성한다
 	mapOBit = (HBITMAP)SelectObject(mapDC, mapBit);
 //여기서 맵번호에따라 플레이어 좌표  - 예외처리후 해야지 ㅎㅎ
+
+	if (_curMapNumber == 0)
+	{
+		_playerPos->setPos(PointMake(100, 100));
+	}
+	else if (_curMapNumber == 1)
+	{
+		_playerPos->setPos(PointMake(100, 100));
+	}
 }
