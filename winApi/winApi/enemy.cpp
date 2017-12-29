@@ -33,7 +33,7 @@ HRESULT enemy::init(string imageName, ENEMYDISCERN discernNum, int appearMapNum,
 	_attactmotion = false;
 	//¸Ô´ÂÇÔ¼ö true ÀÏ °æ¿ì ¸ÔÈû
 	_eating = false;
-
+	_rectcheck = true;
 	_gravity = 3.0f;
 
 
@@ -51,8 +51,9 @@ void enemy::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> ob
 
 }
 
-void enemy::pixelcollision(image * pixelimage)
+void enemy::pixelcollision(image * pixelimage, vector<fieldObject*> objectVec)
 {
+	
 	
 	//Ãæµ¹ - ¾Æ·¡
 	for (int i =_rc.bottom; i > _rc.bottom - 1; i--)
@@ -127,8 +128,22 @@ void enemy::pixelcollision(image * pixelimage)
 	
 }
 
-void enemy::brontocollision(image * pixelimage)
+void enemy::brontocollision(image * pixelimage, vector<fieldObject*> objectVec)
 {
+
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_collisioncheck = true;
+		}
+		else
+		{
+			_collisioncheck = false;
+		}
+	}
+
 	for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
 	{
 		COLORREF color = GetPixel(pixelimage->getMemDC(), _x, i);
@@ -144,7 +159,11 @@ void enemy::brontocollision(image * pixelimage)
 			_state = 1;
 			break;
 		}
-	
+		else
+		{
+			_collisioncheck = false;
+
+		}
 	}
 
 

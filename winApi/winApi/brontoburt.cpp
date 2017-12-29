@@ -28,7 +28,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 	if (_hitCount == false && _eating == false)
 	{
 
-		brontocollision(pixelimage);
+		brontocollision(pixelimage, objectVec);
 	}
 	
 	death(bulletVec);
@@ -71,7 +71,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 				break;
 				}
 
-				if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 150)
+				if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 50)
 				{
 					_sitdown = false;
 					_moveselect = true;

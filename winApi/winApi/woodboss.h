@@ -11,7 +11,7 @@ private:
 	BOOL _missile;
 	POINT _rezen;
 	BOOL _livecheck;
-	int _hp;
+	
 
 public:
 	HRESULT init(string, ENEMYDISCERN, int, POINT);
@@ -23,8 +23,9 @@ public:
 	void attackface();
 	void missileattack(bulletManager* BulletManager,int x, POINT playerPoint);
 	void whisleattack(bulletManager* BulletManager);
-	void hitmove();
 	
+	void hitmove();
+	void underattack(vector<bullet*> bulletVec);
 	void sethp(int h) { _hp = h; }
 	int gethp() { return _hp; }
 	woodboss() {}

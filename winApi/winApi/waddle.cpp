@@ -27,10 +27,26 @@ void waddle::update(image* pixelimage, POINT playerPoint, vector<fieldObject*> o
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	//¿òÁ÷ÀÓ
-	if (_hitCount == false && _eating == false)
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_rectcheck = true;
+			_collisioncheck = true;
+			_state = 1;
+			break;
+		}
+		else
+		{
+			_rectcheck = false;
+			_collisioncheck = false;
+		}
+
+	}
+	if (_hitCount == false && _eating == false && _rectcheck == false)
 	{
 
-		pixelcollision(pixelimage);
+		pixelcollision(pixelimage, objectVec);
 	}
 
 	death(bulletVec);

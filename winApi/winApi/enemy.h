@@ -27,7 +27,7 @@ protected:
 	float _frameTimer;
 	float _frameWorldTimer;
 	RECT _rc;
-	
+	RECT _rctemp;
 	BOOL _hitCount;
 	BOOL _moveselect;
 	BOOL _collisioncheck;
@@ -36,7 +36,7 @@ protected:
 	BOOL _burningselect;
 	BOOL _eating;
 	BOOL _atkreset;
-	
+	BOOL _rectcheck;
 	float _hitTimer;
 	float _hitWorldTimer;
 	float _gravity;
@@ -45,7 +45,7 @@ protected:
 	float _attacktimer;
 	float _missileTimer;
 	direction _dr;
-
+	int _hp;
 
 	int _state; //0 드랍상태 1 행동상태 2 삭제대기 3 빨려가기
 
@@ -56,8 +56,8 @@ public:
 	virtual HRESULT init(string, ENEMYDISCERN, int, POINT);
 	void release(void);
 	virtual void update(image* pixelimage, POINT playerPoint, vector<fieldObject*> objectVec, vector<bullet*> bulletVec, bulletManager* BulletManager);
-	void pixelcollision(image * pixelimage);
-	void brontocollision(image * pixelimage);
+	void pixelcollision(image * pixelimage, vector<fieldObject*> objectVec);
+	void brontocollision(image * pixelimage, vector<fieldObject*> objectVec);
 	
 	virtual void Hit() = 0;
 	virtual void Eating(POINT playerpoint) = 0;
@@ -66,7 +66,7 @@ public:
 	POINT getPos() { return PointMake(_x, _y); }
 	RECT getrc() { return _rc; }
 
-
+	int gethp() { return _hp; }
 
 	ENEMYDISCERN getDiscernNum() { return _discernNum; }
 	int getAppearMapNum() { return _appearMapNum; }

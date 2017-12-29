@@ -22,7 +22,6 @@
 #include <string>
 #include <vector>
 #include <map>
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
 using namespace std;
 

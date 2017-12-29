@@ -26,7 +26,7 @@ void chilly::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> 
 	//움직이는 방향
 	if (_hitCount == false && _eating == false)
 	{
-		pixelcollision(pixelimage);
+		pixelcollision(pixelimage, objectVec);
 	}
 	death(bulletVec);
 	//움직임

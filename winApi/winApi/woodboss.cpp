@@ -23,6 +23,7 @@ HRESULT woodboss::init(string imageName, ENEMYDISCERN discernNum, int appearMapN
 	_ani->start();
 	_attacktimer = TIMEMANAGER->getWorldTime();
 	_missileTimer = TIMEMANAGER->getWorldTime();
+
 	return S_OK;
 }
 
@@ -34,6 +35,7 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 	
 	if (_hp == 0)
 	{
+		_ani->stop();
 		hitmove();
 		if (_hitWorldTimer - _hitTimer > 1.0f)
 		{	
@@ -46,6 +48,7 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 	}
 	if (_livecheck == true)
 	{
+		underattack(bulletVec);
 		if (_whisle == false && _hitCount == false)
 		{
 			face();
@@ -58,7 +61,7 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 			if (_hitWorldTimer - _hitTimer > 1.0f)
 			{
 				_hitCount = false;
-
+				_ani->stop();
 
 			}
 		}
@@ -126,6 +129,7 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 
 void woodboss::Hit()
 {
+	_ani->stop();
 	_hitCount = true;
 
 	_hitTimer = TIMEMANAGER->getWorldTime();
@@ -165,6 +169,19 @@ void woodboss::hitmove()
 	if (_ani->isPlay() == false)
 	{
 		_ani->start();
+	}
+}
+void woodboss::underattack(vector<bullet*> bulletVec)
+{
+	for (int i = 0; i < bulletVec.size(); i++)
+	{
+		RECT rctemp;
+		if (IntersectRect(&rctemp, &bulletVec[i]->getrc(), &_rc))
+		{
+			Hit();
+			bulletVec[i]->setState(2);
+		}
+
 	}
 }
 void woodboss::missileattack(bulletManager* BulletManager,int x, POINT playerPoint)
