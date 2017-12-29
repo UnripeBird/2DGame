@@ -53,7 +53,7 @@ HRESULT bullet::init(BULLETDISCERN discernNum, POINT pos, bool fireLeftRight, fl
 			break;
 	}
 
-	_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
+	_rc = RectMakeCenter(_x, _y, 40, 40);
 	return S_OK;
 }
 
@@ -109,5 +109,5 @@ void bullet::update(void)
 			_state = 2;
 		}
 	}
-	_rc = RectMakeCenter(_x, _y, _image->getFrameWidth(), _image->getFrameHeight());
+	_rc = RectMakeCenter(_x, _y, 40, 40);
 }

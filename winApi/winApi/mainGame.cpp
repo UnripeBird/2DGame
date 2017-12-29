@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "mainGame.h"
 #include "playScene.h"
+#include "titleScene.h"
 
 //=========================
 //	## init(void) ## 초기화
@@ -10,6 +11,7 @@ HRESULT mainGame::init(void)
 	gameNode::init(TRUE);
 	//이곳에서 초기화
 
+	SCENEMANAGER->addScene("title", new titleScene);
 	SCENEMANAGER->addScene("play", new playScene);
 
 	SCENEMANAGER->changeScene("play");

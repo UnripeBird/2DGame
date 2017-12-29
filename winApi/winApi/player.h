@@ -37,6 +37,10 @@ private:
 	bool groundCollision;
 	int _inhaleKind;
 	bool _curInhale;
+	bool _ReleaseTrans;
+
+	float _hitWorldTimer;
+	float _hitTimer;
 
 	float DubbleKeyTimer;
 	float DublleKeyWorldTimer;
@@ -51,8 +55,8 @@ public:
 	void release(void);
 	void update(vector<fieldObject*>, vector<enemy*>, image*, bulletManager*,int);
 
-	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*);
-	void moveCollision(vector<fieldObject*>);
+	void move(vector<fieldObject*>, vector<enemy*>, bulletManager*, int curMapNumber);
+	void moveCollision(vector<fieldObject*>, vector<enemy*>, int curMapNumber);
 
 
 	bool objectCollision(vector<fieldObject*>);
@@ -64,9 +68,9 @@ public:
 	bool rightMove();
 	bool leftMove();
 
-	bool objectRightMove(vector<fieldObject*> objectPos);
-	bool objectLeftMove(vector<fieldObject*> objectPos);
-	bool objectTopMove(vector<fieldObject*> objectPos);
+	bool objectRightMove(vector<fieldObject*> objectPos, int curMapNumber);
+	bool objectLeftMove(vector<fieldObject*> objectPos, int curMapNumber);
+	bool objectTopMove(vector<fieldObject*> objectPos , int curMapNumber);
 
 	POINT getPos() { return PointMake(_x, _y); }
 	POINT getImagePos() { return PointMake(_imageX, _imageY); }
