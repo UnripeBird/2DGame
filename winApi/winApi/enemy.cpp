@@ -131,18 +131,6 @@ void enemy::pixelcollision(image * pixelimage, vector<fieldObject*> objectVec)
 void enemy::brontocollision(image * pixelimage, vector<fieldObject*> objectVec)
 {
 
-	for (int i = 0; i < objectVec.size(); i++)
-	{
-		RECT rctemp;
-		if (IntersectRect(&rctemp, &objectVec[i]->getrc(), &_rc))
-		{
-			_collisioncheck = true;
-		}
-		else
-		{
-			_collisioncheck = false;
-		}
-	}
 
 	for (int i = _rc.bottom; i > _rc.bottom - 1; i--)
 	{

@@ -60,15 +60,19 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 
 	if (KEYMANAGER->isOnceKeyDown('1'))
 	{
+		mapChange(0);
+	}
+	if (KEYMANAGER->isOnceKeyDown('2'))
+	{
 		mapChange(1);
 	}
 
-	if (KEYMANAGER->isOnceKeyDown('2'))
+	if (KEYMANAGER->isOnceKeyDown('3'))
 	{
 		mapChange(2);
 	}
 
-	if (KEYMANAGER->isOnceKeyDown('3'))
+	if (KEYMANAGER->isOnceKeyDown('4'))
 	{
 		mapChange(3);
 	}
@@ -90,7 +94,7 @@ void mapManager::render(void)
 	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - 400)) * 100), _cameraY);
 	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
 
-	Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
+	//Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
 	_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
 
 	for (int i = 0; i < _objectPos.size(); i++)
@@ -112,7 +116,7 @@ void mapManager::render(void)
 	{
 		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
 		{
-			Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
+			//Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
 
 			if (_enemyPos[i]->getframex() != -1)
 			{
@@ -203,9 +207,17 @@ void mapManager::mapChange(int nextMap)
 
 	if (_curMapNumber == 0)
 	{
-		_playerPos->setPos(PointMake(100, 100));
+		_playerPos->setPos(PointMake(100, 300));
 	}
 	else if (_curMapNumber == 1)
+	{
+		_playerPos->setPos(PointMake(100, 300));
+	}
+	else if (_curMapNumber == 2)
+	{
+		_playerPos->setPos(PointMake(100, 100));
+	}
+	else if (_curMapNumber == 3)
 	{
 		_playerPos->setPos(PointMake(100, 100));
 	}

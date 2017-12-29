@@ -13,7 +13,7 @@ HRESULT enemyManager::init(void)
 	enemy* em;
 
 
-	em = new waddle;
+	/*em = new waddle;
 	em->init("¿Íµéµð", waddledee, 0, PointMake(200, 0));
 	_vEnemy.push_back(em);
 
@@ -43,6 +43,58 @@ HRESULT enemyManager::init(void)
 
 	em = new woodboss;
 	em->init("³ª¹«¹Øµ¿", treeboss, 3, PointMake(700, 600));
+	_vEnemy.push_back(em);*/
+
+	//0¹ø¸Ê
+	em = new waddle;
+	em->init("¿Íµéµð", waddledee, 0, PointMake(200, 0));
+	_vEnemy.push_back(em);
+
+	em = new brontoburt;
+	em->init("ºê·ÐÅä", Bronto, 0, PointMake(898, 400));
+	_vEnemy.push_back(em);
+
+	em = new spark;
+	em->init("½ºÆÄÅ©", Spark, 0, PointMake(2250, 300));
+	_vEnemy.push_back(em);
+
+	em = new chilly;
+	em->init("Ä¥¸®", Chilly, 0, PointMake(2700, 350));
+	_vEnemy.push_back(em);
+	//1¹ø¸Ê
+	em = new brontoburt;
+	em->init("ºê·ÐÅä", Bronto, 1, PointMake(1000, 150));
+	_vEnemy.push_back(em);
+
+	em = new spark;
+	em->init("½ºÆÄÅ©", Spark, 1, PointMake(2200, 150));
+	_vEnemy.push_back(em);
+
+	em = new chilly;
+	em->init("Ä¥¸®", Chilly, 1, PointMake(1000, 150));
+	_vEnemy.push_back(em);
+
+	em = new burning;
+	em->init("¹ö´×", Burning, 1, PointMake(220, 250));
+	_vEnemy.push_back(em);
+	//2¹ø¸Ê
+	em = new chilly;
+	em->init("Ä¥¸®", Chilly, 2, PointMake(500, 250));
+	_vEnemy.push_back(em);
+
+	em = new spark;
+	em->init("½ºÆÄÅ©", Spark, 2, PointMake(1500, 150));
+	_vEnemy.push_back(em);
+
+	em = new chilly;
+	em->init("Ä¥¸®", Chilly, 2, PointMake(3000, 0));
+	_vEnemy.push_back(em);
+
+	em = new burning;
+	em->init("¹ö´×", Burning, 2, PointMake(2500, 250));
+	_vEnemy.push_back(em);
+	em = new woodboss;
+	em->init("³ª¹«¹Øµ¿", treeboss, 3, PointMake(700, 500));
 	_vEnemy.push_back(em);
 
 	return S_OK;

@@ -25,28 +25,28 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
-	for (int i = 0; i < objectVec.size(); i++)
-	{
-		if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
-		{
-			_rectcheck = true;
-			_collisioncheck = true;
-			_state = 1;
-			break;
-		}
-		else
-		{
-			_rectcheck = false;
-			_collisioncheck = false;
-		}
+	//for (int i = 0; i < objectVec.size(); i++)
+	//{
+	//	if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
+	//	{
+	//		_rectcheck = true;
+	//		_collisioncheck = true;
+	//		_state = 1;
+	//		break;
+	//	}
+	//	else
+	//	{
+	//		_rectcheck = false;
+	//		_collisioncheck = false;
+	//	}
+	//
+	//}
 
-	}
-	if (_hitCount == false && _eating == false)
+	if (_hitCount == false && _moveselect == false)
 	{
-
 		brontocollision(pixelimage, objectVec);
+
 	}
-	
 	death(bulletVec);
 	//움직이는 방향
 	_triangle++;
@@ -87,7 +87,7 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 				break;
 				}
 
-				if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 50)
+				if (getDistance(playerPoint.x, playerPoint.y, _x, _y) < 200)
 				{
 					_sitdown = false;
 					_moveselect = true;

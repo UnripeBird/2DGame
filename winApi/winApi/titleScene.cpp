@@ -13,14 +13,14 @@ HRESULT titleScene::init(void)
 
 void titleScene::release(void)
 {
-	if(KEYMANAGER->isOnceKeyDown(VK_RETURN))
-	{
-		SCENEMANAGER->changeScene("play");
-	}
 }
 
 void titleScene::update(void)
 {
+	if (KEYMANAGER->isOnceKeyDown(VK_RETURN))
+	{
+		SCENEMANAGER->changeScene("play");
+	}
 	_alpha += 3;
 	if (_alpha > 150) _alpha = 0;
 }

@@ -33,7 +33,7 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	//보스 입냄새 공격 사거리 길게 늘리기
 	
-	if (_hp == 0)
+	if (_hp <= 0)
 	{
 		_ani->stop();
 		hitmove();

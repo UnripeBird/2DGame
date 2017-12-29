@@ -24,26 +24,28 @@ void chilly::update(image * pixelimage, POINT playerPoint, vector<fieldObject*> 
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	//움직이는 방향
-	for (int i = 0; i < objectVec.size(); i++)
-	{
-		if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
-		{
-			_rectcheck = true;
-			_collisioncheck = true;
-			_state = 1;
-			break;
-		}
-		else
-		{
-			_rectcheck = false;
-			_collisioncheck = false;
-		}
+	//for (int i = 0; i < objectVec.size(); i++)
+	//{
+	//	if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc) && objectVec[i]->getAppearMapNum() == _appearMapNum)
+	//	{
+	//		_rectcheck = true;
+	//		_collisioncheck = true;
+	//		_state = 1;
+	//		break;
+	//	}
+	//	else
+	//	{
+	//		_rectcheck = false;
+	//		_collisioncheck = false;
+	//	}
+	//
+	//}
 
-	}
-
-	if (_hitCount == false && _eating == false)
+	
+	if (_hitCount == false)
 	{
 		pixelcollision(pixelimage, objectVec);
+
 	}
 	death(bulletVec);
 	//움직임

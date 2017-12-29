@@ -138,7 +138,14 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 		{
 			if (_curRight == true)
 			{
-				_x += 3;
+				if (rightMove() == false || objectRightMove(objectPos, curMapNumber) == true)
+				{
+					//_x += 3;
+				}
+				else
+				{
+					_x += 3;
+				}
 				rcAttack.left = _x - 80;
 				rcAttack.right = _x + 25;
 				rcAttack.top = _y - 30;
@@ -146,7 +153,14 @@ void player::update(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, ima
 			}
 			else if (_curRight == false)
 			{
-				_x -= 3;
+				if (leftMove() == false || objectLeftMove(objectPos, curMapNumber) == true)
+				{
+
+				}
+				else
+				{
+					_x -= 3;
+				}
 				rcAttack.left = _x - 25;
 				rcAttack.right = _x + 80;
 				rcAttack.top = _y - 30;
@@ -401,7 +415,6 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 
 		_rc = RectMakeCenter(_x, _y, 50, 50);
 	}
-
 	if (KEYMANAGER->isOnceKeyUp(VK_RIGHT) && _pose != SWALLOW && _pose != JUMPING && _pose != FALLING && _pose != FLY)
 	{
 		_pose = IDLE;
@@ -489,7 +502,6 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_curSwallow = false;
 		}
 	}
-
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
 	{
 		if (_pose == FLY)
@@ -498,6 +510,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		}
 	}
 
+	//변신 해제
 	if (KEYMANAGER->isOnceKeyDown(VK_BACK)) //변신 해제
 	{
 		if (_inhaleKind != KIRBY)
@@ -549,9 +562,6 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		{
 			_y -= PLAYERSPEED + 1.5;
 		}
-	}
-	if (KEYMANAGER->isOnceKeyUp('Z'))
-	{
 	}
 
 	//x - 흡입, 뱉기
@@ -658,7 +668,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			//몬스터 흡입
 			for (int i = 0; i < enemyPos.size(); i++)
 			{	//흡입 범위 내에 있고 && 빨아 들이는 모션 && 입안에 아무것도 없을때 실행
-				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false && objectPos[i]->getAppearMapNum() == curMapNumber)
+				if (IntersectRect(&temp, &rc_inhale, &enemyPos[i]->getrc()) && _pose == M_INHALE && _curInhale == false && enemyPos[i]->getAppearMapNum() == curMapNumber)
 				{
 					enemyPos[i]->Eating(PointMake(_x, _y));
 					//흡입 도중 플레이어와 부딪혔을 때
@@ -703,7 +713,6 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_playAni = true;
 		}
 	}
-
 
 	//애니메이션
 	switch (_pose)
@@ -950,16 +959,16 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		_ani->start();
 		_playAni = false;
 	}
-	else if (_playAni == true) //멈출 애니메이션
+	//멈출 애니메이션
+	else if (_playAni == true)
 	{ 
 		_ani->setPlayFrame(_starFrame, _endFrame, false, false);
 		_ani->start();
 		_playAni = false;
 	}
-	moveCollision(objectPos, enemyPos, curMapNumber);
+	moveCollision(objectPos, enemyPos, BulletManager, curMapNumber);
 
-	//플레이어 이미지 위치 업데이트
-	//기본 커비일때 위치 초기화
+	//커비 종류에 따라 위치 초기화
 	if (_inhaleKind == KIRBY || _curInhale == true)
 	{
 		_imageX = _x - (_ani->getFrameWidth() / 2);
@@ -982,7 +991,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 }
 
-void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, int curMapNumber)
+void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulletManager* BulletManager, int curMapNumber)
 {
 	RECT temp;
 
@@ -992,6 +1001,32 @@ void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyP
 	if (_pose != ATTACK && _pose != M_INHALE && _curInhale != true && _pose != DIE)
 	{
 		RECT temp;
+		for (int i = 0; i < BulletManager->getEnemyBullet().size(); i++)
+		{
+			if (IntersectRect(&temp, &_rc, &BulletManager->getEnemyBullet()[i]->getrc()))
+			{
+				if (_pose != COLLISION && _hitWorldTimer - _hitTimer > 1.5f)
+				{
+					_hitTimer = TIMEMANAGER->getWorldTime();
+					BulletManager->getEnemyBullet()[i]->setState(2);
+					_curHp -= 1;
+					_pose = COLLISION;
+					_playAni = true;
+					_ani->setFPS(7);
+					_ReleaseTrans = true;
+					_image = IMAGEMANAGER->findImage(_fileName[0]);
+					_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
+
+					if (_curHp < 1)
+					{
+						_pose = DIE;
+						_playAni = true;
+						_life -= 1;
+						_curHp = _maxHp;
+					}
+				}
+			}
+		}
 
 		for (int i = 0; i < enemyPos.size(); i++) //몬스터 충돌
 		{
@@ -1027,7 +1062,6 @@ void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyP
 			}
 		}
 	}
-
 	//오브젝트 충돌
 	for (int i = 0; i < objectPos.size(); i++)
 	{
