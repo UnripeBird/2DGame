@@ -26,6 +26,22 @@ void burning::update(image * pixelimage, POINT playerPoint, vector<fieldObject*>
 
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_rectcheck = true;
+			_collisioncheck = true;
+			_state = 1;
+			break;
+		}
+		else
+		{
+			_rectcheck = false;
+			_collisioncheck = false;
+		}
+
+	}
 	death(bulletVec);
 	if (_hitCount == false &&_state == 1 && _attactmotion == false && _burningselect == false)
 	{

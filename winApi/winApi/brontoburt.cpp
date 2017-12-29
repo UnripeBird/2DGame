@@ -25,6 +25,22 @@ void brontoburt::update(image* pixelimage, POINT playerPoint, vector<fieldObject
 {
 	_hitWorldTimer = TIMEMANAGER->getWorldTime();
 	_ani->frameUpdate(TIMEMANAGER->getElapsedTime() * 1);
+	for (int i = 0; i < objectVec.size(); i++)
+	{
+		if (IntersectRect(&_rctemp, &objectVec[i]->getrc(), &_rc))
+		{
+			_rectcheck = true;
+			_collisioncheck = true;
+			_state = 1;
+			break;
+		}
+		else
+		{
+			_rectcheck = false;
+			_collisioncheck = false;
+		}
+
+	}
 	if (_hitCount == false && _eating == false)
 	{
 
@@ -182,7 +198,7 @@ void brontoburt::Hit()
 {
 
 	_hitCount = true;
-	_ani->stop();
+
 	_hitTimer = TIMEMANAGER->getWorldTime();
 
 }
