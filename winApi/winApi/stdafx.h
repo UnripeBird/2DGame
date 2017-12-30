@@ -35,6 +35,7 @@ using namespace std;
 #include "utils.h"
 #include "timeManager.h"
 #include "sceneManager.h"
+#include "soundManager.h"
 
 using namespace MY_UTIL;
 
@@ -46,6 +47,7 @@ using namespace MY_UTIL;
 #define IMAGEMANAGER imageManager::getSingleton()
 #define TIMEMANAGER timeManager::getSingleton()
 #define SCENEMANAGER sceneManager::getSingleton()
+#define SOUNDMANAGER soundManager::getSingleton()
 
 //================================
 //	## 매크로 ## (윈도우창 초기화)

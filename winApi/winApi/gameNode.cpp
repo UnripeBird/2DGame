@@ -28,6 +28,8 @@ HRESULT gameNode::init(bool managerInit)
 		TIMEMANAGER->init();
 		//씬매니져 초기화
 		SCENEMANAGER->init();
+
+		SOUNDMANAGER->init();
 	}
 
 	return S_OK;
@@ -55,6 +57,9 @@ void gameNode::release(void)
 		//씬매니져 해제, 싱글톤 해제
 		SCENEMANAGER->release();
 		SCENEMANAGER->releaseSingleton();
+
+		SOUNDMANAGER->release();
+		SOUNDMANAGER->releaseSingleton();
 	}
 
 	//DC 해제

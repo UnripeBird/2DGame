@@ -262,6 +262,9 @@
     <ClCompile Include="fieldBoom2_1.cpp">
       <Filter>커비\object\mapObj\맵폭발</Filter>
     </ClCompile>
+    <ClCompile Include="soundManager.cpp">
+      <Filter>매니져</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commonMacroFiunction.h">
@@ -443,6 +446,9 @@
     </ClInclude>
     <ClInclude Include="fieldBoom2_1.h">
       <Filter>커비\object\mapObj\맵폭발</Filter>
+    </ClInclude>
+    <ClInclude Include="soundManager.h">
+      <Filter>매니져</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
