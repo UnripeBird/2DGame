@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "player.h"
 
+#define SOUNDVOLUME 2.0
+
 enum POSE
 {
 	NONE,
@@ -57,6 +59,15 @@ HRESULT player::init(void)
 	IMAGEMANAGER->addFrameImage("kirby_burning", "image/kirby_burning.bmp", 5520, 4752, 23, 22, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_freeze", "image/kirby_freeze.bmp", 864 * 3, 2016 * 3, 18, 24, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("kirby_spark", "image/kirby_spark.bmp", 3840, 5412, 20, 22, true, RGB(255, 0, 255));
+	SOUNDMANAGER->addSound("jumping", "sound/jumping.wav", false, false);
+	SOUNDMANAGER->addSound("fly", "sound/fly.wav", false, false);
+	SOUNDMANAGER->addSound("exhale", "sound/exhale.wav", false, false);
+	SOUNDMANAGER->addSound("inhale", "sound/inhale.wav", false, false);
+	SOUNDMANAGER->addSound("collision", "sound/collision.wav", false, false);
+	SOUNDMANAGER->addSound("kirbyTrans", "sound/kirbyTrans.wav", false, false);
+	SOUNDMANAGER->addSound("monsterDie", "sound/monsterDie.wav", false, false);
+	SOUNDMANAGER->addSound("boomWall", "sound/boomWall.wav", false, false);
+	SOUNDMANAGER->addSound("attack", "sound/attack.wav", false, false);
 
 	_fileName[0] = "kirby";
 	_fileName[1] = "kirby_burning";
@@ -77,6 +88,7 @@ HRESULT player::init(void)
 	groundCollision = false;
 
 	_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
+	SOUNDMANAGER->init();
 
 	_ani = new animation;
 	_ani->init(1728, 3648, 96, 96);
@@ -501,6 +513,10 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_playAni = true;
 			_curSwallow = false;
 		}
+		if (_curInhale == true && _inhaleKind != KIRBY)
+		{
+			SOUNDMANAGER->play("kirbyTrans", SOUNDVOLUME);
+		}
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
 	{
@@ -548,12 +564,14 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_curjumping = true;
 			_curJump = _y;
 			_maxJump = _curJump - 200;
+			SOUNDMANAGER->play("jumping", SOUNDVOLUME);
 		}
 		else if (_curInhale == false && (_curjumping == true || _pose == FALLING || _pose == EXHALE)) //날기
 		{
 			_pose = FLY;
 			_curjumping = false;
 			_playAni = true;
+			SOUNDMANAGER->play("fly", SOUNDVOLUME);
 		}
 	}
 	if (KEYMANAGER->isStayKeyDown('Z'))
@@ -572,6 +590,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			BulletManager->bulletFire(Breath, PointMake(_x, _y), !_curRight);
 			_pose = EXHALE;
 			_playAni = true;
+			SOUNDMANAGER->play("exhale", SOUNDVOLUME);
 		}
 		else if (_curInhale == true)//별 뱉기 - 기본 커비일때만 가능
 		{
@@ -580,12 +599,14 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			_playAni = true;
 			_ani->setFPS(7);
 			_curInhale = false;
+			SOUNDMANAGER->play("exhale", SOUNDVOLUME);
 			_inhaleKind = KIRBY;
 		}
 		else if(_pose != M_INHALE && _inhaleKind == KIRBY)//몬스터 흡입 - 기본 커비일때만 가능
 		{
 			_pose = M_INHALE;
 			_playAni = true;
+			SOUNDMANAGER->play("inhale", SOUNDVOLUME);
 		}
 	}
 	if (KEYMANAGER->isStayKeyDown('X')) //빨아 들이기
@@ -606,6 +627,10 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 			{
 				_pose = ATTACK;
 				_playAni = true;
+			}
+			if (_inhaleKind == SPARK || _inhaleKind == FREEZE)
+			{
+				SOUNDMANAGER->play("attack", SOUNDVOLUME);
 			}
 		}
 		if (_inhaleKind == KIRBY) //기본 커비시에만 흡입 모션, 다른 모션으로 흡입시에 이미지 초기화가 다르기 때문에 터짐
@@ -1048,6 +1073,7 @@ void player::moveCollision(vector<fieldObject*> objectPos, vector<enemy*> enemyP
 						_ani->setFPS(7);
 						_ReleaseTrans = true;
 						_image = IMAGEMANAGER->findImage(_fileName[0]);
+						SOUNDMANAGER->play("monsterDie", SOUNDVOLUME);
 						_ani->init(_image->getWidth(), _image->getHeight(), _image->getFrameWidth(), _image->getFrameHeight());
 
 						if (_curHp < 1)
