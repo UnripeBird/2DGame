@@ -103,115 +103,118 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 
 void mapManager::render(void)
 {
-	POINT playerPosition = _playerPos->getPos();
-	POINT playerImagePosition = _playerPos->getImagePos();
-
-	_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - 400)) * 100), _cameraY);
-	_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
-
-	//Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
-	_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
-
-	for (int i = 0; i < _objectPos.size(); i++)
+	if (_playerPos != nullptr)
 	{
-		if (_objectPos[i]->getAppearMapNum() == _curMapNumber)
-		{
-			//Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
-			_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
+		POINT playerPosition = _playerPos->getPos();
+		POINT playerImagePosition = _playerPos->getImagePos();
 
-			//새로 추가 브레스 불릿 터지는 이펙트
-			if (_objectPos[i]->getbulletEffect())
+		_mapBackImageVector[_curMapNumber]->render(mapDC, _cameraX - ((_cameraX / (_mapBackImageVector[_curMapNumber]->getWidth() - 400)) * 100), _cameraY);
+		_mapImageVector[_curMapNumber]->render(mapDC, 0, 0);
+
+		//Rectangle(mapDC, playerPosition.x - 25, playerPosition.y - 25, playerPosition.x + 25, playerPosition.y + 25);
+		_playerPos->getImage()->aniRender(mapDC, _playerPos->getImagePos().x, _playerPos->getImagePos().y, _playerPos->getAni());
+
+		for (int i = 0; i < _objectPos.size(); i++)
+		{
+			if (_objectPos[i]->getAppearMapNum() == _curMapNumber)
 			{
-				_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left - 24, _objectPos[i]->getrcTemp().top - 13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
+				//Rectangle(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getrc().right, _objectPos[i]->getrc().bottom);
+				_objectPos[i]->getImage()->frameRender(mapDC, _objectPos[i]->getrc().left, _objectPos[i]->getrc().top, _objectPos[i]->getObjNumberX(), _objectPos[i]->getObjNumberY());
+
+				//새로 추가 브레스 불릿 터지는 이펙트
+				if (_objectPos[i]->getbulletEffect())
+				{
+					_objectPos[i]->getEffect()->frameRender(mapDC, _objectPos[i]->getrcTemp().left - 24, _objectPos[i]->getrcTemp().top - 13, _objectPos[i]->getEffectNumberX(), _objectPos[i]->getEffectNumberY());
+				}
 			}
 		}
-	}
 
-	for (int i = 0; i < _enemyPos.size(); i++)
-	{
-		if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
+		for (int i = 0; i < _enemyPos.size(); i++)
 		{
-			//Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
-
-			if (_enemyPos[i]->getframex() != -1)
+			if (_enemyPos[i]->getAppearMapNum() == _curMapNumber)
 			{
-				_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
-					, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
-					_enemyPos[i]->gethp(), _enemyPos[i]->getframey());
+				//Rectangle(mapDC, _enemyPos[i]->getrc().left, _enemyPos[i]->getrc().top, _enemyPos[i]->getrc().right, _enemyPos[i]->getrc().bottom);
+
+				if (_enemyPos[i]->getframex() != -1)
+				{
+					_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
+						, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
+						_enemyPos[i]->gethp(), _enemyPos[i]->getframey());
+				}
+				else
+				{
+					_enemyPos[i]->getimage()->aniRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
+						, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
+						_enemyPos[i]->getAni());
+				}
+
+
 			}
-			else
+		}
+
+		for (int i = 0; i < _bulletPos.size(); i++)
+		{
+			_bulletPos[i]->getImage()->frameRender(mapDC,
+				_bulletPos[i]->getPos().x - (_bulletPos[i]->getImage()->getFrameWidth() / 2),
+				_bulletPos[i]->getPos().y - (_bulletPos[i]->getImage()->getFrameHeight() / 2),
+				_bulletPos[i]->getImageFrame().x, _bulletPos[i]->getImageFrame().y);
+		}
+
+		for (int i = 0; i < _enemyBullet.size(); i++)
+		{
+			_enemyBullet[i]->getImage()->frameRender(mapDC,
+				_enemyBullet[i]->getPos().x - (_enemyBullet[i]->getImage()->getFrameWidth() / 2),
+				_enemyBullet[i]->getPos().y - (_enemyBullet[i]->getImage()->getFrameHeight() / 2),
+				_enemyBullet[i]->getImageFrame().x, _enemyBullet[i]->getImageFrame().y);
+		}
+
+		BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 
+			mapDC, _cameraX, _cameraY, SRCCOPY);
+
+		///////////////// UI render /////////////////////////////////
+
+		IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
+		// 보스몹 체력바
+		for (int i = 0; i < _enemyPos.size(); i++)
+		{
+			if (_curMapNumber == 3 && _enemyPos[i]->getAppearMapNum() == 3)
 			{
-				_enemyPos[i]->getimage()->aniRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
-					, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
-					_enemyPos[i]->getAni());
+				IMAGEMANAGER->frameRender("보스체력바", getMemDC(), 500, WINSIZEY - 70, _enemyPos[i]->gethp(), 0);
 			}
-
-		
 		}
-	}
 
-	for (int i = 0; i < _bulletPos.size(); i++)
-	{
-		_bulletPos[i]->getImage()->frameRender(mapDC,
-			_bulletPos[i]->getPos().x - (_bulletPos[i]->getImage()->getFrameWidth() / 2),
-			_bulletPos[i]->getPos().y - (_bulletPos[i]->getImage()->getFrameHeight() / 2),
-			_bulletPos[i]->getImageFrame().x, _bulletPos[i]->getImageFrame().y);
-	}
+		int _Life = _playerPos->getLife();
+		int Life = _Life;
 
-	for (int i = 0; i < _enemyBullet.size(); i++)
-	{
-		_enemyBullet[i]->getImage()->frameRender(mapDC,
-			_enemyBullet[i]->getPos().x - (_enemyBullet[i]->getImage()->getFrameWidth() / 2),
-			_enemyBullet[i]->getPos().y - (_enemyBullet[i]->getImage()->getFrameHeight() / 2),
-			_enemyBullet[i]->getImageFrame().x, _enemyBullet[i]->getImageFrame().y);
-	}
+		vector<int> LifeVec;
 
-	BitBlt(getMemDC(), 0, 0, WINSIZEX, WINSIZEY, // 0 0,화면크기 고정: 
-		mapDC, _cameraX, _cameraY, SRCCOPY);
-
-	///////////////// UI render /////////////////////////////////
-
-	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
-	// 보스몹 체력바
-	for (int i = 0; i < _enemyPos.size(); i++)
-	{
-		if (_curMapNumber == 3 && _enemyPos[i]->getAppearMapNum() == 3)
+		if (Life < 10)
 		{
-			IMAGEMANAGER->frameRender("보스체력바", getMemDC(), 500, WINSIZEY - 70, _enemyPos[i]->gethp(), 0);
+			LifeVec.push_back(Life);
+			LifeVec.push_back(0);
 		}
-	}
-
-	int _Life = _playerPos->getLife();
-	int Life = _Life;
-
-	vector<int> LifeVec;
-
-	if (Life < 10)
-	{
-		LifeVec.push_back(Life);
-		LifeVec.push_back(0);
-	}
-	else
-	{
-		while (Life > 0)
+		else
 		{
-			LifeVec.push_back(Life % 10);
-			Life /= 10;
+			while (Life > 0)
+			{
+				LifeVec.push_back(Life % 10);
+				Life /= 10;
+			}
 		}
-	}
 
-	for (int i = 0; i < LifeVec.size(); i++)
-	{
-		IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
-	}
+		for (int i = 0; i < LifeVec.size(); i++)
+		{
+			IMAGEMANAGER->frameRender("LifeNum", getMemDC(), 275 + (IMAGEMANAGER->findImage("LifeNum")->getFrameWidth() * i), WINSIZEY - 30, LifeVec[LifeVec.size() - 1 - i], 0);
+		}
 
-	int Hp = _playerPos->getCurHp();
+		int Hp = _playerPos->getCurHp();
 
-	for (int i = 0; i < 6; i++)
-	{
-		int frameX = 0;
-		if (i + 1 > Hp) frameX = 1;
-		IMAGEMANAGER->frameRender("HpBar", getMemDC(), 330 + (IMAGEMANAGER->findImage("HpBar")->getFrameWidth() * i), WINSIZEY - 45, frameX, 0);
+		for (int i = 0; i < 6; i++)
+		{
+			int frameX = 0;
+			if (i + 1 > Hp) frameX = 1;
+			IMAGEMANAGER->frameRender("HpBar", getMemDC(), 330 + (IMAGEMANAGER->findImage("HpBar")->getFrameWidth() * i), WINSIZEY - 45, frameX, 0);
+		}
 	}
 }
 
@@ -244,10 +247,10 @@ void mapManager::mapChange(int nextMap)
 	}
 	else if (_curMapNumber == 3)
 	{
-		_playerPos->setPos(PointMake(100, 100));
+		_playerPos->setPos(PointMake(100, 300));
 	}
 	else if (_curMapNumber == 4)
 	{
-		_playerPos->setPos(PointMake(200, 100));
+		_playerPos->setPos(PointMake(200, 400));
 	}
 }

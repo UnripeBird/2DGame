@@ -14,7 +14,7 @@ HRESULT mainGame::init(void)
 	SCENEMANAGER->addScene("title", new titleScene);
 	SCENEMANAGER->addScene("play", new playScene);
 
-	SCENEMANAGER->changeScene("play");
+	SCENEMANAGER->changeScene("title");
 	return S_OK;
 }
 

@@ -7,7 +7,6 @@ HRESULT titleScene::init(void)
 	IMAGEMANAGER->addImage("titlebar", "image\\titlebar.bmp", 713, 68);
 
 	_alpha;
-
 	return S_OK;
 }
 
