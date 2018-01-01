@@ -68,6 +68,7 @@ HRESULT player::init(void)
 	SOUNDMANAGER->addSound("monsterDie", "sound/monsterDie.wav", false, false);
 	SOUNDMANAGER->addSound("boomWall", "sound/boomWall.wav", false, false);
 	SOUNDMANAGER->addSound("attack", "sound/attack.wav", false, false);
+	SOUNDMANAGER->addSound("bgm_greengreens", "sound/bgm_greengreens.wav", true, true);
 
 	_fileName[0] = "kirby";
 	_fileName[1] = "kirby_burning";
@@ -88,7 +89,8 @@ HRESULT player::init(void)
 	groundCollision = false;
 
 	_image = IMAGEMANAGER->findImage(_fileName[_fileNum]);
-	SOUNDMANAGER->init();
+	SOUNDMANAGER->play("bgm_greengreens", 1.0f);
+	
 
 	_ani = new animation;
 	_ani->init(1728, 3648, 96, 96);
@@ -978,7 +980,7 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 	}
 	
 	//반복 할 애니메이션
-	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _pose != ATTACK && _pose != COLLISION && _pose != DIE && _curInhale == false)
+	if (_playAni == true && _pose != FALLING && _pose != EXHALE && _pose != M_EXHALE && _pose != ATTACK && _pose != COLLISION && _pose != DIE && _pose != SWALLOW)
 	{
 		_ani->setPlayFrame(_starFrame, _endFrame, false, true);
 		_ani->start();
@@ -990,6 +992,12 @@ void player::move(vector<fieldObject*> objectPos, vector<enemy*> enemyPos, bulle
 		_ani->setPlayFrame(_starFrame, _endFrame, false, false);
 		_ani->start();
 		_playAni = false;
+		if (_curInhale == false && _pose == SWALLOW && _inhaleKind != KIRBY)
+		{
+			_ani->setPlayFrame(_starFrame, _endFrame, false, true);
+			_ani->start();
+			_playAni = false;
+		}
 	}
 	moveCollision(objectPos, enemyPos, BulletManager, curMapNumber);
 
