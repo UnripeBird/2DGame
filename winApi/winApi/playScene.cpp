@@ -19,6 +19,11 @@ HRESULT playScene::init(void)
 	IMAGEMANAGER->addImage("bossmap", "image\\treebossmap.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addImage("bossmappixel", "image\\treebosspixel.bmp", 300 * 3, 300 * 3, true, RGB(255, 0, 255));
 
+
+	IMAGEMANAGER->addImage("ending", "image\\endingBack.bmp", 1280, 570);
+	IMAGEMANAGER->addImage("ending", "image\\endingBack.bmp", 1280, 570);
+	IMAGEMANAGER->addImage("endingpixel", "image\\pixel4.bmp", 300 * 12, 300 * 3, true, RGB(255, 0, 255));
+
 	_mapManager = new mapManager;
 	_mapManager->init();
 

@@ -28,6 +28,7 @@ public:
 	void underattack(vector<bullet*> bulletVec);
 	void sethp(int h) { _hp = h; }
 	int gethp() { return _hp; }
+
 	woodboss() {}
 	~woodboss() {}
 };
