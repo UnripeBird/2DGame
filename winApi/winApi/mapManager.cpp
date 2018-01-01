@@ -19,9 +19,14 @@ HRESULT mapManager::init(void)
 	_mapImageVector.push_back(IMAGEMANAGER->findImage("bossmap"));
 	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("bossmappixel"));
 
+	_mapBackImageVector.push_back(IMAGEMANAGER->findImage("ending"));
+	_mapImageVector.push_back(IMAGEMANAGER->findImage("ending"));
+	_mapPixelCollisionVector.push_back(IMAGEMANAGER->findImage("endingpixel"));
+
 	IMAGEMANAGER->addImage("LifeUI", "image\\kirbyLifeUI.bmp", 24 * 3, 14 * 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("LifeNum", "image\\kirbyLifeNum.bmp", 80 * 2.5, 11 * 2.5, 10, 1, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("HpBar", "image\\kirbyHpBarUI.bmp", 10 * 3, 14 * 3, 2, 1, true, RGB(255, 0, 255));
+
 
 	mapDC = CreateCompatibleDC(getMemDC()); // ±×³É ½á
 	mapBit = NULL;
@@ -76,6 +81,16 @@ void mapManager::update(player* playerPos, vector<fieldObject*> objectPos, vecto
 	{
 		mapChange(3);
 	}
+	
+
+	for (int i = 0; i < _enemyPos.size(); i++)
+	{
+		if (_enemyPos[i]->gethp() == 0)
+		{
+			mapChange(4);
+		}
+	}
+
 	POINT playerPosition = _playerPos->getPos();
 
 	_cameraX = playerPosition.x - WINSIZEX / 2;
@@ -220,5 +235,9 @@ void mapManager::mapChange(int nextMap)
 	else if (_curMapNumber == 3)
 	{
 		_playerPos->setPos(PointMake(100, 100));
+	}
+	else if (_curMapNumber == 4)
+	{
+		_playerPos->setPos(PointMake(200, 100));
 	}
 }

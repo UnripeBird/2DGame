@@ -92,7 +92,7 @@ typedef enum OBJECTDISCERN
 	//고기 아이템 - 체력 회복 - 지민이 맘대로
 	//음료 아이템 - 체력 회복 - 지민이 맘대로
 	//체리 아이템 - 체력회복 - 지민이 맘대로
-	upItem,candyitem,maxtem,meat,drink,cherry
+	upItem,candyitem,maxtem,meat,drink,cherry,ENDING
 };
 
 typedef enum ENEMYDISCERN

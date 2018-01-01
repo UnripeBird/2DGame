@@ -152,6 +152,7 @@
     <ClCompile Include="cherryItem.cpp" />
     <ClCompile Include="chilly.cpp" />
     <ClCompile Include="drinkItem.cpp" />
+    <ClCompile Include="ending.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="enemyManager.cpp" />
     <ClCompile Include="fieldBoom0.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="chilly.h" />
     <ClInclude Include="commonMacroFiunction.h" />
     <ClInclude Include="drinkItem.h" />
+    <ClInclude Include="ending.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="enemyManager.h" />
     <ClInclude Include="fieldBoom0.h" />

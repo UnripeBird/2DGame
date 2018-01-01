@@ -1,6 +1,7 @@
 #pragma once
 #include "gameNode.h"
 #include "mapManager.h"
+#include "titleScene.h"
 #include "player.h"
 #include "objectManager.h"
 #include "enemyManager.h"
@@ -14,6 +15,7 @@ private:
 	objectManager* _objectManager;
 	enemyManager* _enemyManager;
 	bulletManager* _bulletManager;
+	titleScene* _title;
 
 public:
 	HRESULT init(void);

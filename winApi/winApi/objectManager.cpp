@@ -25,6 +25,7 @@
 #include "fieldBoomleft.h"
 #include "fieldBoomMid.h"
 #include "fieldBoomRight.h"
+#include "ending.h"
 
 HRESULT objectManager::init(void)
 {
@@ -56,7 +57,15 @@ HRESULT objectManager::init(void)
 	//맵2 오브젝트
 	IMAGEMANAGER->addFrameImage("맵03오브젝트", "image\\objectImage\\map03Obj.bmp", 195, 96,1,1, true, RGB(255, 0, 255));
 
+	//엔딩용 오브젝트
+	IMAGEMANAGER->addFrameImage("log", "image/log.bmp", 400, 2000, 1, 1, true, RGB(255, 0, 255));
 
+
+
+	fieldObject* _ending;
+	_ending = new ending;
+	_ending->init("end", ENDING, 4, PointMake(450, WINSIZEY+900 ));
+	_vObject.push_back(_ending);
 	//==================================== 오브젝트 ==============================================//
 	//스타박스 - 플레이어 흡수 상호작용 : 플레이어가 삼킬수있고 공격으로 사용가능 / 폭탄 연쇄반응O
 	for (int i = 0; i < 7; i++)
