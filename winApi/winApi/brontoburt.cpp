@@ -199,6 +199,7 @@ void brontoburt::Hit()
 
 	_hitCount = true;
 
+	_ani->stop();
 	_hitTimer = TIMEMANAGER->getWorldTime();
 
 }
@@ -265,6 +266,7 @@ void brontoburt::sitleft()
 
 void brontoburt::Eating(POINT playerpoint)
 {
+	_ani->stop();
 	_hitCount = true;
 	_state = 3;
 	if (playerpoint.x > _x)
