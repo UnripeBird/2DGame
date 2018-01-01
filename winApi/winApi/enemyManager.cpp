@@ -10,6 +10,7 @@ HRESULT enemyManager::init(void)
 	IMAGEMANAGER->addFrameImage("Ä¥¸®", "enemy/chilly.bmp", 533 * 3, 300 * 3, 8, 3, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("¹ö´×", "enemy/burning.bmp", 933*3, 600*3, 14, 6, true, RGB(255, 0, 255));
 	IMAGEMANAGER->addFrameImage("³ª¹«¹Øµ¿", "image/treeboss.bmp", 200 * 3, 380 * 3, 5, 5, true, RGB(255, 0, 255));
+	IMAGEMANAGER->addFrameImage("º¸½ºÃ¼·Â¹Ù", "enemy/hpbar.bmp", 1650*2, 30*2, 11, 1, true, RGB(255, 0, 255));
 	enemy* em;
 
 
@@ -96,6 +97,8 @@ HRESULT enemyManager::init(void)
 	em = new woodboss;
 	em->init("³ª¹«¹Øµ¿", treeboss, 3, PointMake(700, 500));
 	_vEnemy.push_back(em);
+
+
 
 	return S_OK;
 }

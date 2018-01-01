@@ -21,6 +21,7 @@ HRESULT woodboss::init(string imageName, ENEMYDISCERN discernNum, int appearMapN
 	_ani->setPlayFrame(0, 1, false, true);
 	_ani->setFPS(3);
 	_ani->start();
+
 	_attacktimer = TIMEMANAGER->getWorldTime();
 	_missileTimer = TIMEMANAGER->getWorldTime();
 
@@ -124,8 +125,9 @@ void woodboss::update(image * pixelimage, POINT playerPoint, vector<fieldObject*
 		_rc = RectMakeCenter(_x + 30, _y + 50, 250, 500);
 
 	}
-	
+		
 }
+
 
 void woodboss::Hit()
 {
@@ -199,4 +201,3 @@ void woodboss::whisleattack(bulletManager* BulletManager)
 	BulletManager->enemyFire(BossBreath, PointMake(700,700));
 	
 }
-

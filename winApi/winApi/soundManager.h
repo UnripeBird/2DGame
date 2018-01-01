@@ -3,7 +3,7 @@
 //fmod.hpp 추가
 #include "inc/fmod.hpp"
 //lib 링크
-#pragma comment (lib, "lib/fmod64_vc.lib")
+#pragma comment (lib, "lib/fmod_vc.lib")
 
 //사운드 갯수만큼 설정
 #define SOUND_BUFFER 10 

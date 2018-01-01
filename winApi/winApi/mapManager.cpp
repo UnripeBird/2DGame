@@ -137,7 +137,7 @@ void mapManager::render(void)
 			{
 				_enemyPos[i]->getimage()->frameRender(mapDC, _enemyPos[i]->getPos().x - (_enemyPos[i]->getimage()->getFrameWidth() / 2)
 					, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
-					_enemyPos[i]->getframex(), _enemyPos[i]->getframey());
+					_enemyPos[i]->gethp(), _enemyPos[i]->getframey());
 			}
 			else
 			{
@@ -145,6 +145,8 @@ void mapManager::render(void)
 					, _enemyPos[i]->getPos().y - (_enemyPos[i]->getimage()->getFrameHeight() / 2) + 25,
 					_enemyPos[i]->getAni());
 			}
+
+		
 		}
 	}
 
@@ -170,6 +172,14 @@ void mapManager::render(void)
 	///////////////// UI render /////////////////////////////////
 
 	IMAGEMANAGER->render("LifeUI", getMemDC(), 200, WINSIZEY - 40);
+	// 보스몹 체력바
+	for (int i = 0; i < _enemyPos.size(); i++)
+	{
+		if (_curMapNumber == 3 && _enemyPos[i]->getAppearMapNum() == 3)
+		{
+			IMAGEMANAGER->frameRender("보스체력바", getMemDC(), 500, WINSIZEY - 70, _enemyPos[i]->gethp(), 0);
+		}
+	}
 
 	int _Life = _playerPos->getLife();
 	int Life = _Life;

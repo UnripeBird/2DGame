@@ -19,6 +19,7 @@ protected:
 	int _appearMapNum;
 	ENEMYDISCERN _discernNum;
 	animation* _ani;
+
 	float _x, _y;
 	int _framex;
 	int _framey;
